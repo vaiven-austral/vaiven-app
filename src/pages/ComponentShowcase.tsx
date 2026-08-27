@@ -1,0 +1,246 @@
+import { useState } from 'react';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
+import { Select } from '../components/ui/select';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/card';
+import { Badge } from '../components/ui/badge';
+
+export function ComponentShowcase() {
+  const [inputValue, setInputValue] = useState('');
+  const [selectValue, setSelectValue] = useState('opcion1');
+
+  const categoryOptions = [
+    { value: 'opcion1', label: 'Opción 1' },
+    { value: 'opcion2', label: 'Opción 2' },
+    { value: 'opcion3', label: 'Opción 3' },
+  ];
+
+  return (
+    <div className="min-h-screen bg-superficie p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-5xl font-800 text-tinta mb-2">VaiVén Components</h1>
+        <p className="text-texto-medio mb-12">Base de componentes tematizada contra el kit de marca</p>
+
+        {/* BUTTONS */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">Buttons</h2>
+
+          <div className="space-y-6">
+            {/* Primary */}
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Primary</p>
+              <div className="flex gap-3 flex-wrap">
+                <Button size="sm">Small</Button>
+                <Button size="md">Medium</Button>
+                <Button size="lg">Large</Button>
+                <Button size="md" isLoading>Loading</Button>
+                <Button size="md" disabled>Disabled</Button>
+              </div>
+            </div>
+
+            {/* Secondary */}
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Secondary</p>
+              <div className="flex gap-3 flex-wrap">
+                <Button variant="secondary" size="sm">Small</Button>
+                <Button variant="secondary" size="md">Medium</Button>
+                <Button variant="secondary" size="lg">Large</Button>
+              </div>
+            </div>
+
+            {/* Outline */}
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Outline</p>
+              <div className="flex gap-3 flex-wrap">
+                <Button variant="outline" size="sm">Small</Button>
+                <Button variant="outline" size="md">Medium</Button>
+                <Button variant="outline" size="lg">Large</Button>
+              </div>
+            </div>
+
+            {/* Ghost */}
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Ghost</p>
+              <div className="flex gap-3 flex-wrap">
+                <Button variant="ghost" size="sm">Small</Button>
+                <Button variant="ghost" size="md">Medium</Button>
+                <Button variant="ghost" size="lg">Large</Button>
+              </div>
+            </div>
+
+            {/* Destructive */}
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Destructive</p>
+              <div className="flex gap-3 flex-wrap">
+                <Button variant="destructive" size="sm">Small</Button>
+                <Button variant="destructive" size="md">Medium</Button>
+                <Button variant="destructive" size="lg">Large</Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* INPUTS & FIELDS */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">Inputs & Fields</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Input
+              label="Normal Input"
+              placeholder="Ingresa texto..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+
+            <Input
+              label="Input con Error"
+              placeholder="Este tiene error"
+              error="Este campo es requerido"
+            />
+
+            <Input
+              label="Input Disabled"
+              placeholder="No se puede editar"
+              disabled
+            />
+
+            <Input
+              label="Input con Helper"
+              placeholder="Con texto de ayuda"
+              helperText="Este es un texto de ayuda"
+            />
+
+            <Textarea
+              label="Textarea"
+              placeholder="Ingresa un mensaje largo..."
+              rows={4}
+            />
+
+            <Textarea
+              label="Textarea con Error"
+              placeholder="Este tiene error"
+              error="Máximo 100 caracteres"
+              rows={4}
+            />
+
+            <Select
+              label="Select"
+              options={categoryOptions}
+              value={selectValue}
+              onChange={(e) => setSelectValue(e.target.value)}
+            />
+
+            <Select
+              label="Select Disabled"
+              options={categoryOptions}
+              disabled
+            />
+          </div>
+        </section>
+
+        {/* CARDS */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">Cards</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Card Simple</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-texto-medio">
+                  Este es un card simple con header y content.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Card Completo</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-texto-medio mb-4">
+                  Este card tiene header, content y footer con acciones.
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Button size="sm" variant="ghost">Cancelar</Button>
+                <Button size="sm">Aceptar</Button>
+              </CardFooter>
+            </Card>
+          </div>
+        </section>
+
+        {/* BADGES */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">Badges</h2>
+
+          <div className="flex flex-wrap gap-3">
+            <Badge variant="primary">Primary</Badge>
+            <Badge variant="secondary">Secondary</Badge>
+            <Badge variant="success">Success</Badge>
+            <Badge variant="warning">Warning</Badge>
+            <Badge variant="destructive">Destructive</Badge>
+            <Badge variant="neutral">Neutral</Badge>
+          </div>
+        </section>
+
+        {/* COLOR PALETTE */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">Paleta de Colores</h2>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="w-full h-32 bg-primario rounded-tarjeta mb-2 shadow-sm"></div>
+              <p className="font-600 text-sm text-tinta">Primario</p>
+              <p className="text-xs text-texto-suave">#49A078</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-full h-32 bg-secundario rounded-tarjeta mb-2 shadow-sm"></div>
+              <p className="font-600 text-sm text-tinta">Secundario</p>
+              <p className="text-xs text-texto-suave">#216869</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-full h-32 bg-terciario rounded-tarjeta mb-2 shadow-sm"></div>
+              <p className="font-600 text-sm text-tinta">Terciario</p>
+              <p className="text-xs text-texto-suave">#785964</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-full h-32 bg-exito rounded-tarjeta mb-2 shadow-sm"></div>
+              <p className="font-600 text-sm text-tinta">Éxito</p>
+              <p className="text-xs text-texto-suave">#2F7F5D</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-full h-32 bg-atencion rounded-tarjeta mb-2 shadow-sm"></div>
+              <p className="font-600 text-sm text-tinta">Atención</p>
+              <p className="text-xs text-texto-suave">#92620A</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-full h-32 bg-critico rounded-tarjeta mb-2 shadow-sm"></div>
+              <p className="font-600 text-sm text-tinta">Crítico</p>
+              <p className="text-xs text-texto-suave">#B91C1C</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-full h-32 bg-lienzo rounded-tarjeta border border-borde mb-2 shadow-sm"></div>
+              <p className="font-600 text-sm text-tinta">Lienzo</p>
+              <p className="text-xs text-texto-suave">#E9ECEE</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-full h-32 bg-tinta rounded-tarjeta mb-2 shadow-sm"></div>
+              <p className="font-600 text-sm text-tarjeta">Tinta</p>
+              <p className="text-xs text-texto-suave">#111827</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}

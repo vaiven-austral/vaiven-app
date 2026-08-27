@@ -1,0 +1,2 @@
+UPDATE public.perfiles SET nombre_visible = 'Atacante' WHERE id = 'fca9f310-7d9f-4c38-b9cc-cbffdf74278b';
+SELECT id, nombre_visible FROM public.perfiles WHERE id = 'fca9f310-7d9f-4c38-b9cc-cbffdf74278b';

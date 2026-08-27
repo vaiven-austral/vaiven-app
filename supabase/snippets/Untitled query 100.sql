@@ -1,0 +1,2 @@
+UPDATE public.perfiles SET nombre_visible = 'Ana Actualizada' WHERE id = '99794ebc-1663-42fa-bcef-28b69dc93961';
+SELECT id, nombre_visible FROM public.perfiles WHERE id = '99794ebc-1663-42fa-bcef-28b69dc93961';
