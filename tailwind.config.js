@@ -16,7 +16,9 @@ export default {
         superficie: "#F9FAFB",
         tarjeta: "#FFFFFF",
         borde: "#EEF0F2",
+        "borde-fuerte": "#E5E7EB",
         "texto-medio": "#6B7280",
+        "texto-suave": "#9CA3AF",
         lienzo: "#F3F4F6",
       },
       fontFamily: {
