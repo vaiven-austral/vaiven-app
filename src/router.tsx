@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { ComponentShowcase } from './pages/ComponentShowcase';
 import { Home } from './pages/Home';
 import { LoginPage } from './pages/LoginPage';
@@ -19,18 +19,6 @@ export const router = createBrowserRouter([
   {
     path: '/registro',
     element: <RegisterPage />,
-  },
-  {
-    path: '/register',
-    element: <Register />,
-  },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/feed',
-    element: <Feed />,
   },
   {
     path: '/dev/components',
