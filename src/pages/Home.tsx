@@ -1,39 +1,30 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useN8n } from '../hooks/useN8n';
 import { supabase } from '../lib/supabaseClient';
 import { Button } from '../components/ui/button';
-import { callN8nWebhook } from '../lib/n8nClient';
 
 export function Home() {
   const navigate = useNavigate();
   const { user, session } = useAuth();
-  const [testResult, setTestResult] = useState('');
-  const [testing, setTesting] = useState(false);
+  const { loading: testing, error: testError, data: testData, callWebhook } = useN8n();
 
   async function handleLogout() {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Error al cerrar sesión:', error);
+    }
     navigate('/login');
   }
 
   async function testN8nCall() {
-    setTesting(true);
-    setTestResult('⏳ Loading: Llamando a webhook de n8n...');
-
     const webhookUrl = 'https://webhook.site/unique-id-test';
 
-    const result = await callN8nWebhook(
+    await callWebhook(
       webhookUrl,
       { test: true, timestamp: new Date().toISOString() },
       session
     );
-
-    if (result.error) {
-      setTestResult(`❌ Error: ${result.error.message}`);
-    } else {
-      setTestResult(`✅ Success: Webhook llamado correctamente. Verifica Network tab para ver Authorization: Bearer <JWT>`);
-    }
-    setTesting(false);
   }
 
   return (
@@ -55,8 +46,16 @@ export function Home() {
               </Button>
             </div>
 
-            {testResult && (
-              <p className="text-sm text-texto-medio">{testResult}</p>
+            {testing && (
+              <p className="text-sm text-texto-medio">⏳ Loading: Llamando a webhook de n8n...</p>
+            )}
+            {!testing && testError && (
+              <p className="text-sm text-texto-medio">❌ Error: {testError.message}</p>
+            )}
+            {!testing && !testError && testData !== null && (
+              <p className="text-sm text-texto-medio">
+                ✅ Success: Webhook llamado correctamente. Verifica Network tab para ver Authorization: Bearer &lt;JWT&gt;
+              </p>
             )}
           </div>
         )}

@@ -14,10 +14,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     // Leer sesión existente (cuando la app carga o recarga)
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
+    supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        setSession(session);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error al obtener sesión:', error);
+        setLoading(false);
+      });
 
     // Suscribirse a cambios de autenticación (login, logout, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
