@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
 import { Button } from '../components/ui/button';
+import { Logo } from '../components/Logo';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
@@ -52,7 +53,9 @@ export function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-superficie">
       <div className="w-full max-w-md px-6">
-        <h1 className="text-3xl font-bold text-tinta mb-8 text-center">VaiVen</h1>
+        <div className="mb-8 flex justify-center">
+          <Logo size="md" />
+        </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
