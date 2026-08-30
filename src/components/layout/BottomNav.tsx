@@ -34,8 +34,8 @@ const navItems: NavItem[] = [
     label: 'Movimientos',
     icon: (
       <svg {...iconProps}>
-        <path d="M9 8 5 12l4 4" />
-        <path d="M5 12h9a5 5 0 0 0 0-10" />
+        <path d="M9 11 5 15l4 4" />
+        <path d="M5 15h9a5 5 0 0 0 0-10" />
       </svg>
     ),
   },
@@ -65,16 +65,44 @@ export function BottomNav() {
   const location = useLocation();
 
   return (
-    <nav className="relative flex h-[84px] items-center justify-around border-t border-borde bg-tarjeta px-2 pb-2">
+    <nav className="relative grid h-[84px] grid-cols-[1fr_1fr_72px_1fr_1fr] items-center border-t border-borde bg-tarjeta px-4 pb-2">
       {navItems.slice(0, 2).map((item) => {
         const isActive = location.pathname === item.to;
         return (
           <NavLink
             key={item.to}
             to={item.to}
-            className={`flex flex-col items-center gap-1 text-xs ${isActive ? 'text-primario font-600' : 'text-texto-suave'}`}
+            className={`flex flex-col items-center gap-[5px] pt-1 text-[10px] font-bold leading-none tracking-normal ${isActive ? 'text-secundario' : 'text-texto-suave'}`}
           >
-            {item.icon}
+            <span
+              className={`flex h-[26px] w-[42px] items-center justify-center rounded-boton ${
+                isActive ? 'bg-[#21686917] text-secundario' : 'text-texto-suave'
+              }`}
+            >
+              {item.icon}
+            </span>
+            {item.label}
+          </NavLink>
+        );
+      })}
+
+      <div aria-hidden="true" />
+
+      {navItems.slice(2).map((item) => {
+        const isActive = location.pathname === item.to;
+        return (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={`flex flex-col items-center gap-[5px] pt-1 text-[10px] font-bold leading-none tracking-normal ${isActive ? 'text-secundario' : 'text-texto-suave'}`}
+          >
+            <span
+              className={`flex h-[26px] w-[42px] items-center justify-center rounded-boton ${
+                isActive ? 'bg-[#21686917] text-secundario' : 'text-texto-suave'
+              }`}
+            >
+              {item.icon}
+            </span>
             {item.label}
           </NavLink>
         );
@@ -83,26 +111,12 @@ export function BottomNav() {
       <NavLink
         to="/publicar"
         aria-label="Nueva publicación"
-        className="absolute left-1/2 top-0 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-pill bg-primario text-tarjeta shadow-[0_8px_20px_rgba(73,160,120,0.32)]"
+        className="absolute left-1/2 top-0 flex h-[62px] w-[62px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-pill border-[5px] border-tarjeta bg-primario text-tarjeta shadow-[0_10px_22px_rgba(73,160,120,0.42)]"
       >
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
           <path d="M12 5v14M5 12h14" />
         </svg>
       </NavLink>
-
-      {navItems.slice(2).map((item) => {
-        const isActive = location.pathname === item.to;
-        return (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            className={`flex flex-col items-center gap-1 text-xs ${isActive ? 'text-primario font-600' : 'text-texto-suave'}`}
-          >
-            {item.icon}
-            {item.label}
-          </NavLink>
-        );
-      })}
     </nav>
   );
 }
