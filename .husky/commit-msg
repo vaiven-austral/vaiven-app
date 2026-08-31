@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+COMMIT_MSG=$(cat "$1")
+if ! echo "$COMMIT_MSG" | grep -qE "SCRUM-[0-9]+"; then
+  echo "❌ El mensaje del commit no incluye un ID de Jira (ej: SCRUM-123)."
+  echo "Ejemplo correcto: git commit -m \"SCRUM-123: arreglo bug de login\""
+  exit 1
+fi
