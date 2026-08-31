@@ -1,0 +1,19 @@
+name: Check commit messages
+on:
+  push:
+    branches-ignore:
+      - main
+jobs:
+  check-commit-messages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar mensajes de commit
+        run: |
+          MESSAGES=$(jq -r '.commits[].message' "$GITHUB_EVENT_PATH")
+          while IFS= read -r MSG; do
+            if [[ ! "$MSG" =~ SCRUM-[0-9]+ ]]; then
+              echo "❌ El commit '$MSG' no incluye un ID de Jira."
+              exit 1
+            fi
+          done <<< "$MESSAGES"
+          echo "✅ Todos los mensajes de commit son correctos."
