@@ -3,6 +3,8 @@ import { useAuth } from '../hooks/useAuth';
 import { useN8n } from '../hooks/useN8n';
 import { supabase } from '../lib/supabaseClient';
 import { Button } from '../components/ui/button';
+import { Logo } from '../components/Logo';
+
 
 export function Home() {
   const navigate = useNavigate();
@@ -30,7 +32,7 @@ export function Home() {
   return (
     <div className="min-h-screen bg-superficie p-8 flex items-center justify-center">
       <div className="text-center">
-        <h1 className="text-5xl font-800 text-tinta mb-4">VaiVén</h1>
+        <Logo size="md" />
         <p className="text-xl text-texto-medio">Plataforma de donaciones con matching asistido por IA</p>
 
         {user && (

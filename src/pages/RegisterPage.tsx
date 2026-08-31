@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
 import { Button } from '../components/ui/button';
+import { Logo } from '../components/Logo';
 
 export function RegisterPage() {
+  const [nombreVisible, setNombreVisible] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -29,12 +31,35 @@ export function RegisterPage() {
     );
   }
 
+  function validateForm(): boolean {
+    if (!nombreVisible.trim()) {
+      setError('El nombre visible es requerido');
+      return false;
+    }
+    if (!email.trim()) {
+      setError('El email es requerido');
+      return false;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('Email inválido');
+      return false;
+    }
+    if (password.length < 8) {
+      setError('La contraseña debe tener al menos 8 caracteres');
+      return false;
+    }
+    if (password !== confirmPassword) {
+      setError('Las contraseñas no coinciden');
+      return false;
+    }
+    return true;
+  }
+
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     setError('');
 
-    if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
+    if (!validateForm()) {
       return;
     }
 
@@ -44,11 +69,16 @@ export function RegisterPage() {
       const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            nombre_visible: nombreVisible,
+          },
+        },
       });
 
       if (error) throw error;
 
-      navigate('/login');
+      navigate('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al registrarse');
     } finally {
@@ -56,33 +86,58 @@ export function RegisterPage() {
     }
   }
 
+  const clearError = () => setError('');
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-superficie">
       <div className="w-full max-w-md px-6">
-        <h1 className="text-3xl font-bold text-tinta mb-8 text-center">VaiVen</h1>
+        <div className="mb-8 flex justify-center">
+          <Logo size="md" />
+        </div>
 
         <form onSubmit={handleRegister} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-tinta mb-2">Nombre visible</label>
+            <input
+              type="text"
+              value={nombreVisible}
+              onChange={(e) => {
+                setNombreVisible(e.target.value);
+                clearError();
+              }}
+              className="w-full px-4 py-2 border border-borde rounded-boton focus:outline-none focus:ring-2 focus:ring-primario"
+              placeholder="Tu nombre"
+              disabled={submitting}
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-tinta mb-2">Email</label>
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              onChange={(e) => {
+                setEmail(e.target.value);
+                clearError();
+              }}
               className="w-full px-4 py-2 border border-borde rounded-boton focus:outline-none focus:ring-2 focus:ring-primario"
               placeholder="tu@email.com"
+              disabled={submitting}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-tinta mb-2">Contraseña</label>
+            <label className="block text-sm font-medium text-tinta mb-2">Contraseña (mínimo 8 caracteres)</label>
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              onChange={(e) => {
+                setPassword(e.target.value);
+                clearError();
+              }}
               className="w-full px-4 py-2 border border-borde rounded-boton focus:outline-none focus:ring-2 focus:ring-primario"
               placeholder="••••••••"
+              disabled={submitting}
             />
           </div>
 
@@ -91,10 +146,13 @@ export function RegisterPage() {
             <input
               type="password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                clearError();
+              }}
               className="w-full px-4 py-2 border border-borde rounded-boton focus:outline-none focus:ring-2 focus:ring-primario"
               placeholder="••••••••"
+              disabled={submitting}
             />
           </div>
 
