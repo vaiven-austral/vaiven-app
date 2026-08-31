@@ -76,7 +76,7 @@ export function BottomNav() {
           >
             <span
               className={`flex h-[26px] w-[42px] items-center justify-center rounded-boton ${
-                isActive ? 'bg-[#21686917] text-secundario' : 'text-texto-suave'
+                isActive ? 'bg-secundario/[0.09] text-secundario' : 'text-texto-suave'
               }`}
             >
               {item.icon}
@@ -98,7 +98,7 @@ export function BottomNav() {
           >
             <span
               className={`flex h-[26px] w-[42px] items-center justify-center rounded-boton ${
-                isActive ? 'bg-[#21686917] text-secundario' : 'text-texto-suave'
+                isActive ? 'bg-secundario/[0.09] text-secundario' : 'text-texto-suave'
               }`}
             >
               {item.icon}
