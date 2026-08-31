@@ -2,6 +2,10 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+## Git hooks (Husky)
+
+Este repo usa [Husky](https://typicode.github.io/husky/) para bloquear commits automáticamente si: la rama no sigue la convención `SCRUM-XX-descripcion`, el mensaje del commit no incluye un ID de Jira (`SCRUM-XX`), o el proyecto no compila (`pnpm run build`). Los hooks se instalan solos al correr `pnpm install` (vía el script `prepare`).
+
 Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
