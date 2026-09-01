@@ -127,7 +127,6 @@ export function CreateNeed() {
         <Input
           label="Título de la publicación"
           placeholder="Ej: Notebook para cursar"
-          maxLength={80}
           value={titulo}
           onChange={(e) => setTitulo(e.target.value)}
           error={errors.titulo}
@@ -172,7 +171,6 @@ export function CreateNeed() {
           </div>
           <Textarea
             placeholder="Contanos brevemente tu situación..."
-            maxLength={1000}
             rows={4}
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
