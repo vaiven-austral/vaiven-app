@@ -9,11 +9,12 @@ jobs:
     steps:
       - name: Verificar mensajes de commit
         run: |
-          MESSAGES=$(jq -r '.commits[].message' "$GITHUB_EVENT_PATH")
-          while IFS= read -r MSG; do
-            if [[ ! "$MSG" =~ SCRUM-[0-9]+ ]]; then
-              echo "❌ El commit '$MSG' no incluye un ID de Jira."
+          COMMIT_COUNT=$(jq '.commits | length' "$GITHUB_EVENT_PATH")
+          for i in $(seq 0 $((COMMIT_COUNT - 1))); do
+            SUBJECT=$(jq -r ".commits[$i].message" "$GITHUB_EVENT_PATH" | head -n1)
+            if [[ ! "$SUBJECT" =~ SCRUM-[0-9]+ ]]; then
+              echo "❌ El commit '$SUBJECT' no incluye un ID de Jira."
               exit 1
             fi
-          done <<< "$MESSAGES"
+          done
           echo "✅ Todos los mensajes de commit son correctos."
