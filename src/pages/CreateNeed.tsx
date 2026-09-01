@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
 import { Input } from '../components/ui/input';
@@ -109,32 +109,29 @@ export function CreateNeed() {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-800 text-tinta mb-6">Publicar necesidad</h1>
+      <h1 className="text-3xl font-800 text-tinta mb-6">Nueva Publicación</h1>
+
+      <div className="flex bg-lienzo rounded-tarjeta p-1 mb-6">
+        <Link
+          to="/publicar/donacion"
+          className="flex-1 text-center px-4 py-3 rounded-boton font-600 text-sm text-texto-medio"
+        >
+          🎁 Quiero Donar un Objeto
+        </Link>
+        <span className="flex-1 text-center px-4 py-3 rounded-boton font-600 text-sm bg-tarjeta text-tinta shadow-sm">
+          🤝 Necesito Recibir una Ayuda
+        </span>
+      </div>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
         <Input
-          label="Título"
-          placeholder="Ej: Zapatillas talle 38 para niño"
+          label="Título de la publicación"
+          placeholder="Ej: Notebook para cursar"
           maxLength={80}
           value={titulo}
           onChange={(e) => setTitulo(e.target.value)}
           error={errors.titulo}
         />
-
-        <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <label className="font-600 text-tinta text-sm">Descripción</label>
-            <Badge variant="primary">✨ ANALIZADO POR IA</Badge>
-          </div>
-          <Textarea
-            placeholder="Contanos brevemente qué necesitás y por qué..."
-            maxLength={1000}
-            rows={4}
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
-            error={errors.descripcion}
-          />
-        </div>
 
         <div>
           <CategorySelect value={categoriaId} onChange={setCategoriaId} />
@@ -143,16 +140,8 @@ export function CreateNeed() {
           )}
         </div>
 
-        <div>
-          <p className="block mb-1.5 font-600 text-tinta text-sm">Ubicación</p>
-          <ZoneCascadeSelect onChange={setZonaId} />
-          {errors.zona && (
-            <p className="text-critico text-sm mt-1 font-500">{errors.zona}</p>
-          )}
-        </div>
-
         <Select
-          label="Urgencia"
+          label="Nivel de urgencia"
           options={urgenciaOptions}
           value={urgencia}
           onChange={(e) => setUrgencia(e.target.value as Urgencia)}
@@ -167,6 +156,29 @@ export function CreateNeed() {
           onChange={(e) => setCantidad(e.target.value === '' ? 0 : Number(e.target.value))}
           error={errors.cantidad}
         />
+
+        <div>
+          <p className="block mb-1.5 font-600 text-tinta text-sm">Ubicación</p>
+          <ZoneCascadeSelect onChange={setZonaId} />
+          {errors.zona && (
+            <p className="text-critico text-sm mt-1 font-500">{errors.zona}</p>
+          )}
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="font-600 text-tinta text-sm">¿Por qué lo necesitás?</label>
+            <Badge variant="primary">✨ ANALIZADO POR IA</Badge>
+          </div>
+          <Textarea
+            placeholder="Contanos brevemente tu situación..."
+            maxLength={1000}
+            rows={4}
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+            error={errors.descripcion}
+          />
+        </div>
 
         {submitError && (
           <div className="rounded-tarjeta border-2 border-critico bg-[rgba(220,38,38,0.06)] p-4 text-critico text-sm font-500">

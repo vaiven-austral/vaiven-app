@@ -60,6 +60,10 @@ export const router = createBrowserRouter([
             element: <PublicarDonacionPage />,
           },
           {
+            path: '/publicar/necesidad',
+            element: <CreateNeed />,
+          },
+          {
             path: '/ranking-ia',
             element: <RankingIAPage />,
           },
@@ -82,10 +86,6 @@ export const router = createBrowserRouter([
       {
         path: '/publicaciones',
         element: <PublicacionesPage />,
-      },
-      {
-        path: '/publicar/necesidad',
-        element: <CreateNeed />,
       },
     ],
   },
