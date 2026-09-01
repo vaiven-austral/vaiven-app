@@ -24,6 +24,12 @@ export default {
       fontFamily: {
         sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
       },
+      fontWeight: {
+        500: "500",
+        600: "600",
+        700: "700",
+        800: "800",
+      },
       borderRadius: {
         chip: "8px",
         boton: "14px",
