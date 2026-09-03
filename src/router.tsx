@@ -13,6 +13,7 @@ import { RankingIAPage } from './pages/RankingIAPage';
 import { OfertasPage } from './pages/OfertasPage';
 import { HistorialPage } from './pages/HistorialPage';
 import { PerfilPage } from './pages/PerfilPage';
+import { MatchingResultsPage } from './pages/MatchingResultsPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { AppLayout } from './layouts/AppLayout';
 
@@ -86,6 +87,10 @@ export const router = createBrowserRouter([
       {
         path: '/publicar/necesidad',
         element: <PublicarNecesidadPage />,
+      },
+      {
+        path: '/matching/:publicacionId',
+        element: <MatchingResultsPage />,
       },
     ],
   },
