@@ -310,6 +310,61 @@
     },
     {
       "parameters": {
+        "jsCode": "const allCandidates = $input.all().map(item => item.json);\nreturn [{\n  json: {\n    statusCode: 200,\n    body: {\n      success: true,\n      candidates: allCandidates,\n      count: allCandidates.length\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1952,
+        -432
+      ],
+      "id": "7bde3c6d-b228-4301-bda8-134c9ef60a4b",
+      "name": "response"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:54321/rest/v1/publicaciones",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{  'eq.' + $json.body.publicacion_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$json.headers.authorization.split(' ')[1]}} "
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1104,
+        -432
+      ],
+      "id": "abb61655-a9f3-4310-81fa-90c56993a7b9",
+      "name": "Original Post"
+    },
+    {
+      "parameters": {
         "url": "http://host.docker.internal:54321/rest/v1/publicaciones",
         "sendQuery": true,
         "queryParameters": {
