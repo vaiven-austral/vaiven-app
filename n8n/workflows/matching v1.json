@@ -330,6 +330,10 @@
             {
               "name": "id",
               "value": "={{  'eq.' + $json.body.publicacion_id }}"
+            },
+            {
+              "name": "select",
+              "value": "id,tipo,estado,titulo,descripcion,categoria_id,zona_id,urgencia,zonas:zona_id(id,region,partido,localidad)"
             }
           ]
         },
