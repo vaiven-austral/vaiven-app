@@ -1,0 +1,352 @@
+{
+  "name": "VaiVen - Motor de Matching v1",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1232,
+        -400
+      ],
+      "id": "cb979570-01de-4bc3-8406-553664569a81",
+      "name": "200"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1152,
+        -48
+      ],
+      "id": "72ff1131-38db-4020-bc6e-f95c0997f338",
+      "name": "400"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 401
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        848,
+        96
+      ],
+      "id": "d483965c-632a-4c13-9607-fa37c6f177b8",
+      "name": "401"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "matching-v1",
+        "authentication": "jwtAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "5de2886c-2e9e-4e04-96fd-11e6306875fc",
+      "name": "Webhook",
+      "webhookId": "a869b9c1-4a9c-4da7-be8f-cca4682ccb13",
+      "credentials": {
+        "jwtAuth": {
+          "id": "bluD5ajczYoBiPMf",
+          "name": "JWT Auth account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b503b791-f877-4bba-91cb-1089c0c5fb45",
+              "leftValue": "={{ $json.jwtPayload.aud }}",
+              "rightValue": "authenticated",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "590874f7-e188-4338-afb7-645d3aff91f6",
+              "leftValue": "={{ $json.jwtPayload.role }}",
+              "rightValue": "authenticated",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        0
+      ],
+      "id": "3637bc15-a5b8-4ad1-b802-1247bbf81717",
+      "name": "auth"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  statusCode: 400,\n  body: {\n    error: 'Bad Request',\n    message: 'publicacion_id is required'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        -48
+      ],
+      "id": "6cdd39e6-ebd0-46f7-b17b-b932547696ad",
+      "name": "bad request"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  statusCode: 401,\n  body: {\n    error: 'Unauthorized',\n    message: 'Invalid JWT claims: aud or role missing/invalid'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        96
+      ],
+      "id": "2ba4010a-426e-48cf-b0a9-5cce4aa06fcd",
+      "name": "unauth"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  statusCode: 400,\n  body: {\n    error: 'Bad Request',\n    message: 'publicacion_id must be a valid UUID'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        -176
+      ],
+      "id": "7725be28-55a6-4ed2-91f4-8e068da73086",
+      "name": "bad request1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "18c37b04-a965-4f68-bf79-2a6a90242754",
+              "leftValue": "={{ $json.body.publicacion_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "33f561a8-b380-448e-923c-b946dbe2ce34",
+      "name": "publicacion_id precent"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1456,
+        -176
+      ],
+      "id": "98405db3-6505-416a-a5d5-d9f3a38f54a2",
+      "name": "400-1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3b02ac38-5e53-4fa1-8065-9d7e7f67e2a1",
+              "leftValue": "={{ $json.body.publicacion_id }}",
+              "rightValue": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        896,
+        -320
+      ],
+      "id": "bb6a39e4-2581-4313-83ad-d32623fabefe",
+      "name": "valid piblication_id"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "auth",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "auth": {
+      "main": [
+        [
+          {
+            "node": "publicacion_id precent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "unauth",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "bad request": {
+      "main": [
+        [
+          {
+            "node": "400",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "unauth": {
+      "main": [
+        [
+          {
+            "node": "401",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "bad request1": {
+      "main": [
+        [
+          {
+            "node": "400-1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "publicacion_id precent": {
+      "main": [
+        [
+          {
+            "node": "valid piblication_id",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "bad request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "valid piblication_id": {
+      "main": [
+        [
+          {
+            "node": "200",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "bad request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a022e921-a223-4cd1-86b2-0d88276e8cf8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "618168d9f03a7f7ca92cb8070924ed70992ba5a5e3f7fcada607da4123af789e"
+  },
+  "nodeGroups": [],
+  "id": "XRFe8IUhCLn2qM4l",
+  "tags": []
+}
