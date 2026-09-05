@@ -20,6 +20,8 @@ export default {
         "texto-medio": "#6B7280",
         "texto-suave": "#9CA3AF",
         lienzo: "#F3F4F6",
+        "terciario-claro": "#DAC6CD",
+        "terciario-oscuro": "#3A2A31",
       },
       fontFamily: {
         sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"],

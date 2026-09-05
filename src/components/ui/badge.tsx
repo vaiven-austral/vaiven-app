@@ -1,15 +1,17 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 interface BadgeProps {
   children: ReactNode;
-  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'neutral';
+  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'neutral' | 'terciario';
   className?: string;
+  style?: CSSProperties;
 }
 
 export function Badge({
   children,
   variant = 'primary',
   className = '',
+  style,
 }: BadgeProps) {
   const variants = {
     primary: 'bg-[rgba(73,160,120,0.13)] text-primario',
@@ -18,6 +20,7 @@ export function Badge({
     warning: 'bg-[rgba(245,158,11,0.13)] text-atencion',
     destructive: 'bg-[rgba(220,38,38,0.09)] text-critico',
     neutral: 'bg-lienzo text-texto-medio',
+    terciario: 'bg-terciario-claro text-terciario-oscuro',
   };
 
   return (
@@ -29,6 +32,7 @@ export function Badge({
         ${variants[variant]}
         ${className}
       `}
+      style={style}
     >
       {children}
     </span>
