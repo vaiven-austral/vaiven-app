@@ -1,14 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { Select } from '../components/ui/select';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
+import { CategorySelect } from '../components/forms/CategorySelect';
+import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
 
 export function ComponentShowcase() {
   const [inputValue, setInputValue] = useState('');
   const [selectValue, setSelectValue] = useState('opcion1');
+  const [categoriaId, setCategoriaId] = useState<number | null>(null);
+  const [zonaId, setZonaId] = useState<number | null>(null);
+
+  useEffect(() => {
+    console.log('CategorySelect + ZoneCascadeSelect ->', { categoria_id: categoriaId, zona_id: zonaId });
+  }, [categoriaId, zonaId]);
 
   const categoryOptions = [
     { value: 'opcion1', label: 'Opción 1' },
@@ -136,6 +144,20 @@ export function ComponentShowcase() {
               options={categoryOptions}
               disabled
             />
+          </div>
+        </section>
+
+        {/* FORM SELECTS: CATEGORIA Y ZONA */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">CategorySelect & ZoneCascadeSelect</h2>
+
+          <div className="space-y-6 max-w-2xl">
+            <CategorySelect value={categoriaId} onChange={setCategoriaId} />
+            <ZoneCascadeSelect onChange={setZonaId} />
+
+            <p className="text-sm text-texto-medio">
+              Salida: <code className="text-xs">{JSON.stringify({ categoria_id: categoriaId, zona_id: zonaId })}</code>
+            </p>
           </div>
         </section>
 

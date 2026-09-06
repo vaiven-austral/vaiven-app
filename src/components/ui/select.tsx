@@ -15,9 +15,10 @@ export function Select({
   ...props
 }: SelectProps) {
   const baseStyles = `
-    w-full px-3 py-2 rounded-boton border-2
+    w-full pl-3 pr-8 py-2 rounded-boton border-2
     font-sans text-base text-tinta
     bg-tarjeta
+    truncate
     transition-all duration-200
     focus:outline-none focus:ring-2 focus:ring-primario focus:ring-offset-0
     disabled:bg-lienzo disabled:cursor-not-allowed disabled:opacity-60
