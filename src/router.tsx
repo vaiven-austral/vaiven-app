@@ -5,8 +5,8 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { PublicacionesPage } from './pages/PublicacionesPage';
 import { PublicarPage } from './pages/PublicarPage';
-import { PublicarDonacionPage } from './pages/PublicarDonacionPage';
-import { PublicarNecesidadPage } from './pages/PublicarNecesidadPage';
+import { CreateDonation } from './pages/CreateDonation';
+import { CreateNeed } from './pages/CreateNeed';
 import { MisDonacionesPage } from './pages/MisDonacionesPage';
 import { MisNecesidadesPage } from './pages/MisNecesidadesPage';
 import { RankingIAPage } from './pages/RankingIAPage';
@@ -57,7 +57,11 @@ export const router = createBrowserRouter([
           },
           {
             path: '/publicar/donacion',
-            element: <PublicarDonacionPage />,
+            element: <CreateDonation />,
+          },
+          {
+            path: '/publicar/necesidad',
+            element: <CreateNeed />,
           },
           {
             path: '/ranking-ia',
@@ -82,10 +86,6 @@ export const router = createBrowserRouter([
       {
         path: '/publicaciones',
         element: <PublicacionesPage />,
-      },
-      {
-        path: '/publicar/necesidad',
-        element: <PublicarNecesidadPage />,
       },
     ],
   },
