@@ -31,3 +31,6 @@ dist-ssr
 
 .env
 .env.local
+
+# Snippets locales del SQL Editor de Supabase Studio
+supabase/snippets/

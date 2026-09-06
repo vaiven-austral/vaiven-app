@@ -1,7 +1,9 @@
+import type { EstadoPublicacion } from './publicationState';
+
 export interface Publication {
   id: string;
   tipo: 'donacion' | 'necesidad';
-  estado: 'activa' | 'en_proceso' | 'completada';
+  estado: EstadoPublicacion;
   titulo: string;
   urgencia?: 'alta' | 'media' | 'sin_apuro' | null;
   estado_objeto?: 'nuevo' | 'como_nuevo' | 'bueno' | 'usado' | 'requiere_reparacion' | null;
