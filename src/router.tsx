@@ -5,7 +5,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { PublicacionesPage } from './pages/PublicacionesPage';
 import { PublicarPage } from './pages/PublicarPage';
-import { PublicarDonacionPage } from './pages/PublicarDonacionPage';
+import { CreateDonation } from './pages/CreateDonation';
 import { CreateNeed } from './pages/CreateNeed';
 import { MisDonacionesPage } from './pages/MisDonacionesPage';
 import { MisNecesidadesPage } from './pages/MisNecesidadesPage';
@@ -57,7 +57,7 @@ export const router = createBrowserRouter([
           },
           {
             path: '/publicar/donacion',
-            element: <PublicarDonacionPage />,
+            element: <CreateDonation />,
           },
           {
             path: '/publicar/necesidad',

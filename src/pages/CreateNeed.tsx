@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
 import { Input } from '../components/ui/input';
@@ -9,6 +9,7 @@ import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { CategorySelect } from '../components/forms/CategorySelect';
 import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
+import { PublicationTypeToggle } from '../components/forms/PublicationTypeToggle';
 
 type Urgencia = 'alta' | 'media' | 'sin_apuro';
 
@@ -111,17 +112,7 @@ export function CreateNeed() {
     <div className="p-6">
       <h1 className="text-3xl font-800 text-tinta mb-6">Nueva Publicación</h1>
 
-      <div className="flex bg-lienzo rounded-tarjeta p-1 mb-6">
-        <Link
-          to="/publicar/donacion"
-          className="flex-1 text-center px-4 py-3 rounded-boton font-600 text-sm text-texto-medio"
-        >
-          🎁 Quiero Donar un Objeto
-        </Link>
-        <span className="flex-1 text-center px-4 py-3 rounded-boton font-600 text-sm bg-tarjeta text-tinta shadow-sm">
-          🤝 Necesito Recibir una Ayuda
-        </span>
-      </div>
+      <PublicationTypeToggle />
 
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
         <Input
