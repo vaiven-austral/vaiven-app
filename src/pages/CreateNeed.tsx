@@ -58,7 +58,7 @@ export function CreateNeed() {
       nextErrors.categoria = 'Seleccioná una categoría.';
     }
     if (zonaId === null) {
-      nextErrors.zona = 'Seleccioná una ubicación completa (región, partido y localidad).';
+      nextErrors.zona = 'Seleccioná una ubicación (región, partido y localidad si corresponde).';
     }
     if (!Number.isInteger(cantidad) || cantidad < 1) {
       nextErrors.cantidad = 'La cantidad debe ser un número entero mayor o igual a 1.';
