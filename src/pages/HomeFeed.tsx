@@ -2,7 +2,15 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
-import type { Publication } from '../components/publications/PublicationCard';
+import {
+  type Publication,
+  estadoLabels,
+  estadoVariants,
+  urgenciaLabels,
+  urgenciaVariants,
+  estadoObjetoLabels,
+  estadoObjetoVariant,
+} from '../lib/publicationBadges';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Badge } from '../components/ui/badge';
 import lightBulbOutline from '../assets/LightBulbOutline.png';
@@ -11,38 +19,6 @@ function getPrimerNombre(nombre?: string | null, email?: string | null): string 
   if (nombre) return nombre.trim().split(/\s+/)[0];
   return email ? email.split('@')[0] : '';
 }
-
-const estadoLabels: Record<Publication['estado'], string> = {
-  activa: 'Activa',
-  en_proceso: 'En proceso',
-  completada: 'Completada',
-};
-
-const estadoVariants: Record<Publication['estado'], 'primary' | 'warning' | 'secondary'> = {
-  activa: 'primary',
-  en_proceso: 'warning',
-  completada: 'secondary',
-};
-
-const urgenciaLabels: Record<NonNullable<Publication['urgencia']>, string> = {
-  alta: 'Urgencia alta',
-  media: 'Urgencia media',
-  sin_apuro: 'Sin apuro',
-};
-
-const urgenciaVariants: Record<NonNullable<Publication['urgencia']>, 'destructive' | 'warning' | 'neutral'> = {
-  alta: 'destructive',
-  media: 'warning',
-  sin_apuro: 'neutral',
-};
-
-const estadoObjetoLabels: Record<NonNullable<Publication['estado_objeto']>, string> = {
-  nuevo: 'Nuevo en caja / sin uso',
-  como_nuevo: 'Como nuevo',
-  bueno: 'Buen estado',
-  usado: 'Usado con detalles',
-  requiere_reparacion: 'Requiere reparación',
-};
 
 // fotos placeholder temporales por categoría (Pexels), hasta que exista el bucket de fotos real
 const fotoPorCategoria: Record<string, string> = {
@@ -149,7 +125,7 @@ export function HomeFeed() {
                 className="h-24 w-full object-cover bg-lienzo"
               />
               <div className="p-3">
-                <p className="font-700 text-tinta text-sm truncate">{publication.titulo}</p>
+                <p className="font-500 text-[14.5px] leading-[150%] text-tinta truncate">{publication.titulo}</p>
                 {publication.categorias && (
                   <p className="text-texto-medio text-xs truncate">{publication.categorias.nombre}</p>
                 )}
@@ -160,7 +136,7 @@ export function HomeFeed() {
                       : publication.zonas.partido}
                   </p>
                 )}
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-col items-start gap-1">
                   <Badge variant={estadoVariants[publication.estado]} className="!text-[11px]">
                     {estadoLabels[publication.estado]}
                   </Badge>
@@ -170,7 +146,7 @@ export function HomeFeed() {
                     </Badge>
                   )}
                   {publication.tipo === 'donacion' && publication.estado_objeto && (
-                    <Badge variant="terciario" className="!text-[11px]">
+                    <Badge variant={estadoObjetoVariant} className="!text-[11px]">
                       {estadoObjetoLabels[publication.estado_objeto]}
                     </Badge>
                   )}

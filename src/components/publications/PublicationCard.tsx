@@ -1,47 +1,15 @@
 import { Badge } from '../ui/badge';
+import {
+  type Publication,
+  estadoLabels,
+  estadoVariants,
+  urgenciaLabels,
+  urgenciaVariants,
+  estadoObjetoLabels,
+  estadoObjetoVariant,
+} from '../../lib/publicationBadges';
 
-export interface Publication {
-  id: string;
-  tipo: 'donacion' | 'necesidad';
-  estado: 'activa' | 'en_proceso' | 'completada';
-  titulo: string;
-  urgencia?: 'alta' | 'media' | 'sin_apuro' | null;
-  estado_objeto?: 'nuevo' | 'como_nuevo' | 'bueno' | 'usado' | 'requiere_reparacion' | null;
-  categorias: { nombre: string } | null;
-  zonas: { partido: string; localidad: string | null } | null;
-}
-
-const estadoLabels: Record<Publication['estado'], string> = {
-  activa: 'ACTIVA',
-  en_proceso: 'EN PROCESO',
-  completada: 'COMPLETADA',
-};
-
-const estadoVariants: Record<Publication['estado'], 'primary' | 'warning' | 'secondary'> = {
-  activa: 'primary',
-  en_proceso: 'warning',
-  completada: 'secondary',
-};
-
-const urgenciaLabels: Record<NonNullable<Publication['urgencia']>, string> = {
-  alta: 'Urgencia Alta',
-  media: 'Urgencia Media',
-  sin_apuro: 'Sin Apuro',
-};
-
-const urgenciaVariants: Record<NonNullable<Publication['urgencia']>, 'destructive' | 'warning' | 'neutral'> = {
-  alta: 'destructive',
-  media: 'warning',
-  sin_apuro: 'neutral',
-};
-
-const estadoObjetoLabels: Record<NonNullable<Publication['estado_objeto']>, string> = {
-  nuevo: 'Nuevo en caja / sin uso',
-  como_nuevo: 'Como nuevo',
-  bueno: 'Buen estado',
-  usado: 'Usado con detalles',
-  requiere_reparacion: 'Requiere reparación',
-};
+export type { Publication };
 
 interface PublicationCardProps {
   publication: Publication;
@@ -53,7 +21,7 @@ export function PublicationCard({ publication }: PublicationCardProps) {
   return (
     <div className="bg-tarjeta rounded-tarjeta border border-borde p-4 shadow-sm">
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h3 className="font-700 text-tinta text-base">{titulo}</h3>
+        <h3 className="font-500 text-[14.5px] leading-[150%] text-tinta">{titulo}</h3>
         <Badge variant={estadoVariants[estado]}>{estadoLabels[estado]}</Badge>
       </div>
 
@@ -69,7 +37,7 @@ export function PublicationCard({ publication }: PublicationCardProps) {
           <Badge variant={urgenciaVariants[urgencia]}>{urgenciaLabels[urgencia]}</Badge>
         )}
         {tipo === 'donacion' && estado_objeto && (
-          <Badge variant="terciario">{estadoObjetoLabels[estado_objeto]}</Badge>
+          <Badge variant={estadoObjetoVariant}>{estadoObjetoLabels[estado_objeto]}</Badge>
         )}
       </div>
     </div>
