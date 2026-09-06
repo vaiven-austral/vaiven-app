@@ -73,15 +73,20 @@ export function ZoneCascadeSelect({ onChange }: ZoneCascadeSelectProps) {
   );
 
   useEffect(() => {
-    if (!region || !partido || !localidad) {
+    const requiereLocalidad = localidades.length > 0;
+
+    if (!region || !partido || (requiereLocalidad && !localidad)) {
       onChange(null);
       return;
     }
     const zona = zonas.find(
-      (z) => z.region === region && z.partido === partido && z.localidad === localidad
+      (z) =>
+        z.region === region &&
+        z.partido === partido &&
+        (requiereLocalidad ? z.localidad === localidad : z.localidad === null)
     );
     onChange(zona ? zona.id : null);
-  }, [zonas, region, partido, localidad, onChange]);
+  }, [zonas, region, partido, localidad, localidades, onChange]);
 
   function handleRegionChange(nuevaRegion: string) {
     setRegion(nuevaRegion);
