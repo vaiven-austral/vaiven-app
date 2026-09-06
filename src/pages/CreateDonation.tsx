@@ -55,13 +55,13 @@ export function CreateDonation() {
       nextErrors.titulo = 'El título debe tener entre 3 y 80 caracteres.';
     }
     if (descripcionLength < 10 || descripcionLength > 1000) {
-      nextErrors.descripcion = 'La descripción debe tener entre 10 y 1000 caracteres.';
+      nextErrors.descripcion = 'Las observaciones adicionales deben tener entre 10 y 1000 caracteres.';
     }
     if (categoriaId === null) {
       nextErrors.categoria = 'Seleccioná una categoría.';
     }
     if (zonaId === null) {
-      nextErrors.zona = 'Seleccioná una ubicación completa (región, partido y localidad).';
+      nextErrors.zona = 'Seleccioná una ubicación (región, partido y localidad si corresponde).';
     }
     if (estadoObjeto === '') {
       nextErrors.estadoObjeto = 'Seleccioná el estado del objeto.';

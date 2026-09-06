@@ -12,7 +12,7 @@ export function PublicationTypeToggle() {
           !isNecesidad ? 'bg-tarjeta text-tinta shadow-sm' : 'text-texto-medio'
         }`}
       >
-        🎁 Quiero Donar un Objeto
+        Quiero donar
       </Link>
       <Link
         to="/publicar/necesidad"
@@ -20,7 +20,7 @@ export function PublicationTypeToggle() {
           isNecesidad ? 'bg-tarjeta text-tinta shadow-sm' : 'text-texto-medio'
         }`}
       >
-        🤝 Necesito Recibir una Ayuda
+        Quiero recibir
       </Link>
     </div>
   );
