@@ -7,6 +7,37 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../compone
 import { Badge } from '../components/ui/badge';
 import { CategorySelect } from '../components/forms/CategorySelect';
 import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
+import { PublicationCard, type Publication } from '../components/publications/PublicationCard';
+
+const mockPublications: Publication[] = [
+  {
+    id: '1',
+    tipo: 'donacion',
+    estado: 'activa',
+    titulo: 'Mantas de invierno 1½ plaza',
+    estado_objeto: 'bueno',
+    categorias: { nombre: 'Ropa & Abrigo' },
+    zonas: { partido: 'Pilar', localidad: 'Del Viso' },
+  },
+  {
+    id: '2',
+    tipo: 'necesidad',
+    estado: 'activa',
+    titulo: 'Notebook para cursar',
+    urgencia: 'alta',
+    categorias: { nombre: 'Tecnología' },
+    zonas: { partido: 'San Isidro', localidad: null },
+  },
+  {
+    id: '3',
+    tipo: 'donacion',
+    estado: 'completada',
+    titulo: 'Mesa plegable',
+    estado_objeto: 'bueno',
+    categorias: { nombre: 'Mobiliario' },
+    zonas: { partido: 'Tigre', localidad: 'Tigre' },
+  },
+];
 
 export function ComponentShowcase() {
   const [inputValue, setInputValue] = useState('');
@@ -158,6 +189,17 @@ export function ComponentShowcase() {
             <p className="text-sm text-texto-medio">
               Salida: <code className="text-xs">{JSON.stringify({ categoria_id: categoriaId, zona_id: zonaId })}</code>
             </p>
+          </div>
+        </section>
+
+        {/* PUBLICATION CARD */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">PublicationCard</h2>
+
+          <div className="space-y-4 max-w-md">
+            {mockPublications.map((pub) => (
+              <PublicationCard key={pub.id} publication={pub} />
+            ))}
           </div>
         </section>
 

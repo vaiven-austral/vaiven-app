@@ -111,7 +111,7 @@ export function CreateDonation() {
     }
 
     setSuccess(true);
-    setTimeout(() => navigate('/publicaciones'), 1500);
+    setTimeout(() => navigate('/feed'), 1500);
   }
 
   return (
