@@ -27,6 +27,17 @@ interface FormErrors {
   zona?: string;
   estadoObjeto?: string;
   cantidad?: string;
+  venceEn?: string;
+}
+
+function getTodayISODate(): string {
+  return new Date().toISOString().split('T')[0];
+}
+
+function getMaxVencimientoISODate(): string {
+  const max = new Date();
+  max.setDate(max.getDate() + 30);
+  return max.toISOString().split('T')[0];
 }
 
 export function CreateDonation() {
@@ -39,6 +50,7 @@ export function CreateDonation() {
   const [zonaId, setZonaId] = useState<number | null>(null);
   const [estadoObjeto, setEstadoObjeto] = useState<EstadoObjeto | ''>('');
   const [cantidad, setCantidad] = useState(1);
+  const [venceEn, setVenceEn] = useState('');
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,6 +80,15 @@ export function CreateDonation() {
     }
     if (!Number.isInteger(cantidad) || cantidad < 1) {
       nextErrors.cantidad = 'La cantidad debe ser un número entero mayor o igual a 1.';
+    }
+    if (venceEn) {
+      const fechaSeleccionada = new Date(`${venceEn}T23:59:59`);
+      const maxFecha = new Date(`${getMaxVencimientoISODate()}T23:59:59`);
+      if (fechaSeleccionada.getTime() <= Date.now()) {
+        nextErrors.venceEn = 'La fecha de vencimiento debe ser posterior a hoy.';
+      } else if (fechaSeleccionada.getTime() > maxFecha.getTime()) {
+        nextErrors.venceEn = 'La fecha de vencimiento no puede superar los 30 días (el valor por defecto).';
+      }
     }
 
     return nextErrors;
@@ -100,6 +121,7 @@ export function CreateDonation() {
         cantidad,
         urgencia: null,
         usuario_id: user.id,
+        ...(venceEn ? { vence_en: new Date(`${venceEn}T23:59:59`).toISOString() } : {}),
       })
       .select();
 
@@ -154,6 +176,17 @@ export function CreateDonation() {
           value={cantidad}
           onChange={(e) => setCantidad(e.target.value === '' ? 0 : Number(e.target.value))}
           error={errors.cantidad}
+        />
+
+        <Input
+          label="Fecha de vencimiento (opcional)"
+          type="date"
+          min={getTodayISODate()}
+          max={getMaxVencimientoISODate()}
+          value={venceEn}
+          onChange={(e) => setVenceEn(e.target.value)}
+          error={errors.venceEn}
+          helperText={!errors.venceEn ? 'Si no elegís una fecha, se usan 30 días por defecto.' : undefined}
         />
 
         <div>

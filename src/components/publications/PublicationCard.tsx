@@ -1,6 +1,7 @@
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { usePublicationState } from '../../hooks/usePublicationState';
+import { isPublicationExpired } from '../../lib/publicationState';
 import {
   type Publication,
   estadoLabels,
@@ -9,6 +10,8 @@ import {
   urgenciaVariants,
   estadoObjetoLabels,
   estadoObjetoVariant,
+  vencidaLabel,
+  vencidaVariant,
 } from '../../lib/publicationBadges';
 
 export type { Publication };
@@ -18,14 +21,18 @@ interface PublicationCardProps {
 }
 
 export function PublicationCard({ publication }: PublicationCardProps) {
-  const { id, tipo, titulo, urgencia, estado_objeto, categorias, zonas } = publication;
+  const { id, tipo, titulo, vence_en, urgencia, estado_objeto, categorias, zonas } = publication;
   const { estado, loading, error, transicionar } = usePublicationState(id, publication.estado);
+  const vencida = estado !== 'completada' && isPublicationExpired(vence_en);
 
   return (
     <div className="bg-tarjeta rounded-tarjeta border border-borde p-4 shadow-sm">
       <div className="flex items-start justify-between gap-2 mb-2">
         <h3 className="font-500 text-[14.5px] leading-[150%] text-tinta">{titulo}</h3>
-        <Badge variant={estadoVariants[estado]}>{estadoLabels[estado]}</Badge>
+        <div className="flex gap-1">
+          {vencida && <Badge variant={vencidaVariant}>{vencidaLabel}</Badge>}
+          <Badge variant={estadoVariants[estado]}>{estadoLabels[estado]}</Badge>
+        </div>
       </div>
 
       {zonas && (
