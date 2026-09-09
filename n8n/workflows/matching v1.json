@@ -184,7 +184,7 @@
         -96
       ],
       "id": "33f561a8-b380-448e-923c-b946dbe2ce34",
-      "name": "publicacion_id precent"
+      "name": "publicacion_id present"
     },
     {
       "parameters": {
@@ -232,7 +232,7 @@
         -320
       ],
       "id": "bb6a39e4-2581-4313-83ad-d32623fabefe",
-      "name": "valid piblication_id"
+      "name": "valid publication_id"
     }
   ],
   "pinData": {},
@@ -252,7 +252,7 @@
       "main": [
         [
           {
-            "node": "publicacion_id precent",
+            "node": "publicacion_id present",
             "type": "main",
             "index": 0
           }
@@ -299,11 +299,11 @@
         ]
       ]
     },
-    "publicacion_id precent": {
+    "publicacion_id present": {
       "main": [
         [
           {
-            "node": "valid piblication_id",
+            "node": "valid publication_id",
             "type": "main",
             "index": 0
           }
@@ -317,7 +317,7 @@
         ]
       ]
     },
-    "valid piblication_id": {
+    "valid publication_id": {
       "main": [
         [
           {
