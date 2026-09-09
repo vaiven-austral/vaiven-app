@@ -1,14 +1,13 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { ComponentShowcase } from './pages/ComponentShowcase';
 import { Home } from './pages/Home';
+import { HomeFeed } from './pages/HomeFeed';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
-import { PublicacionesPage } from './pages/PublicacionesPage';
 import { PublicarPage } from './pages/PublicarPage';
-import { PublicarDonacionPage } from './pages/PublicarDonacionPage';
-import { PublicarNecesidadPage } from './pages/PublicarNecesidadPage';
-import { MisDonacionesPage } from './pages/MisDonacionesPage';
-import { MisNecesidadesPage } from './pages/MisNecesidadesPage';
+import { CreateDonation } from './pages/CreateDonation';
+import { CreateNeed } from './pages/CreateNeed';
+import { MyPublications } from './pages/MyPublications';
 import { RankingIAPage } from './pages/RankingIAPage';
 import { OfertasPage } from './pages/OfertasPage';
 import { HistorialPage } from './pages/HistorialPage';
@@ -42,15 +41,23 @@ export const router = createBrowserRouter([
         children: [
           {
             path: '/',
+            element: <Navigate to="/feed" replace />,
+          },
+          {
+            path: '/feed',
+            element: <HomeFeed />,
+          },
+          {
+            path: '/dev/home',
             element: <Home />,
           },
           {
             path: '/mis-donaciones',
-            element: <MisDonacionesPage />,
+            element: <MyPublications />,
           },
           {
             path: '/mis-necesidades',
-            element: <MisNecesidadesPage />,
+            element: <MyPublications />,
           },
           {
             path: '/publicar',
@@ -58,7 +65,11 @@ export const router = createBrowserRouter([
           },
           {
             path: '/publicar/donacion',
-            element: <PublicarDonacionPage />,
+            element: <CreateDonation />,
+          },
+          {
+            path: '/publicar/necesidad',
+            element: <CreateNeed />,
           },
           {
             path: '/ranking-ia',
@@ -80,14 +91,6 @@ export const router = createBrowserRouter([
       },
 
       // Rutas protegidas sin Shell (fuera del alcance de este ticket)
-      {
-        path: '/publicaciones',
-        element: <PublicacionesPage />,
-      },
-      {
-        path: '/publicar/necesidad',
-        element: <PublicarNecesidadPage />,
-      },
       {
         path: '/matching/:publicacionId',
         element: <MatchingResultsPage />,
