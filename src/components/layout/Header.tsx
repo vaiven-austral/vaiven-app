@@ -19,7 +19,7 @@ export function Header() {
 
   return (
     <header className="flex h-14 items-center justify-between border-b border-borde bg-tarjeta px-4">
-      <Link to="/">
+      <Link to="/feed">
         <img src={logoVaiVen} alt="VaiVen" className="h-9 w-auto" />
       </Link>
 
