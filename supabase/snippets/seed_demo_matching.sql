@@ -3,8 +3,8 @@
 -- ============================================================
 
 -- 1. LIMPIEZA
-DELETE FROM public.publicaciones;
-DELETE FROM auth.users WHERE email LIKE '%@vaiven.dev';
+-- DELETE FROM public.publicaciones;
+-- DELETE FROM auth.users WHERE email LIKE '%@vaiven.dev';
 
 -- 2. CREACIÓN DE USUARIOS (6)
 -- UUIDs:
