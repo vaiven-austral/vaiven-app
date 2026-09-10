@@ -86,19 +86,21 @@ export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
             <h4 className="text-xs font-bold text-tinta uppercase mb-2">Factores de Scoring</h4>
             <div className="space-y-1.5">
               {[
-                { label: 'Resolución', value: candidate.factores.f1_resolucion, max: 40, color: 'bg-teal-600' },
-                { label: 'Urgencia', value: candidate.factores.f2_urgencia, max: 25, color: 'bg-orange-500' },
-                { label: 'Proximidad', value: candidate.factores.f3_proximidad, max: 20, color: 'bg-blue-500' },
-                { label: 'Confianza', value: candidate.factores.f4_confianza, max: 10, color: 'bg-green-500' },
-                { label: 'Calidad', value: candidate.factores.f5_calidad, max: 5, color: 'bg-purple-500' },
+                { label: 'Resolución', value: candidate.factores.f1_resolucion, max: 40, color: '#0d9488' },
+                { label: 'Urgencia', value: candidate.factores.f2_urgencia, max: 25, color: '#f97316' },
+                { label: 'Proximidad', value: candidate.factores.f3_proximidad, max: 20, color: '#3b82f6' },
+                { label: 'Confianza', value: candidate.factores.f4_confianza, max: 10, color: '#22c55e' },
+                { label: 'Calidad', value: candidate.factores.f5_calidad, max: 5, color: '#a855f7' },
               ].map((factor) => (
                 <div key={factor.label} className="flex items-center justify-between text-xs">
                   <span className="text-texto-medio">{factor.label}</span>
                   <div className="flex items-center gap-2">
                     <div className="w-16 h-1.5 bg-gray-300 rounded-full overflow-hidden">
                       <div
-                        className={factor.color}
-                        style={{ width: `${(factor.value / factor.max) * 100}%` }}
+                        style={{
+                          backgroundColor: factor.color,
+                          width: `${(factor.value / factor.max) * 100}%`,
+                        }}
                       ></div>
                     </div>
                     <span className="text-tinta font-semibold w-10 text-right">
