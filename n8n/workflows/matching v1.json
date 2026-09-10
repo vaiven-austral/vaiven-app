@@ -10,8 +10,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        1232,
-        -400
+        1792,
+        -432
       ],
       "id": "cb979570-01de-4bc3-8406-553664569a81",
       "name": "200"
@@ -25,8 +25,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        1152,
-        -48
+        1104,
+        -32
       ],
       "id": "72ff1131-38db-4020-bc6e-f95c0997f338",
       "name": "400"
@@ -40,8 +40,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        848,
-        96
+        880,
+        112
       ],
       "id": "d483965c-632a-4c13-9607-fa37c6f177b8",
       "name": "401"
@@ -120,8 +120,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        928,
-        -48
+        880,
+        -32
       ],
       "id": "6cdd39e6-ebd0-46f7-b17b-b932547696ad",
       "name": "bad request"
@@ -134,7 +134,7 @@
       "typeVersion": 2,
       "position": [
         672,
-        96
+        112
       ],
       "id": "2ba4010a-426e-48cf-b0a9-5cce4aa06fcd",
       "name": "unauth"
@@ -146,8 +146,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1232,
-        -176
+        1104,
+        -224
       ],
       "id": "7725be28-55a6-4ed2-91f4-8e068da73086",
       "name": "bad request1"
@@ -181,7 +181,7 @@
       "typeVersion": 2.3,
       "position": [
         672,
-        -96
+        -112
       ],
       "id": "33f561a8-b380-448e-923c-b946dbe2ce34",
       "name": "publicacion_id present"
@@ -195,8 +195,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        1456,
-        -176
+        1360,
+        -224
       ],
       "id": "98405db3-6505-416a-a5d5-d9f3a38f54a2",
       "name": "400-1"
@@ -228,11 +228,113 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        896,
-        -320
+        880,
+        -240
       ],
       "id": "bb6a39e4-2581-4313-83ad-d32623fabefe",
       "name": "valid publication_id"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:54321/rest/v1/publicaciones",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "id,tipo,estado,titulo,descripcion,categoria_id,zona_id,estado_objeto,cantidad,usuario_id,creada_en,vence_en,perfiles:usuario_id(avatar_ruta,zona_id)"
+            },
+            {
+              "name": "tipo",
+              "value": "={{ $json.tipo === 'necesidad' ? 'eq.donacion' : 'eq.necesidad' }}"
+            },
+            {
+              "name": "estado",
+              "value": "eq.activa"
+            },
+            {
+              "name": "vence_en",
+              "value": "={{'gt.' + $now.toISO() }}"
+            },
+            {
+              "name": "usuario_id",
+              "value": "={{ 'neq.' + $('Webhook').item.json.jwtPayload.sub}}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $('Webhook').item.json.headers.authorization }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1360,
+        -432
+      ],
+      "id": "23ca540c-3f7b-4e83-b0f7-1a5497998c49",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:54321/rest/v1/publicaciones",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{  'eq.' + $json.body.publicacion_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$json.headers.authorization.split(' ')[1]}} "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1104,
+        -432
+      ],
+      "id": "abb61655-a9f3-4310-81fa-90c56993a7b9",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "return {\n  statusCode: 200,\n  body: {\n    success: true,\n    candidates: $json,\n    count: $json.length\n  }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        -432
+      ],
+      "id": "7bde3c6d-b228-4301-bda8-134c9ef60a4b",
+      "name": "response"
     }
   ],
   "pinData": {},
@@ -321,7 +423,7 @@
       "main": [
         [
           {
-            "node": "200",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -334,6 +436,39 @@
           }
         ]
       ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "response": {
+      "main": [
+        [
+          {
+            "node": "200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -341,7 +476,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "a022e921-a223-4cd1-86b2-0d88276e8cf8",
+  "versionId": "0a1eb7ac-1091-4151-9d80-6102d14f331d",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "618168d9f03a7f7ca92cb8070924ed70992ba5a5e3f7fcada607da4123af789e"
