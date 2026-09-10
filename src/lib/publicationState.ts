@@ -12,3 +12,7 @@ export function esTransicionValida(
 ): boolean {
   return TRANSICIONES[estadoActual].includes(nuevoEstado);
 }
+
+export function isPublicationExpired(venceEn: string): boolean {
+  return new Date(venceEn).getTime() <= Date.now();
+}

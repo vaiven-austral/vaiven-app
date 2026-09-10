@@ -8,7 +8,13 @@ export default {
       colors: {
         primario: "#49A078",
         secundario: "#216869",
-        terciario: "#785964",
+        terciario: {
+          DEFAULT: "#785964",
+          100: "#EDE3E6",
+          200: "#DAC6CD",
+          700: "#4E3841",
+          800: "#3A2A31",
+        },
         tinta: "#111827",
         exito: "#2F7F5D",
         atencion: "#F59E0B",
