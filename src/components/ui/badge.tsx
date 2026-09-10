@@ -5,6 +5,7 @@ interface BadgeProps {
   variant?:
     | 'primary'
     | 'secondary'
+    | 'vencida'
     | 'success'
     | 'warning'
     | 'destructive'
@@ -26,6 +27,7 @@ export function Badge({
   const variants = {
     primary: 'bg-[rgba(73,160,120,0.13)] text-primario',
     secondary: 'bg-[rgba(33,104,105,0.13)] text-secundario',
+    vencida: 'bg-terciario-200 text-terciario-800',
     success: 'bg-[rgba(47,127,93,0.13)] text-exito',
     warning: 'bg-[rgba(245,158,11,0.13)] text-atencion',
     destructive: 'bg-[rgba(220,38,38,0.09)] text-critico',

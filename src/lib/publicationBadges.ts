@@ -1,8 +1,11 @@
+import type { EstadoPublicacion } from './publicationState';
+
 export interface Publication {
   id: string;
   tipo: 'donacion' | 'necesidad';
-  estado: 'activa' | 'en_proceso' | 'completada';
+  estado: EstadoPublicacion;
   titulo: string;
+  vence_en: string;
   urgencia?: 'alta' | 'media' | 'sin_apuro' | null;
   estado_objeto?: 'nuevo' | 'como_nuevo' | 'bueno' | 'usado' | 'requiere_reparacion' | null;
   categorias: { nombre: string } | null;
@@ -12,6 +15,7 @@ export interface Publication {
 type BadgeVariant =
   | 'primary'
   | 'secondary'
+  | 'vencida'
   | 'success'
   | 'warning'
   | 'destructive'
@@ -60,3 +64,6 @@ export const estadoObjetoLabels: Record<NonNullable<Publication['estado_objeto']
 };
 
 export const estadoObjetoVariant: BadgeVariant = 'outline';
+
+export const vencidaLabel = 'VENCIDA';
+export const vencidaVariant: BadgeVariant = 'vencida';
