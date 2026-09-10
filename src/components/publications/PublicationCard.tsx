@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { usePublicationState } from '../../hooks/usePublicationState';
@@ -15,6 +16,28 @@ export type { Publication };
 
 interface PublicationCardProps {
   publication: Publication;
+}
+
+interface TransitionButtonProps {
+  variant: 'outline' | 'primary' | 'ghost';
+  isLoading: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}
+
+function TransitionButton({ variant, isLoading, onClick, children }: TransitionButtonProps) {
+  return (
+    <Button
+      size="sm"
+      variant={variant}
+      isLoading={isLoading}
+      disabled={isLoading}
+      className="!h-8 !px-3 !text-xs"
+      onClick={onClick}
+    >
+      {children}
+    </Button>
+  );
 }
 
 export function PublicationCard({ publication }: PublicationCardProps) {
@@ -47,40 +70,19 @@ export function PublicationCard({ publication }: PublicationCardProps) {
       {estado !== 'completada' && (
         <div className="flex flex-wrap gap-2">
           {estado === 'activa' && (
-            <Button
-              size="sm"
-              variant="outline"
-              isLoading={loading}
-              disabled={loading}
-              className="!h-8 !px-3 !text-xs"
-              onClick={() => transicionar('en_proceso')}
-            >
+            <TransitionButton variant="outline" isLoading={loading} onClick={() => transicionar('en_proceso')}>
               Marcar en proceso
-            </Button>
+            </TransitionButton>
           )}
 
           {estado === 'en_proceso' && (
             <>
-              <Button
-                size="sm"
-                variant="primary"
-                isLoading={loading}
-                disabled={loading}
-                className="!h-8 !px-3 !text-xs"
-                onClick={() => transicionar('completada')}
-              >
+              <TransitionButton variant="primary" isLoading={loading} onClick={() => transicionar('completada')}>
                 Completar entrega
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                isLoading={loading}
-                disabled={loading}
-                className="!h-8 !px-3 !text-xs"
-                onClick={() => transicionar('activa')}
-              >
+              </TransitionButton>
+              <TransitionButton variant="ghost" isLoading={loading} onClick={() => transicionar('activa')}>
                 Volver a activa
-              </Button>
+              </TransitionButton>
             </>
           )}
         </div>
