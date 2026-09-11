@@ -2,6 +2,15 @@
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
+## Base de datos local
+
+```bash
+supabase start
+psql "postgresql://postgres:postgres@127.0.0.1:54322/postgres" -f supabase/seed-storage.sql
+```
+
+El segundo paso crea el bucket `publicaciones` y sus policies de `storage.objects`. No están en una migración ni en `config.toml` porque el contenedor de Storage crea sus propias tablas (`storage.buckets`, `storage.objects`) recién después de que el CLI termina de aplicar `supabase/migrations/` (y de intentar seedear buckets declarados en `config.toml`), así que cualquier `INSERT`/`CREATE POLICY` sobre `storage.*` puesto ahí falla en un `supabase start`/`db reset` desde cero. Corré `seed-storage.sql` una vez después de cada `supabase start`/`db reset` (es idempotente, podés correrlo de nuevo sin problema).
+
 ## Git hooks (Husky)
 
 Este repo usa [Husky](https://typicode.github.io/husky/) para bloquear commits automáticamente si: la rama no sigue la convención `SCRUM-XX-descripcion`, el mensaje del commit no incluye un ID de Jira (`SCRUM-XX`), o el proyecto no compila (`pnpm run build`). Los hooks se instalan solos al correr `pnpm install` (vía el script `prepare`).

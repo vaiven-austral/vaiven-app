@@ -56,46 +56,19 @@ CREATE POLICY "Borrar imagen de publicación propia"
 GRANT SELECT, INSERT, DELETE ON public.imagenes_publicacion TO authenticated;
 
 -- ============================================
--- BUCKET PRIVADO: publicaciones
+-- BUCKET PRIVADO Y POLÍTICAS DE STORAGE: publicaciones
 -- ============================================
-INSERT INTO storage.buckets (id, name, public)
-   VALUES ('publicaciones', 'publicaciones', false)
-   ON CONFLICT (id) DO UPDATE SET public = false;
+-- El bucket y las policies de storage.objects NO van acá: en un `supabase
+-- start`/`db reset` desde cero, el CLI aplica supabase/migrations/*.sql
+-- contra Postgres antes de que el contenedor de Storage llegue a crear sus
+-- propias tablas (storage.buckets, storage.objects) — por eso este archivo
+-- rompía todo reset local limpio con "relation storage.buckets does not
+-- exist". El bucket ahora se declara en supabase/config.toml
+-- ([storage.buckets.publicaciones]), que es el mecanismo que el propio CLI
+-- provee para este caso. Las policies de storage.objects quedaron en
+-- supabase/seed-storage.sql, para correr una vez que el stack completo
+-- (incluido el contenedor de Storage) ya esté arriba — ver README.
 
--- ============================================
--- POLÍTICAS DE STORAGE (storage.objects)
--- Convención de ruta: {usuario_id}/{publicacion_id}/{orden}.jpg
--- ============================================
-CREATE POLICY "Usuarios suben bajo su propio prefijo"
-       ON storage.objects FOR INSERT
-       TO authenticated
-       WITH CHECK (
-         bucket_id = 'publicaciones' AND
-         (storage.foldername(name))[1] = auth.uid()::text
-       );
-
-CREATE POLICY "Lectura autenticada de imagenes activas o propias"
-       ON storage.objects FOR SELECT
-       TO authenticated
-       USING (
-         bucket_id = 'publicaciones' AND (
-           (storage.foldername(name))[1] = auth.uid()::text
-           OR EXISTS (
-             SELECT 1 FROM public.publicaciones p
-             WHERE p.id::text = (storage.foldername(name))[2]
-             AND p.estado IN ('activa', 'en_proceso')
-           )
-         )
-       );
-
-CREATE POLICY "Propietario elimina sus archivos de Storage"
-       ON storage.objects FOR DELETE
-       TO authenticated
-       USING (
-         bucket_id = 'publicaciones' AND
-         (storage.foldername(name))[1] = auth.uid()::text
-       );
-       
 -- ============================================
 -- ARREGLOS DE ESQUEMA
 -- ============================================
