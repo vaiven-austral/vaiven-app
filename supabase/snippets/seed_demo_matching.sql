@@ -28,12 +28,12 @@ INSERT INTO auth.users (
    'usuario-a@vaiven.dev', extensions.crypt('vaiven123', extensions.gen_salt('bf')),
    now(), '', '', '', '', '',
    '{"provider":"email","providers":["email"]}', '{"nombre_visible":"Usuario A"}',
-   false, now(), now() - interval '9 days', false, false),
+   false, now(), now(), false, false),
   ('00000000-0000-0000-0000-000000000000', 'ff3041a6-febe-4e85-925b-ae5216b73361', 'authenticated', 'authenticated',
    'usuario-b@vaiven.dev', extensions.crypt('vaiven123', extensions.gen_salt('bf')),
    now(), '', '', '', '', '',
    '{"provider":"email","providers":["email"]}', '{"nombre_visible":"Usuario B"}',
-   false, now(), now() - interval '310 days', false, false),
+   false, now(), now(), false, false),
   ('00000000-0000-0000-0000-000000000000', '78d026a5-c05c-4705-b32b-b518bd05bc3b', 'authenticated', 'authenticated',
    'usuario-c@vaiven.dev', extensions.crypt('vaiven123', extensions.gen_salt('bf')),
    now(), '', '', '', '', '',
@@ -101,6 +101,14 @@ WHERE id = 'acc5626b-15d6-40f6-bba8-080859c55539';
 UPDATE public.perfiles
 SET avatar_ruta = NULL, zona_id = 4430, rol_preferido = 'receptor'
 WHERE id = '76e7c5c3-4acf-40da-9115-638c442c866a';
+
+UPDATE perfiles
+SET creado_en = now() - interval '9 days'
+WHERE id = 'f3b6d105-625f-400e-8d1d-dd5a3d0364a0';
+
+UPDATE perfiles
+SET creado_en = now() - interval '310 days'
+WHERE id = 'ff3041a6-febe-4e85-925b-ae5216b73361';
 
 -- 4. 10 NECESIDADES
 INSERT INTO public.publicaciones (

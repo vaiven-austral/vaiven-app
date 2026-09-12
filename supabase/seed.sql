@@ -102,6 +102,14 @@ UPDATE public.perfiles
 SET avatar_ruta = NULL, zona_id = 4430, rol_preferido = 'receptor'
 WHERE id = '76e7c5c3-4acf-40da-9115-638c442c866a';
 
+UPDATE perfiles
+SET creado_en = now() - interval '9 days'
+WHERE id = 'f3b6d105-625f-400e-8d1d-dd5a3d0364a0';
+
+UPDATE perfiles
+SET creado_en = now() - interval '310 days'
+WHERE id = 'ff3041a6-febe-4e85-925b-ae5216b73361';
+
 -- 4. 10 NECESIDADES
 INSERT INTO public.publicaciones (
   id, usuario_id, tipo, estado, titulo, descripcion, categoria_id, zona_id, urgencia, cantidad, vence_en
