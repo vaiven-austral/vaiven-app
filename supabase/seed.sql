@@ -346,3 +346,10 @@ INSERT INTO public.publicaciones (
     'Heladera con algunos años de uso pero en buen funcionamiento.',
     1, 4430, 'usado', 1, now() + interval '30 days'
   );
+
+-- ============================================================
+-- 7. FOTOS
+-- Las fotos (Storage + su fila en imagenes_publicacion) NO se seedean acá:
+-- SQL no puede escribir bytes en Storage. Se generan solas corriendo
+-- ./supabase/scripts/seed_fotos.sh, que lee supabase/datos/fotos/{publicacion_id}/{orden}.ext
+-- ============================================================
