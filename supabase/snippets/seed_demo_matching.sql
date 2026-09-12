@@ -14,6 +14,62 @@
 -- Usuario D: 6723bd6b-18f7-486a-806b-dbab31d35620
 -- Usuario E: acc5626b-15d6-40f6-bba8-080859c55539
 -- Usuario F: 76e7c5c3-4acf-40da-9115-638c442c866a
+--
+-- Password para los 6: vaiven123
+
+INSERT INTO auth.users (
+  instance_id, id, aud, role, email, encrypted_password,
+  email_confirmed_at, confirmation_token, recovery_token,
+  email_change_token_new, email_change, email_change_token_current,
+  raw_app_meta_data, raw_user_meta_data,
+  is_super_admin, created_at, updated_at, is_sso_user, is_anonymous
+) VALUES
+  ('00000000-0000-0000-0000-000000000000', 'f3b6d105-625f-400e-8d1d-dd5a3d0364a0', 'authenticated', 'authenticated',
+   'usuario-a@vaiven.dev', extensions.crypt('vaiven123', extensions.gen_salt('bf')),
+   now(), '', '', '', '', '',
+   '{"provider":"email","providers":["email"]}', '{"nombre_visible":"Usuario A"}',
+   false, now(), now(), false, false),
+  ('00000000-0000-0000-0000-000000000000', 'ff3041a6-febe-4e85-925b-ae5216b73361', 'authenticated', 'authenticated',
+   'usuario-b@vaiven.dev', extensions.crypt('vaiven123', extensions.gen_salt('bf')),
+   now(), '', '', '', '', '',
+   '{"provider":"email","providers":["email"]}', '{"nombre_visible":"Usuario B"}',
+   false, now(), now(), false, false),
+  ('00000000-0000-0000-0000-000000000000', '78d026a5-c05c-4705-b32b-b518bd05bc3b', 'authenticated', 'authenticated',
+   'usuario-c@vaiven.dev', extensions.crypt('vaiven123', extensions.gen_salt('bf')),
+   now(), '', '', '', '', '',
+   '{"provider":"email","providers":["email"]}', '{"nombre_visible":"Usuario C"}',
+   false, now(), now(), false, false),
+  ('00000000-0000-0000-0000-000000000000', '6723bd6b-18f7-486a-806b-dbab31d35620', 'authenticated', 'authenticated',
+   'usuario-d@vaiven.dev', extensions.crypt('vaiven123', extensions.gen_salt('bf')),
+   now(), '', '', '', '', '',
+   '{"provider":"email","providers":["email"]}', '{"nombre_visible":"Usuario D"}',
+   false, now(), now(), false, false),
+  ('00000000-0000-0000-0000-000000000000', 'acc5626b-15d6-40f6-bba8-080859c55539', 'authenticated', 'authenticated',
+   'usuario-e@vaiven.dev', extensions.crypt('vaiven123', extensions.gen_salt('bf')),
+   now(), '', '', '', '', '',
+   '{"provider":"email","providers":["email"]}', '{"nombre_visible":"Usuario E"}',
+   false, now(), now(), false, false),
+  ('00000000-0000-0000-0000-000000000000', '76e7c5c3-4acf-40da-9115-638c442c866a', 'authenticated', 'authenticated',
+   'usuario-f@vaiven.dev', extensions.crypt('vaiven123', extensions.gen_salt('bf')),
+   now(), '', '', '', '', '',
+   '{"provider":"email","providers":["email"]}', '{"nombre_visible":"Usuario F"}',
+   false, now(), now(), false, false)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO auth.identities (id, user_id, provider_id, identity_data, provider, created_at, updated_at, last_sign_in_at)
+SELECT gen_random_uuid(), u.id, u.id::text,
+       jsonb_build_object('sub', u.id::text, 'email', u.email),
+       'email', now(), now(), now()
+FROM auth.users u
+WHERE u.id IN (
+  'f3b6d105-625f-400e-8d1d-dd5a3d0364a0',
+  'ff3041a6-febe-4e85-925b-ae5216b73361',
+  '78d026a5-c05c-4705-b32b-b518bd05bc3b',
+  '6723bd6b-18f7-486a-806b-dbab31d35620',
+  'acc5626b-15d6-40f6-bba8-080859c55539',
+  '76e7c5c3-4acf-40da-9115-638c442c866a'
+)
+ON CONFLICT (provider_id, provider) DO NOTHING;
 
 -- 3. ACTUALIZACIÓN DE PERFILES (Zona y Avatar para scoring de confianza y cercanía)
 -- Usuario A: Perfil completo (Caballito, Comuna 6, AMBA: zona_id=1178)
@@ -129,6 +185,14 @@ INSERT INTO public.publicaciones (
     'Mochila escolar reforzada (completada)',
     'Mochila para inicio de clases ya conseguida.',
     6, 550, 'alta', 1, now() + interval '30 days'
+  ),
+  -- N11: En Proceso
+  (
+    'a1000000-0000-0000-0000-000000000000',
+    'acc5626b-15d6-40f6-bba8-080859c55539', 'necesidad', 'en_proceso',
+    'Mochila escolar reforzada (en proceso)',
+    'Mochila para inicio de clases en proceso de obtención.',
+    6, 550, 'alta', 1, now() + interval '30 days'
   );
 
 -- 5. 10 DONACIONES
@@ -214,4 +278,63 @@ INSERT INTO public.publicaciones (
     'Mesa de comedor con 4 sillas (completada)',
     'Juego de mesa y sillas que ya fue entregado a otra familia.',
     2, 550, 'usado', 1, now() + interval '30 days'
+  );
+
+-- ============================================================
+-- 6. ESCALÓN DE PROXIMIDAD
+-- Heladera de Usuario C en Sarandí vs 4 donaciones de heladera:
+--   Sarandí   (zona 546)  -> misma localidad
+--   Wilde     (zona 548)  -> mismo partido (Avellaneda)
+--   Palermo   (zona 1193) -> misma región AMBA (Comuna 14)
+--   Rosario   (zona 4430) -> otra región (Santa Fe)
+-- El orden de estos 4 IDs ya da el orden esperado por la query del ticket
+-- (ORDER BY region, partido, localidad -> Sarandí, Wilde, Palermo, Rosario).
+-- ============================================================
+
+-- Necesidad de heladera, en Sarandí
+INSERT INTO public.publicaciones (
+  id, usuario_id, tipo, estado, titulo, descripcion, categoria_id, zona_id, urgencia, cantidad, vence_en
+) VALUES (
+  'c1111111-1111-1111-1111-111111111111',
+  '78d026a5-c05c-4705-b32b-b518bd05bc3b', 'necesidad', 'activa',
+  'Heladera para familia en Sarandí',
+  'Se nos rompió la heladera y no podemos conservar alimentos ni medicamentos. Cualquier heladera que funcione nos sirve.',
+  1, 546, 'alta', 1, now() + interval '30 days'
+);
+
+-- Las 4 donaciones de heladera, una por escalón
+INSERT INTO public.publicaciones (
+  id, usuario_id, tipo, estado, titulo, descripcion, categoria_id, zona_id, estado_objeto, cantidad, vence_en
+) VALUES
+  -- Misma localidad: Sarandí (zona 546). Ésta es la que en H3-B.1 lleva las 3 fotos.
+  (
+    'c2222222-2222-2222-2222-222222222222',
+    'ff3041a6-febe-4e85-925b-ae5216b73361', 'donacion', 'activa',
+    'Heladera con freezer, funcionando',
+    'Heladera con freezer en funcionamiento, la cambiamos por una más grande. Se puede retirar cuando quieras.',
+    1, 546, 'bueno', 1, now() + interval '30 days'
+  ),
+  -- Mismo partido: Wilde (zona 548, partido Avellaneda igual que Sarandí)
+  (
+    'c3333333-3333-3333-3333-333333333333',
+    '6723bd6b-18f7-486a-806b-dbab31d35620', 'donacion', 'activa',
+    'Heladera pequeña ideal para monoambiente',
+    'Heladera chica, funciona bien, ideal para poca gente.',
+    1, 548, 'usado', 1, now() + interval '30 days'
+  ),
+  -- Misma región AMBA: Palermo (zona 1193, Comuna 14 — distinto partido, misma region AMBA)
+  (
+    'c4444444-4444-4444-4444-444444444444',
+    'acc5626b-15d6-40f6-bba8-080859c55539', 'donacion', 'activa',
+    'Heladera No Frost en buen estado',
+    'Heladera No Frost, funciona perfecto, se regala por mudanza.',
+    1, 1193, 'como_nuevo', 1, now() + interval '30 days'
+  ),
+  -- Otra región: Rosario (zona 4430, Santa Fe)
+  (
+    'c5555555-5555-5555-5555-555555555555',
+    '76e7c5c3-4acf-40da-9115-638c442c866a', 'donacion', 'activa',
+    'Heladera usada, funciona bien',
+    'Heladera con algunos años de uso pero en buen funcionamiento.',
+    1, 4430, 'usado', 1, now() + interval '30 days'
   );
