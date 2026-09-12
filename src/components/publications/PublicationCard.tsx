@@ -19,6 +19,7 @@ export type { Publication };
 
 interface PublicationCardProps {
   publication: Publication;
+  onClick?: () => void;
 }
 
 interface TransitionButtonProps {
@@ -36,20 +37,26 @@ function TransitionButton({ variant, isLoading, onClick, children }: TransitionB
       isLoading={isLoading}
       disabled={isLoading}
       className="!h-8 !px-3 !text-xs"
-      onClick={onClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
     >
       {children}
     </Button>
   );
 }
 
-export function PublicationCard({ publication }: PublicationCardProps) {
+export function PublicationCard({ publication, onClick }: PublicationCardProps) {
   const { id, tipo, titulo, vence_en, urgencia, estado_objeto, categorias, zonas } = publication;
   const { estado, loading, error, transicionar } = usePublicationState(id, publication.estado);
   const vencida = estado !== 'completada' && isPublicationExpired(vence_en);
 
   return (
-    <div className="bg-tarjeta rounded-tarjeta border border-borde p-4 shadow-sm">
+    <div
+      className={`bg-tarjeta rounded-tarjeta border border-borde p-4 shadow-sm ${onClick ? 'cursor-pointer' : ''}`}
+      onClick={onClick}
+    >
       <div className="flex items-start justify-between gap-2 mb-2">
         <h3 className="font-500 text-[14.5px] leading-[150%] text-tinta">{titulo}</h3>
         <div className="flex gap-1">
