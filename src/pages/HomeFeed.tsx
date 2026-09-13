@@ -15,6 +15,16 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { Badge } from '../components/ui/badge';
 import lightBulbOutline from '../assets/LightBulbOutline.png';
 
+const tipoLabels: Record<Publication['tipo'], string> = {
+  donacion: 'DONACIÓN',
+  necesidad: 'NECESIDAD',
+};
+
+const tipoVariants: Record<Publication['tipo'], 'primary' | 'secondary'> = {
+  donacion: 'secondary',
+  necesidad: 'secondary',
+};
+
 function getPrimerNombre(nombre?: string | null, email?: string | null): string {
   if (nombre) return nombre.trim().split(/\s+/)[0];
   return email ? email.split('@')[0] : '';
@@ -137,6 +147,9 @@ export function HomeFeed() {
                   </p>
                 )}
                 <div className="flex flex-col items-start gap-1">
+                  <Badge variant={tipoVariants[publication.tipo]} className="!text-[11px]">
+                    {tipoLabels[publication.tipo]}
+                  </Badge>
                   <Badge variant={estadoVariants[publication.estado]} className="!text-[11px]">
                     {estadoLabels[publication.estado]}
                   </Badge>
