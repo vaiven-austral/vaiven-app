@@ -13,6 +13,7 @@ import { OfertasPage } from './pages/OfertasPage';
 import { HistorialPage } from './pages/HistorialPage';
 import { PerfilPage } from './pages/PerfilPage';
 import { MatchingResultsPage } from './pages/MatchingResultsPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { AppLayout } from './layouts/AppLayout';
 
@@ -96,5 +97,10 @@ export const router = createBrowserRouter([
         element: <MatchingResultsPage />,
       },
     ],
+  },
+
+  {
+    path: '*',
+    element: <NotFoundPage />,
   },
 ]);
