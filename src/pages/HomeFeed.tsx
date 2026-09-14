@@ -20,10 +20,8 @@ const tipoLabels: Record<Publication['tipo'], string> = {
   necesidad: 'NECESIDAD',
 };
 
-const tipoVariants: Record<Publication['tipo'], 'primary' | 'secondary'> = {
-  donacion: 'secondary',
-  necesidad: 'secondary',
-};
+// donación y necesidad comparten el mismo turquesa; solo el texto las distingue
+const tipoVariant = 'secondary';
 
 function getPrimerNombre(nombre?: string | null, email?: string | null): string {
   if (nombre) return nombre.trim().split(/\s+/)[0];
@@ -147,7 +145,7 @@ export function HomeFeed() {
                   </p>
                 )}
                 <div className="flex flex-col items-start gap-1">
-                  <Badge variant={tipoVariants[publication.tipo]} className="!text-[11px]">
+                  <Badge variant={tipoVariant} className="!text-[11px]">
                     {tipoLabels[publication.tipo]}
                   </Badge>
                   <Badge variant={estadoVariants[publication.estado]} className="!text-[11px]">
