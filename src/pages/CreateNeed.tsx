@@ -10,6 +10,8 @@ import { Button } from '../components/ui/button';
 import { CategorySelect } from '../components/forms/CategorySelect';
 import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
 import { PublicationTypeToggle } from '../components/forms/PublicationTypeToggle';
+import { ImageUploader } from '../components/forms/ImageUploader';
+import { subirImagenesPublicacion } from '../lib/imagenesPublicacion';
 
 type Urgencia = 'alta' | 'media' | 'sin_apuro';
 
@@ -26,6 +28,7 @@ interface FormErrors {
   zona?: string;
   cantidad?: string;
   venceEn?: string;
+  imagenes?: string;
 }
 
 function getTodayISODate(): string {
@@ -49,6 +52,7 @@ export function CreateNeed() {
   const [urgencia, setUrgencia] = useState<Urgencia>('media');
   const [cantidad, setCantidad] = useState(1);
   const [venceEn, setVenceEn] = useState('');
+  const [imagenes, setImagenes] = useState<File[]>([]);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,6 +76,9 @@ export function CreateNeed() {
     }
     if (zonaId === null) {
       nextErrors.zona = 'Seleccioná una ubicación (región, partido y localidad si corresponde).';
+    }
+    if (imagenes.length === 0) {
+      nextErrors.imagenes = 'Adjuntá al menos una foto.';
     }
     if (!Number.isInteger(cantidad) || cantidad < 1) {
       nextErrors.cantidad = 'La cantidad debe ser un número entero mayor o igual a 1.';
@@ -103,7 +110,7 @@ export function CreateNeed() {
     setIsSubmitting(true);
     setSubmitError('');
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('publicaciones')
       .insert({
         tipo: 'necesidad',
@@ -117,12 +124,21 @@ export function CreateNeed() {
         usuario_id: user.id,
         ...(venceEn ? { vence_en: new Date(`${venceEn}T23:59:59`).toISOString() } : {}),
       })
-      .select();
+      .select('id')
+      .single();
 
     if (error) {
       submittingRef.current = false;
       setIsSubmitting(false);
       setSubmitError(error.message);
+      return;
+    }
+
+    const { error: imagenesError } = await subirImagenesPublicacion(imagenes, user.id, data.id);
+    if (imagenesError) {
+      submittingRef.current = false;
+      setIsSubmitting(false);
+      setSubmitError(`La publicación se creó, pero hubo un problema con las fotos: ${imagenesError}`);
       return;
     }
 
@@ -201,6 +217,8 @@ export function CreateNeed() {
             error={errors.descripcion}
           />
         </div>
+
+        <ImageUploader files={imagenes} onChange={setImagenes} error={errors.imagenes} />
 
         {submitError && (
           <div className="rounded-tarjeta border-2 border-critico bg-[rgba(220,38,38,0.06)] p-4 text-critico text-sm font-500">
