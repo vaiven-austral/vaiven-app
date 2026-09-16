@@ -5,9 +5,17 @@ interface ImageUploaderProps {
   files: File[];
   onChange: (files: File[]) => void;
   error?: string;
+  maxImagenes?: number;
+  requerido?: boolean;
 }
 
-export function ImageUploader({ files, onChange, error }: ImageUploaderProps) {
+export function ImageUploader({
+  files,
+  onChange,
+  error,
+  maxImagenes = MAX_IMAGENES_POR_PUBLICACION,
+  requerido = true,
+}: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [warning, setWarning] = useState('');
 
@@ -29,13 +37,17 @@ export function ImageUploader({ files, onChange, error }: ImageUploaderProps) {
     // operativo — no bloquea un archivo arrastrado o elegido por otra vía.
     const imagenes = seleccionados.filter((file) => file.type.startsWith('image/'));
 
-    const disponibles = MAX_IMAGENES_POR_PUBLICACION - files.length;
+    const disponibles = maxImagenes - files.length;
     const aceptados = imagenes.slice(0, disponibles);
 
     if (imagenes.length < seleccionados.length) {
       setWarning('Solo se aceptan archivos de imagen.');
     } else if (seleccionados.length > disponibles) {
-      setWarning(`Como máximo podés subir ${MAX_IMAGENES_POR_PUBLICACION} fotos por publicación.`);
+      setWarning(
+        maxImagenes === 1
+          ? 'Como máximo podés subir 1 foto.'
+          : `Como máximo podés subir ${maxImagenes} fotos por publicación.`
+      );
     } else {
       setWarning('');
     }
@@ -51,7 +63,14 @@ export function ImageUploader({ files, onChange, error }: ImageUploaderProps) {
   return (
     <div>
       <p className="block mb-1.5 font-600 text-tinta text-sm">
-        Fotos (de 1 a {MAX_IMAGENES_POR_PUBLICACION})
+        Fotos{' '}
+        {requerido
+          ? maxImagenes === 1
+            ? '(1, obligatoria)'
+            : `(de 1 a ${maxImagenes})`
+          : maxImagenes === 1
+            ? '(opcional, 1 como referencia)'
+            : `(opcional, hasta ${maxImagenes})`}
       </p>
 
       <div className="flex gap-3 flex-wrap">
@@ -74,7 +93,7 @@ export function ImageUploader({ files, onChange, error }: ImageUploaderProps) {
           </div>
         ))}
 
-        {files.length < MAX_IMAGENES_POR_PUBLICACION && (
+        {files.length < maxImagenes && (
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
