@@ -60,7 +60,7 @@ export function PublicationImage({
     <img
       src={mostrado?.url}
       alt=""
-      className={`${fit === 'cover' ? 'object-cover' : 'object-contain'} ${className}`}
+      className={`${fit === 'cover' ? 'object-cover' : 'object-contain object-top'} ${className}`}
       onError={() => setBrokenFor(rutaStorage ?? null)}
     />
   );

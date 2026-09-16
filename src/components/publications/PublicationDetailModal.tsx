@@ -60,18 +60,21 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
       }}
     >
       <div
-        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-tarjeta bg-tarjeta shadow-lg flex flex-col sm:flex-row"
+        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-tarjeta bg-tarjeta shadow-lg flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Cerrar"
-          className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-pill bg-tinta/60 text-tarjeta hover:bg-tinta/80"
-        >
-          <X size={18} />
-        </button>
+        <div className="flex items-center justify-end p-2 border-b border-borde">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Cerrar"
+            className="flex h-8 w-8 items-center justify-center rounded-pill text-texto-medio hover:bg-lienzo"
+          >
+            <X size={18} />
+          </button>
+        </div>
 
+        <div className="flex flex-col sm:flex-row">
         <div className="relative w-full shrink-0 bg-lienzo sm:w-1/2">
           <PublicationImage
             rutaStorage={rutaActual}
@@ -111,7 +114,7 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
         </div>
 
         <div className="min-w-0 flex-1 p-6">
-          <h2 className="mb-3 pr-8 font-800 text-xl text-tinta">{titulo}</h2>
+          <h2 className="mb-3 font-800 text-xl text-tinta">{titulo}</h2>
 
           <div className="mb-4 flex flex-wrap gap-2">
             <Badge variant={tipoVariant}>{tipoLabels[tipo]}</Badge>
@@ -133,6 +136,7 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
           )}
 
           {descripcion && <p className="text-sm leading-relaxed text-texto-medio">{descripcion}</p>}
+        </div>
         </div>
       </div>
     </div>
