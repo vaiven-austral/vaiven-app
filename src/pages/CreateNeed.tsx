@@ -28,7 +28,6 @@ interface FormErrors {
   zona?: string;
   cantidad?: string;
   venceEn?: string;
-  imagenes?: string;
 }
 
 function getTodayISODate(): string {
@@ -76,9 +75,6 @@ export function CreateNeed() {
     }
     if (zonaId === null) {
       nextErrors.zona = 'Seleccioná una ubicación (región, partido y localidad si corresponde).';
-    }
-    if (imagenes.length === 0) {
-      nextErrors.imagenes = 'Adjuntá al menos una foto.';
     }
     if (!Number.isInteger(cantidad) || cantidad < 1) {
       nextErrors.cantidad = 'La cantidad debe ser un número entero mayor o igual a 1.';
@@ -218,7 +214,7 @@ export function CreateNeed() {
           />
         </div>
 
-        <ImageUploader files={imagenes} onChange={setImagenes} error={errors.imagenes} />
+        <ImageUploader files={imagenes} onChange={setImagenes} maxImagenes={1} requerido={false} />
 
         {submitError && (
           <div className="rounded-tarjeta border-2 border-critico bg-[rgba(220,38,38,0.06)] p-4 text-critico text-sm font-500">

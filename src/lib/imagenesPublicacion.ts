@@ -2,6 +2,12 @@ import { supabase } from './supabaseClient';
 
 export const MAX_IMAGENES_POR_PUBLICACION = 3;
 
+// portada = imagen de menor orden, no necesariamente orden === 0 (p.ej. datos
+// de seed o publicaciones con imágenes borradas pueden dejar gaps)
+export function getPortada<T extends { orden: number }>(imagenes: T[] | null | undefined): T | undefined {
+  return imagenes?.reduce<T | undefined>((menor, img) => (!menor || img.orden < menor.orden ? img : menor), undefined);
+}
+
 interface SubirImagenesResult {
   error: string | null;
 }
@@ -35,9 +41,8 @@ export async function subirImagenesPublicacion(
     });
 
     if (dbError) {
-      // El archivo ya se subió arriba; si no se registra, no lo dejamos
-      // huérfano en Storage. Best-effort: si el borrado también falla, no
-      // tapamos el error original (que es el que le importa al usuario).
+      // el archivo se subió arriba; si no se registra, no lo dejamos
+      // huérfano en Storage
       await supabase.storage.from('publicaciones').remove([rutaStorage]);
       return { error: `Se subió la foto ${orden + 1} pero no se pudo registrar: ${dbError.message}` };
     }

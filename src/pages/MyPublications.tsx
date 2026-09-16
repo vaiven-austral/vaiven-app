@@ -30,7 +30,7 @@ export function MyPublications() {
       const { data, error } = await supabase
         .from('publicaciones')
         .select(
-          'id, tipo, estado, titulo, creada_en, vence_en, estado_objeto, urgencia, categorias(nombre), zonas(localidad, partido)'
+          'id, tipo, estado, titulo, descripcion, creada_en, vence_en, estado_objeto, urgencia, categorias(nombre), zonas(localidad, partido), imagenes_publicacion(ruta_storage, orden)'
         )
         .eq('usuario_id', user!.id)
         .eq('tipo', activeTab)
