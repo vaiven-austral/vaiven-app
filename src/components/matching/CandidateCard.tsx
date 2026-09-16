@@ -87,16 +87,23 @@ export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
             <div className="space-y-1.5">
               {[
                 { label: 'Resolución', value: candidate.factores.f1_resolucion, max: 40, color: '#0d9488' },
-                { label: 'Urgencia', value: candidate.factores.f2_urgencia, max: 25, color: '#f97316' },
+                {
+                  label: candidate.tipo === 'necesidad' ? 'Urgencia' : 'Estado del objeto',
+                  value: candidate.factores.f2_urgencia,
+                  max: 10,
+                  color: '#f97316',
+                },
                 { label: 'Proximidad', value: candidate.factores.f3_proximidad, max: 20, color: '#3b82f6' },
                 { label: 'Confianza', value: candidate.factores.f4_confianza, max: 10, color: '#22c55e' },
                 { label: 'Calidad', value: candidate.factores.f5_calidad, max: 5, color: '#a855f7' },
+                { label: 'Categoría', value: candidate.factores.f6_categoria, max: 15, color: '#ec4899' },
               ].map((factor) => (
                 <div key={factor.label} className="flex items-center justify-between text-xs">
                   <span className="text-texto-medio">{factor.label}</span>
                   <div className="flex items-center gap-2">
                     <div className="w-16 h-1.5 bg-gray-300 rounded-full overflow-hidden">
                       <div
+                        className="h-full"
                         style={{
                           backgroundColor: factor.color,
                           width: `${(factor.value / factor.max) * 100}%`,
