@@ -29,10 +29,7 @@ export function PublicationImage({
   className = '',
   fit = 'cover',
 }: PublicationImageProps) {
-  const [resolved, setResolved] = useState<{ ruta: string; url: string | null }>({
-    ruta: '',
-    url: null,
-  });
+  const [mostrado, setMostrado] = useState<{ ruta: string; url: string } | null>(null);
   const [brokenFor, setBrokenFor] = useState<string | null>(null);
 
   useEffect(() => {
@@ -40,16 +37,15 @@ export function PublicationImage({
 
     let cancelled = false;
     getPublicationImageUrl(rutaStorage).then((url) => {
-      if (!cancelled) setResolved({ ruta: rutaStorage, url });
+      if (!cancelled && url) setMostrado({ ruta: rutaStorage, url });
     });
     return () => {
       cancelled = true;
     };
   }, [rutaStorage]);
 
-  const url = rutaStorage && resolved.ruta === rutaStorage ? resolved.url : null;
   const broken = rutaStorage !== undefined && rutaStorage === brokenFor;
-  const mostrarPlaceholder = !rutaStorage || !url || broken;
+  const mostrarPlaceholder = !rutaStorage || !mostrado || broken;
 
   if (mostrarPlaceholder) {
     const IconoCategoria = (categoria && iconoPorCategoria[categoria]) || Image;
@@ -62,7 +58,7 @@ export function PublicationImage({
 
   return (
     <img
-      src={url}
+      src={mostrado?.url}
       alt=""
       className={`${fit === 'cover' ? 'object-cover' : 'object-contain'} ${className}`}
       onError={() => setBrokenFor(rutaStorage ?? null)}
