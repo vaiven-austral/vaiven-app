@@ -29,6 +29,7 @@ export interface Candidate {
     f3_proximidad: number;
     f4_confianza: number;
     f5_calidad: number;
+    f6_categoria: number;
   };
 }
 
