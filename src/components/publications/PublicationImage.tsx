@@ -50,8 +50,10 @@ export function PublicationImage({
   if (mostrarPlaceholder) {
     const IconoCategoria = (categoria && iconoPorCategoria[categoria]) || Image;
     return (
-      <div className={`flex items-center justify-center bg-lienzo text-texto-suave ${className}`}>
-        <IconoCategoria size={24} />
+      <div
+        className={`flex items-center justify-center bg-[rgba(73,160,120,0.1)] text-primario ${className}`}
+      >
+        <IconoCategoria size={28} strokeWidth={1.5} />
       </div>
     );
   }
