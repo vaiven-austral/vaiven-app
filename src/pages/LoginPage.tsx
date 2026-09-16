@@ -44,7 +44,7 @@ export function LoginPage() {
 
       if (error) throw error;
 
-      navigate('/');
+      window.location.href = '/feed';
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
     } finally {
