@@ -5,6 +5,7 @@ export interface Publication {
   tipo: 'donacion' | 'necesidad';
   estado: EstadoPublicacion;
   titulo: string;
+  descripcion?: string;
   vence_en: string;
   urgencia?: 'alta' | 'media' | 'sin_apuro' | null;
   estado_objeto?: 'nuevo' | 'como_nuevo' | 'bueno' | 'usado' | 'requiere_reparacion' | null;
@@ -68,3 +69,11 @@ export const estadoObjetoVariant: BadgeVariant = 'outline';
 
 export const vencidaLabel = 'VENCIDA';
 export const vencidaVariant: BadgeVariant = 'vencida';
+
+export const tipoLabels: Record<Publication['tipo'], string> = {
+  donacion: 'DONACIÓN',
+  necesidad: 'NECESIDAD',
+};
+
+// donación y necesidad comparten el mismo turquesa; solo el texto las distingue
+export const tipoVariant: BadgeVariant = 'secondary';

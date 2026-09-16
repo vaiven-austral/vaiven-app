@@ -10,22 +10,16 @@ import {
   urgenciaVariants,
   estadoObjetoLabels,
   estadoObjetoVariant,
+  tipoLabels,
+  tipoVariant,
 } from '../lib/publicationBadges';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { MatchConfirmModal } from '../components/matching/MatchConfirmModal';
 import { PublicationImage } from '../components/publications/PublicationImage';
-import { PublicationGalleryModal } from '../components/publications/PublicationGalleryModal';
+import { PublicationDetailModal } from '../components/publications/PublicationDetailModal';
 import lightBulbOutline from '../assets/LightBulbOutline.png';
-
-const tipoLabels: Record<Publication['tipo'], string> = {
-  donacion: 'DONACIÓN',
-  necesidad: 'NECESIDAD',
-};
-
-// donación y necesidad comparten el mismo turquesa; solo el texto las distingue
-const tipoVariant = 'secondary';
 
 function getPrimerNombre(nombre?: string | null, email?: string | null): string {
   if (nombre) return nombre.trim().split(/\s+/)[0];
@@ -41,7 +35,7 @@ export function HomeFeed() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [publicationParaMatch, setPublicationParaMatch] = useState<Publication | null>(null);
-  const [publicationParaGaleria, setPublicationParaGaleria] = useState<Publication | null>(null);
+  const [publicationParaDetalle, setPublicationParaDetalle] = useState<Publication | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -112,6 +106,7 @@ export function HomeFeed() {
             >
               <PublicationImage
                 rutaStorage={publication.imagenes_publicacion?.find((img) => img.orden === 0)?.ruta_storage}
+                categoria={publication.categorias?.nombre}
                 className="h-24 w-full"
               />
               <div className="p-3">
@@ -144,19 +139,17 @@ export function HomeFeed() {
                     </Badge>
                   )}
                 </div>
-                {(publication.imagenes_publicacion?.length ?? 0) > 0 && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="!h-7 !px-2 !text-[11px] w-full"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPublicationParaGaleria(publication);
-                    }}
-                  >
-                    Ver fotos
-                  </Button>
-                )}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="!h-7 !px-2 !text-[11px] w-full"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPublicationParaDetalle(publication);
+                  }}
+                >
+                  Ver detalles
+                </Button>
               </div>
             </div>
           ))}
@@ -172,10 +165,10 @@ export function HomeFeed() {
         />
       )}
 
-      {publicationParaGaleria && (
-        <PublicationGalleryModal
-          imagenes={publicationParaGaleria.imagenes_publicacion ?? []}
-          onClose={() => setPublicationParaGaleria(null)}
+      {publicationParaDetalle && (
+        <PublicationDetailModal
+          publication={publicationParaDetalle}
+          onClose={() => setPublicationParaDetalle(null)}
         />
       )}
     </div>

@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { usePublicationState } from '../../hooks/usePublicationState';
 import { isPublicationExpired } from '../../lib/publicationState';
 import { PublicationImage } from './PublicationImage';
-import { PublicationGalleryModal } from './PublicationGalleryModal';
+import { PublicationDetailModal } from './PublicationDetailModal';
 import {
   type Publication,
   estadoLabels,
@@ -54,7 +54,7 @@ export function PublicationCard({ publication, onClick }: PublicationCardProps) 
     publication;
   const { estado, loading, error, transicionar } = usePublicationState(id, publication.estado);
   const vencida = estado !== 'completada' && isPublicationExpired(vence_en);
-  const [mostrarGaleria, setMostrarGaleria] = useState(false);
+  const [mostrarDetalle, setMostrarDetalle] = useState(false);
 
   const imagenes = imagenes_publicacion ?? [];
   const portada = imagenes.find((img) => img.orden === 0);
@@ -64,7 +64,11 @@ export function PublicationCard({ publication, onClick }: PublicationCardProps) 
       className={`bg-tarjeta rounded-tarjeta border border-borde shadow-sm overflow-hidden ${onClick ? 'cursor-pointer' : ''}`}
       onClick={onClick}
     >
-      <PublicationImage rutaStorage={portada?.ruta_storage} className="w-full h-40" />
+      <PublicationImage
+        rutaStorage={portada?.ruta_storage}
+        categoria={categorias?.nombre}
+        className="w-full h-40"
+      />
 
       <div className="p-4">
       <div className="flex items-start justify-between gap-2 mb-2">
@@ -92,19 +96,17 @@ export function PublicationCard({ publication, onClick }: PublicationCardProps) 
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {imagenes.length > 0 && (
-          <Button
-            size="sm"
-            variant="outline"
-            className="!h-8 !px-3 !text-xs"
-            onClick={(e) => {
-              e.stopPropagation();
-              setMostrarGaleria(true);
-            }}
-          >
-            Ver fotos
-          </Button>
-        )}
+        <Button
+          size="sm"
+          variant="outline"
+          className="!h-8 !px-3 !text-xs"
+          onClick={(e) => {
+            e.stopPropagation();
+            setMostrarDetalle(true);
+          }}
+        >
+          Ver detalles
+        </Button>
 
         {estado !== 'completada' && estado === 'activa' && (
           <TransitionButton variant="outline" isLoading={loading} onClick={() => transicionar('en_proceso')}>
@@ -127,8 +129,8 @@ export function PublicationCard({ publication, onClick }: PublicationCardProps) 
       {error && <p className="text-critico text-sm mt-2 font-500">{error}</p>}
       </div>
 
-      {mostrarGaleria && (
-        <PublicationGalleryModal imagenes={imagenes} onClose={() => setMostrarGaleria(false)} />
+      {mostrarDetalle && (
+        <PublicationDetailModal publication={publication} onClose={() => setMostrarDetalle(false)} />
       )}
     </div>
   );
