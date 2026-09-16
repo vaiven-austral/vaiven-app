@@ -29,7 +29,7 @@ export function PublicationImage({
   className = '',
   fit = 'cover',
 }: PublicationImageProps) {
-  const [mostrado, setMostrado] = useState<{ ruta: string; url: string } | null>(null);
+  const [resultado, setResultado] = useState<{ ruta: string; url: string | null } | null>(null);
   const [brokenFor, setBrokenFor] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,13 +37,17 @@ export function PublicationImage({
 
     let cancelled = false;
     getPublicationImageUrl(rutaStorage).then((url) => {
-      if (!cancelled && url) setMostrado({ ruta: rutaStorage, url });
+      if (!cancelled) setResultado({ ruta: rutaStorage, url });
     });
     return () => {
       cancelled = true;
     };
   }, [rutaStorage]);
 
+  const mostrado =
+    resultado && resultado.ruta === rutaStorage && resultado.url
+      ? { ruta: resultado.ruta, url: resultado.url }
+      : null;
   const broken = rutaStorage !== undefined && rutaStorage === brokenFor;
   const mostrarPlaceholder = !rutaStorage || !mostrado || broken;
 

@@ -2,6 +2,12 @@ import { supabase } from './supabaseClient';
 
 export const MAX_IMAGENES_POR_PUBLICACION = 3;
 
+// portada = imagen de menor orden, no necesariamente orden === 0 (p.ej. datos
+// de seed o publicaciones con imágenes borradas pueden dejar gaps)
+export function getPortada<T extends { orden: number }>(imagenes: T[] | null | undefined): T | undefined {
+  return imagenes?.reduce<T | undefined>((menor, img) => (!menor || img.orden < menor.orden ? img : menor), undefined);
+}
+
 interface SubirImagenesResult {
   error: string | null;
 }

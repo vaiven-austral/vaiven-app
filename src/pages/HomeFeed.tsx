@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
+import { getPortada } from '../lib/imagenesPublicacion';
 import {
   type Publication,
   estadoLabels,
@@ -105,11 +106,7 @@ export function HomeFeed() {
               onClick={() => setPublicationParaMatch(publication)}
             >
               <PublicationImage
-                rutaStorage={
-                  publication.imagenes_publicacion?.reduce<
-                    NonNullable<typeof publication.imagenes_publicacion>[number] | undefined
-                  >((menor, img) => (!menor || img.orden < menor.orden ? img : menor), undefined)?.ruta_storage
-                }
+                rutaStorage={getPortada(publication.imagenes_publicacion)?.ruta_storage}
                 categoria={publication.categorias?.nombre}
                 className="h-24 w-full"
               />

@@ -3,6 +3,7 @@ import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { usePublicationState } from '../../hooks/usePublicationState';
 import { isPublicationExpired } from '../../lib/publicationState';
+import { getPortada } from '../../lib/imagenesPublicacion';
 import { PublicationImage } from './PublicationImage';
 import { PublicationDetailModal } from './PublicationDetailModal';
 import {
@@ -56,11 +57,7 @@ export function PublicationCard({ publication, onClick }: PublicationCardProps) 
   const vencida = estado !== 'completada' && isPublicationExpired(vence_en);
   const [mostrarDetalle, setMostrarDetalle] = useState(false);
 
-  const imagenes = imagenes_publicacion ?? [];
-  const portada = imagenes.reduce<(typeof imagenes)[number] | undefined>(
-    (menor, img) => (!menor || img.orden < menor.orden ? img : menor),
-    undefined
-  );
+  const portada = getPortada(imagenes_publicacion);
 
   return (
     <div
@@ -111,13 +108,13 @@ export function PublicationCard({ publication, onClick }: PublicationCardProps) 
           Ver detalles
         </Button>
 
-        {estado !== 'completada' && estado === 'activa' && (
+        {estado === 'activa' && (
           <TransitionButton variant="outline" isLoading={loading} onClick={() => transicionar('en_proceso')}>
             Marcar en proceso
           </TransitionButton>
         )}
 
-        {estado !== 'completada' && estado === 'en_proceso' && (
+        {estado === 'en_proceso' && (
           <>
             <TransitionButton variant="primary" isLoading={loading} onClick={() => transicionar('completada')}>
               Completar entrega
