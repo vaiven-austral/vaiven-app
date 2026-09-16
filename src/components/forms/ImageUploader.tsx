@@ -25,10 +25,16 @@ export function ImageUploader({ files, onChange, error }: ImageUploaderProps) {
 
     if (seleccionados.length === 0) return;
 
-    const disponibles = MAX_IMAGENES_POR_PUBLICACION - files.length;
-    const aceptados = seleccionados.slice(0, disponibles);
+    // accept="image/*" es solo una sugerencia para el selector del sistema
+    // operativo — no bloquea un archivo arrastrado o elegido por otra vía.
+    const imagenes = seleccionados.filter((file) => file.type.startsWith('image/'));
 
-    if (seleccionados.length > disponibles) {
+    const disponibles = MAX_IMAGENES_POR_PUBLICACION - files.length;
+    const aceptados = imagenes.slice(0, disponibles);
+
+    if (imagenes.length < seleccionados.length) {
+      setWarning('Solo se aceptan archivos de imagen.');
+    } else if (seleccionados.length > disponibles) {
       setWarning(`Como máximo podés subir ${MAX_IMAGENES_POR_PUBLICACION} fotos por publicación.`);
     } else {
       setWarning('');
