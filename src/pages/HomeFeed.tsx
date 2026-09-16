@@ -105,7 +105,11 @@ export function HomeFeed() {
               onClick={() => setPublicationParaMatch(publication)}
             >
               <PublicationImage
-                rutaStorage={publication.imagenes_publicacion?.find((img) => img.orden === 0)?.ruta_storage}
+                rutaStorage={
+                  publication.imagenes_publicacion?.reduce<
+                    NonNullable<typeof publication.imagenes_publicacion>[number] | undefined
+                  >((menor, img) => (!menor || img.orden < menor.orden ? img : menor), undefined)?.ruta_storage
+                }
                 categoria={publication.categorias?.nombre}
                 className="h-24 w-full"
               />

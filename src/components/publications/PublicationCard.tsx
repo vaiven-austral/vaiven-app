@@ -57,7 +57,10 @@ export function PublicationCard({ publication, onClick }: PublicationCardProps) 
   const [mostrarDetalle, setMostrarDetalle] = useState(false);
 
   const imagenes = imagenes_publicacion ?? [];
-  const portada = imagenes.find((img) => img.orden === 0);
+  const portada = imagenes.reduce<(typeof imagenes)[number] | undefined>(
+    (menor, img) => (!menor || img.orden < menor.orden ? img : menor),
+    undefined
+  );
 
   return (
     <div
