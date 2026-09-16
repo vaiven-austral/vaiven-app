@@ -109,7 +109,7 @@ export function BottomNav() {
       })}
 
       <NavLink
-        to="/publicar/donacion"
+        to="/publicar"
         aria-label="Nueva publicación"
         className="absolute left-1/2 top-0 flex h-[62px] w-[62px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-pill border-[5px] border-tarjeta bg-primario text-tarjeta shadow-[0_10px_22px_rgba(73,160,120,0.42)]"
       >
