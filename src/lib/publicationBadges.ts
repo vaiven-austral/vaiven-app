@@ -10,6 +10,7 @@ export interface Publication {
   estado_objeto?: 'nuevo' | 'como_nuevo' | 'bueno' | 'usado' | 'requiere_reparacion' | null;
   categorias: { nombre: string } | null;
   zonas: { partido: string; localidad: string | null } | null;
+  imagenes_publicacion?: { ruta_storage: string; orden: number }[];
 }
 
 type BadgeVariant =

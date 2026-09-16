@@ -13,7 +13,10 @@ import {
 } from '../lib/publicationBadges';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
 import { MatchConfirmModal } from '../components/matching/MatchConfirmModal';
+import { PublicationImage } from '../components/publications/PublicationImage';
+import { PublicationGalleryModal } from '../components/publications/PublicationGalleryModal';
 import lightBulbOutline from '../assets/LightBulbOutline.png';
 
 const tipoLabels: Record<Publication['tipo'], string> = {
@@ -29,29 +32,6 @@ function getPrimerNombre(nombre?: string | null, email?: string | null): string 
   return email ? email.split('@')[0] : '';
 }
 
-// fotos placeholder temporales por categoría (Pexels), hasta que exista el bucket de fotos real
-const fotoPorCategoria: Record<string, string> = {
-  'Electrodomésticos': 'https://images.pexels.com/photos/30946798/pexels-photo-30946798.jpeg?auto=compress&cs=tinysrgb&w=400',
-  'Muebles y colchones': 'https://images.pexels.com/photos/6580377/pexels-photo-6580377.jpeg?auto=compress&cs=tinysrgb&w=400',
-  'Ropa y calzado': 'https://images.pexels.com/photos/15398044/pexels-photo-15398044.jpeg?auto=compress&cs=tinysrgb&w=400',
-  'Bebés e infancia': 'https://images.pexels.com/photos/27086424/pexels-photo-27086424.jpeg?auto=compress&cs=tinysrgb&w=400',
-  'Tecnología': 'https://images.pexels.com/photos/6893890/pexels-photo-6893890.jpeg?auto=compress&cs=tinysrgb&w=400',
-  'Educación y libros': 'https://images.pexels.com/photos/8045884/pexels-photo-8045884.jpeg?auto=compress&cs=tinysrgb&w=400',
-  'Salud y movilidad': 'https://images.pexels.com/photos/8543045/pexels-photo-8543045.jpeg?auto=compress&cs=tinysrgb&w=400',
-  'Herramientas y construcción': 'https://images.pexels.com/photos/6263062/pexels-photo-6263062.jpeg?auto=compress&cs=tinysrgb&w=400',
-  'Hogar y menaje': 'https://images.pexels.com/photos/8286625/pexels-photo-8286625.jpeg?auto=compress&cs=tinysrgb&w=400',
-  'Transporte': 'https://images.pexels.com/photos/36546545/pexels-photo-36546545.jpeg?auto=compress&cs=tinysrgb&w=400',
-  'Otros': 'https://images.pexels.com/photos/11200117/pexels-photo-11200117.jpeg?auto=compress&cs=tinysrgb&w=400',
-};
-
-function getFotoPlaceholder(publication: Publication): string {
-  const nombreCategoria = publication.categorias?.nombre;
-  if (nombreCategoria && fotoPorCategoria[nombreCategoria]) {
-    return fotoPorCategoria[nombreCategoria];
-  }
-  return `https://picsum.photos/seed/${publication.id}/200/200`;
-}
-
 export function HomeFeed() {
   const { user } = useAuth();
   const nombreVisible = user?.user_metadata?.nombre_visible as string | undefined;
@@ -61,6 +41,7 @@ export function HomeFeed() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [publicationParaMatch, setPublicationParaMatch] = useState<Publication | null>(null);
+  const [publicationParaGaleria, setPublicationParaGaleria] = useState<Publication | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -71,7 +52,7 @@ export function HomeFeed() {
       const { data, error } = await supabase
         .from('publicaciones')
         .select(
-          'id, tipo, estado, titulo, descripcion, creada_en, vence_en, urgencia, estado_objeto, categorias(nombre), zonas(region, partido, localidad)'
+          'id, tipo, estado, titulo, descripcion, creada_en, vence_en, urgencia, estado_objeto, categorias(nombre), zonas(region, partido, localidad), imagenes_publicacion(ruta_storage, orden)'
         )
         .eq('usuario_id', user!.id)
         .in('estado', ['activa', 'en_proceso'])
@@ -129,11 +110,9 @@ export function HomeFeed() {
               className="w-40 shrink-0 bg-tarjeta rounded-tarjeta border border-borde shadow-sm overflow-hidden cursor-pointer"
               onClick={() => setPublicationParaMatch(publication)}
             >
-              {/* foto placeholder temporal por categoría, hasta que exista el bucket de fotos real */}
-              <img
-                src={getFotoPlaceholder(publication)}
-                alt=""
-                className="h-24 w-full object-cover bg-lienzo"
+              <PublicationImage
+                rutaStorage={publication.imagenes_publicacion?.find((img) => img.orden === 0)?.ruta_storage}
+                className="h-24 w-full"
               />
               <div className="p-3">
                 <p className="font-500 text-[14.5px] leading-[150%] text-tinta truncate">{publication.titulo}</p>
@@ -147,7 +126,7 @@ export function HomeFeed() {
                       : publication.zonas.partido}
                   </p>
                 )}
-                <div className="flex flex-col items-start gap-1">
+                <div className="flex flex-col items-start gap-1 mb-2">
                   <Badge variant={tipoVariant} className="!text-[11px]">
                     {tipoLabels[publication.tipo]}
                   </Badge>
@@ -165,6 +144,19 @@ export function HomeFeed() {
                     </Badge>
                   )}
                 </div>
+                {(publication.imagenes_publicacion?.length ?? 0) > 0 && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="!h-7 !px-2 !text-[11px] w-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPublicationParaGaleria(publication);
+                    }}
+                  >
+                    Ver fotos
+                  </Button>
+                )}
               </div>
             </div>
           ))}
@@ -177,6 +169,13 @@ export function HomeFeed() {
           tipo={publicationParaMatch.tipo}
           titulo={publicationParaMatch.titulo}
           onClose={() => setPublicationParaMatch(null)}
+        />
+      )}
+
+      {publicationParaGaleria && (
+        <PublicationGalleryModal
+          imagenes={publicationParaGaleria.imagenes_publicacion ?? []}
+          onClose={() => setPublicationParaGaleria(null)}
         />
       )}
     </div>

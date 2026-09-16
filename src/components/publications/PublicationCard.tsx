@@ -1,8 +1,10 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { usePublicationState } from '../../hooks/usePublicationState';
 import { isPublicationExpired } from '../../lib/publicationState';
+import { PublicationImage } from './PublicationImage';
+import { PublicationGalleryModal } from './PublicationGalleryModal';
 import {
   type Publication,
   estadoLabels,
@@ -48,15 +50,23 @@ function TransitionButton({ variant, isLoading, onClick, children }: TransitionB
 }
 
 export function PublicationCard({ publication, onClick }: PublicationCardProps) {
-  const { id, tipo, titulo, vence_en, urgencia, estado_objeto, categorias, zonas } = publication;
+  const { id, tipo, titulo, vence_en, urgencia, estado_objeto, categorias, zonas, imagenes_publicacion } =
+    publication;
   const { estado, loading, error, transicionar } = usePublicationState(id, publication.estado);
   const vencida = estado !== 'completada' && isPublicationExpired(vence_en);
+  const [mostrarGaleria, setMostrarGaleria] = useState(false);
+
+  const imagenes = imagenes_publicacion ?? [];
+  const portada = imagenes.find((img) => img.orden === 0);
 
   return (
     <div
-      className={`bg-tarjeta rounded-tarjeta border border-borde p-4 shadow-sm ${onClick ? 'cursor-pointer' : ''}`}
+      className={`bg-tarjeta rounded-tarjeta border border-borde shadow-sm overflow-hidden ${onClick ? 'cursor-pointer' : ''}`}
       onClick={onClick}
     >
+      <PublicationImage rutaStorage={portada?.ruta_storage} className="w-full h-40" />
+
+      <div className="p-4">
       <div className="flex items-start justify-between gap-2 mb-2">
         <h3 className="font-500 text-[14.5px] leading-[150%] text-tinta">{titulo}</h3>
         <div className="flex gap-1">
@@ -81,28 +91,45 @@ export function PublicationCard({ publication, onClick }: PublicationCardProps) 
         )}
       </div>
 
-      {estado !== 'completada' && (
-        <div className="flex flex-wrap gap-2">
-          {estado === 'activa' && (
-            <TransitionButton variant="outline" isLoading={loading} onClick={() => transicionar('en_proceso')}>
-              Marcar en proceso
-            </TransitionButton>
-          )}
+      <div className="flex flex-wrap gap-2">
+        {imagenes.length > 0 && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="!h-8 !px-3 !text-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              setMostrarGaleria(true);
+            }}
+          >
+            Ver fotos
+          </Button>
+        )}
 
-          {estado === 'en_proceso' && (
-            <>
-              <TransitionButton variant="primary" isLoading={loading} onClick={() => transicionar('completada')}>
-                Completar entrega
-              </TransitionButton>
-              <TransitionButton variant="ghost" isLoading={loading} onClick={() => transicionar('activa')}>
-                Volver a activa
-              </TransitionButton>
-            </>
-          )}
-        </div>
-      )}
+        {estado !== 'completada' && estado === 'activa' && (
+          <TransitionButton variant="outline" isLoading={loading} onClick={() => transicionar('en_proceso')}>
+            Marcar en proceso
+          </TransitionButton>
+        )}
+
+        {estado !== 'completada' && estado === 'en_proceso' && (
+          <>
+            <TransitionButton variant="primary" isLoading={loading} onClick={() => transicionar('completada')}>
+              Completar entrega
+            </TransitionButton>
+            <TransitionButton variant="ghost" isLoading={loading} onClick={() => transicionar('activa')}>
+              Volver a activa
+            </TransitionButton>
+          </>
+        )}
+      </div>
 
       {error && <p className="text-critico text-sm mt-2 font-500">{error}</p>}
+      </div>
+
+      {mostrarGaleria && (
+        <PublicationGalleryModal imagenes={imagenes} onClose={() => setMostrarGaleria(false)} />
+      )}
     </div>
   );
 }
