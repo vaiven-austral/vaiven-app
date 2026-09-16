@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { X } from 'lucide-react';
 import { MAX_IMAGENES_POR_PUBLICACION } from '../../lib/imagenesPublicacion';
 
 interface ImageUploaderProps {
@@ -18,6 +19,7 @@ export function ImageUploader({
 }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [warning, setWarning] = useState('');
+  const [arrastrando, setArrastrando] = useState(false);
 
   const previews = useMemo(() => files.map((file) => URL.createObjectURL(file)), [files]);
 
@@ -27,10 +29,7 @@ export function ImageUploader({
     };
   }, [previews]);
 
-  function handleFilesSelected(e: ChangeEvent<HTMLInputElement>) {
-    const seleccionados = Array.from(e.target.files ?? []);
-    e.target.value = ''; // permite volver a elegir el mismo archivo después de sacarlo
-
+  function agregarArchivos(seleccionados: File[]) {
     if (seleccionados.length === 0) return;
 
     // accept="image/*" es solo una sugerencia para el selector del sistema
@@ -55,6 +54,18 @@ export function ImageUploader({
     onChange([...files, ...aceptados]);
   }
 
+  function handleFilesSelected(e: ChangeEvent<HTMLInputElement>) {
+    const seleccionados = Array.from(e.target.files ?? []);
+    e.target.value = ''; // permite volver a elegir el mismo archivo después de sacarlo
+    agregarArchivos(seleccionados);
+  }
+
+  function handleDrop(e: DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    setArrastrando(false);
+    agregarArchivos(Array.from(e.dataTransfer.files));
+  }
+
   function handleRemove(index: number) {
     setWarning('');
     onChange(files.filter((_, i) => i !== index));
@@ -73,7 +84,17 @@ export function ImageUploader({
             : `(opcional, hasta ${maxImagenes})`}
       </p>
 
-      <div className="flex gap-3 flex-wrap">
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          setArrastrando(true);
+        }}
+        onDragLeave={() => setArrastrando(false)}
+        onDrop={handleDrop}
+        className={`flex gap-3 flex-wrap rounded-boton p-2 -m-2 transition-colors ${
+          arrastrando ? 'bg-[rgba(73,160,120,0.08)] outline-dashed outline-2 outline-primario' : ''
+        }`}
+      >
         {files.map((file, index) => (
           <div
             key={`${file.name}-${index}`}
@@ -86,9 +107,9 @@ export function ImageUploader({
               type="button"
               onClick={() => handleRemove(index)}
               aria-label="Quitar foto"
-              className="absolute top-0.5 right-0.5 h-5 w-5 flex items-center justify-center rounded-pill bg-tinta/70 text-tarjeta text-xs leading-none"
+              className="absolute top-0.5 right-0.5 h-5 w-5 flex items-center justify-center rounded-pill bg-tinta/70 text-tarjeta"
             >
-              ×
+              <X size={12} />
             </button>
           </div>
         ))}
@@ -116,6 +137,9 @@ export function ImageUploader({
 
       {error && <p className="text-critico text-sm mt-1.5 font-500">{error}</p>}
       {warning && <p className="text-critico text-sm mt-1.5 font-500">{warning}</p>}
+      {!error && !warning && (
+        <p className="text-texto-suave text-sm mt-1.5">Arrastrá las fotos acá o tocá el +</p>
+      )}
     </div>
   );
 }
