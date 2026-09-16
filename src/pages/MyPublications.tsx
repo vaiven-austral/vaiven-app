@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
 import { PublicationCard, type Publication } from '../components/publications/PublicationCard';
 import { EmptyState } from '../components/ui/EmptyState';
+import { MatchConfirmModal } from '../components/matching/MatchConfirmModal';
 
 type Tipo = 'donacion' | 'necesidad';
 
@@ -15,6 +16,7 @@ export function MyPublications() {
   const [publicaciones, setPublicaciones] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [publicationParaMatch, setPublicationParaMatch] = useState<Publication | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -93,9 +95,22 @@ export function MyPublications() {
       {!loading && !error && publicaciones.length > 0 && (
         <div className="grid grid-cols-1 gap-4">
           {publicaciones.map((publication) => (
-            <PublicationCard key={publication.id} publication={publication} />
+            <PublicationCard
+              key={publication.id}
+              publication={publication}
+              onClick={() => setPublicationParaMatch(publication)}
+            />
           ))}
         </div>
+      )}
+
+      {publicationParaMatch && (
+        <MatchConfirmModal
+          publicationId={publicationParaMatch.id}
+          tipo={publicationParaMatch.tipo}
+          titulo={publicationParaMatch.titulo}
+          onClose={() => setPublicationParaMatch(null)}
+        />
       )}
     </div>
   );

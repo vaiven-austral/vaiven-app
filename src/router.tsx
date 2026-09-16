@@ -88,13 +88,11 @@ export const router = createBrowserRouter([
             path: '/perfil',
             element: <PerfilPage />,
           },
+          {
+            path: '/matching/:publicacionId',
+            element: <MatchingResultsPage />,
+          },
         ],
-      },
-
-      // Rutas protegidas sin Shell (fuera del alcance de este ticket)
-      {
-        path: '/matching/:publicacionId',
-        element: <MatchingResultsPage />,
       },
     ],
   },

@@ -13,6 +13,7 @@ import {
 } from '../lib/publicationBadges';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Badge } from '../components/ui/badge';
+import { MatchConfirmModal } from '../components/matching/MatchConfirmModal';
 import lightBulbOutline from '../assets/LightBulbOutline.png';
 
 const tipoLabels: Record<Publication['tipo'], string> = {
@@ -59,6 +60,7 @@ export function HomeFeed() {
   const [publicaciones, setPublicaciones] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [publicationParaMatch, setPublicationParaMatch] = useState<Publication | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -124,7 +126,8 @@ export function HomeFeed() {
           {publicaciones.map((publication) => (
             <div
               key={publication.id}
-              className="w-40 shrink-0 bg-tarjeta rounded-tarjeta border border-borde shadow-sm overflow-hidden"
+              className="w-40 shrink-0 bg-tarjeta rounded-tarjeta border border-borde shadow-sm overflow-hidden cursor-pointer"
+              onClick={() => setPublicationParaMatch(publication)}
             >
               {/* foto placeholder temporal por categoría, hasta que exista el bucket de fotos real */}
               <img
@@ -166,6 +169,15 @@ export function HomeFeed() {
             </div>
           ))}
         </div>
+      )}
+
+      {publicationParaMatch && (
+        <MatchConfirmModal
+          publicationId={publicationParaMatch.id}
+          tipo={publicationParaMatch.tipo}
+          titulo={publicationParaMatch.titulo}
+          onClose={() => setPublicationParaMatch(null)}
+        />
       )}
     </div>
   );
