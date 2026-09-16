@@ -54,7 +54,10 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
       role="dialog"
       aria-modal="true"
-      onClick={onClose}
+      onClick={(e) => {
+        e.stopPropagation();
+        onClose();
+      }}
     >
       <div
         className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-tarjeta bg-tarjeta shadow-lg flex flex-col sm:flex-row"
