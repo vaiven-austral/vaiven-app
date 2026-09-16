@@ -35,9 +35,8 @@ export async function subirImagenesPublicacion(
     });
 
     if (dbError) {
-      // El archivo ya se subió arriba; si no se registra, no lo dejamos
-      // huérfano en Storage. Best-effort: si el borrado también falla, no
-      // tapamos el error original (que es el que le importa al usuario).
+      // el archivo se subió arriba; si no se registra, no lo dejamos
+      // huérfano en Storage
       await supabase.storage.from('publicaciones').remove([rutaStorage]);
       return { error: `Se subió la foto ${orden + 1} pero no se pudo registrar: ${dbError.message}` };
     }
