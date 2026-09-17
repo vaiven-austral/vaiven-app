@@ -300,15 +300,15 @@ INSERT INTO public.publicaciones (
 -- ============================================================
 
 -- Necesidad de heladera, en Sarandí
-INSERT INTO public.publicaciones (
-  id, usuario_id, tipo, estado, titulo, descripcion, categoria_id, zona_id, urgencia, cantidad, vence_en
-) VALUES (
-  'c1111111-1111-1111-1111-111111111111',
-  '78d026a5-c05c-4705-b32b-b518bd05bc3b', 'necesidad', 'activa',
-  'Heladera para familia en Sarandí',
-  'Se nos rompió la heladera y no podemos conservar alimentos ni medicamentos. Cualquier heladera que funcione nos sirve.',
-  1, 546, 'alta', 1, now() + interval '30 days'
-);
+--INSERT INTO public.publicaciones (
+--  id, usuario_id, tipo, estado, titulo, descripcion, categoria_id, zona_id, urgencia, cantidad, vence_en
+--) VALUES (
+--  'c1111111-1111-1111-1111-111111111111',
+--  '78d026a5-c05c-4705-b32b-b518bd05bc3b', 'necesidad', 'activa',
+--  'Heladera para familia en Sarandí',
+--  'Se nos rompió la heladera y no podemos conservar alimentos ni medicamentos. Cualquier heladera que funcione nos sirve.',
+--  1, 546, 'alta', 1, now() + interval '30 days'
+--);
 
 -- Las 4 donaciones de heladera, una por escalón
 INSERT INTO public.publicaciones (
@@ -352,13 +352,13 @@ INSERT INTO public.publicaciones (
   id, usuario_id, tipo, estado, titulo, descripcion, categoria_id, zona_id, urgencia, cantidad, vence_en
 ) VALUES
   -- N-Demo 1: Misma localidad: San Isidro (zona 826, AMBA) - Match con persona en silla de ruedas
-  (
-    'c6666666-6666-6666-6666-666666666666',
-    'ff3041a6-febe-4e85-925b-ae5216b73361', 'necesidad', 'activa',
-    'Heladera pequeña o accesible para persona en silla de ruedas',
-    'Me desplazo en silla de ruedas tras un accidente y vivo solo en San Isidro. Necesito con urgencia una heladera accesible o bajo mesada que me permita guardar mi medicación e insulina de forma autónoma sin depender de terceros.',
-    1, 826, 'alta', 1, now() + interval '30 days'
-  ),
+  --(
+  --  'c6666666-6666-6666-6666-666666666666',
+  --  'ff3041a6-febe-4e85-925b-ae5216b73361', 'necesidad', 'activa',
+  --  'Heladera pequeña o accesible para persona en silla de ruedas',
+  --  'Me desplazo en silla de ruedas tras un accidente y vivo solo en San Isidro. Necesito con urgencia una heladera accesible o bajo mesada que me permita guardar mi medicación e insulina de forma autónoma sin depender de terceros.',
+  --  1, 826, 'alta', 1, now() + interval '30 days'
+  --),
   -- N-Demo 2: Mismo partido: Martínez (zona 825, partido San Isidro, AMBA)
   (
     'c7777777-7777-7777-7777-777777777777',
