@@ -347,6 +347,43 @@ INSERT INTO public.publicaciones (
     1, 4430, 'usado', 1, now() + interval '30 days'
   );
 
+-- 4 Nuevas necesidades de heladera con escalón de proximidad en San Isidro (AMBA)
+INSERT INTO public.publicaciones (
+  id, usuario_id, tipo, estado, titulo, descripcion, categoria_id, zona_id, urgencia, cantidad, vence_en
+) VALUES
+  -- N-Demo 1: Misma localidad: San Isidro (zona 826, AMBA) - Match con persona en silla de ruedas
+  (
+    'c6666666-6666-6666-6666-666666666666',
+    'ff3041a6-febe-4e85-925b-ae5216b73361', 'necesidad', 'activa',
+    'Heladera pequeña o accesible para persona en silla de ruedas',
+    'Me desplazo en silla de ruedas tras un accidente y vivo solo en San Isidro. Necesito con urgencia una heladera accesible o bajo mesada que me permita guardar mi medicación e insulina de forma autónoma sin depender de terceros.',
+    1, 826, 'alta', 1, now() + interval '30 days'
+  ),
+  -- N-Demo 2: Mismo partido: Martínez (zona 825, partido San Isidro, AMBA)
+  (
+    'c7777777-7777-7777-7777-777777777777',
+    '6723bd6b-18f7-486a-806b-dbab31d35620', 'necesidad', 'activa',
+    'Heladera urgente para familia con niños chicos',
+    'Se nos quemó el motor de la heladera en Martínez tras el último corte de luz. Somos una familia con tres chicos y se nos hace imposible conservar alimentos frescos y lácteos. Cualquier ayuda nos viene bien.',
+    1, 825, 'alta', 1, now() + interval '30 days'
+  ),
+  -- N-Demo 3: Misma región AMBA: Palermo (zona 1193, Comuna 14, AMBA)
+  (
+    'c8888888-8888-8888-8888-888888888888',
+    'acc5626b-15d6-40f6-bba8-080859c55539', 'necesidad', 'activa',
+    'Heladera o frigobar para taller comunitario',
+    'Buscamos una heladera en funcionamiento para el comedor de nuestro espacio comunitario en Palermo, para conservar las viandas y refrigerios de quienes asisten a las actividades.',
+    1, 1193, 'media', 1, now() + interval '30 days'
+  ),
+  -- N-Demo 4: Otra región (afuera de AMBA): Rosario (zona 4430, Santa Fe)
+  (
+    'c9999999-9999-9999-9999-999999999999',
+    '76e7c5c3-4acf-40da-9115-638c442c866a', 'necesidad', 'activa',
+    'Heladera en funcionamiento para estudiante',
+    'Me mudé solo recientemente a Rosario y no cuento con heladera. No tengo apuro inmediato pero busco alguna usada que enfríe bien y esté operativa.',
+    1, 4430, 'sin_apuro', 1, now() + interval '30 days'
+  );
+
 -- ============================================================
 -- 7. FOTOS
 -- Las fotos (Storage + su fila en imagenes_publicacion) NO se seedean acá:
