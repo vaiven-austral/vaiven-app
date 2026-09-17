@@ -3,6 +3,9 @@ import { useParams } from 'react-router-dom';
 import { callN8nWebhook } from '@/lib/n8n';
 import type { Candidate } from '@/lib/n8n';
 import { CandidateCard } from '@/components/matching/CandidateCard';
+import { supabase } from '@/lib/supabaseClient';
+import { PublicationDetailModal } from '@/components/publications/PublicationDetailModal';
+import type { Publication } from '@/lib/publicationBadges';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
 export function MatchingResultsPage() {
@@ -10,6 +13,7 @@ export function MatchingResultsPage() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedPublication, setSelectedPublication] = useState<Publication | null>(null);
 
   const handleRefresh = useCallback(async () => {
     if (!publicacionId) {
@@ -31,6 +35,42 @@ export function MatchingResultsPage() {
       setLoading(false);
     }
   }, [publicacionId]);
+
+  const handleViewDetails = async (candidate: Candidate) => {
+    try {
+      const { data, error: err } = await supabase
+        .from('publicaciones')
+        .select(
+          'id, tipo, estado, titulo, descripcion, creada_en, vence_en, urgencia, estado_objeto, categorias(nombre), zonas(region, partido, localidad), imagenes_publicacion(ruta_storage, orden)'
+        )
+        .eq('id', candidate.id)
+        .single();
+
+      if (data && !err) {
+        setSelectedPublication(data as unknown as Publication);
+        return;
+      }
+    } catch (e) {
+      console.error('Error al obtener detalle de la publicación:', e);
+    }
+
+    // Fallback con los datos del candidate en memoria
+    setSelectedPublication({
+      id: candidate.id,
+      tipo: candidate.tipo,
+      estado: 'activa',
+      titulo: candidate.titulo,
+      descripcion: candidate.descripcion,
+      vence_en: candidate.vence_en,
+      urgencia: (candidate.urgencia as Publication['urgencia']) || null,
+      estado_objeto: (candidate.estado_objeto as Publication['estado_objeto']) || null,
+      categorias: null,
+      zonas: candidate.zonas
+        ? { partido: candidate.zonas.partido, localidad: candidate.zonas.localidad }
+        : null,
+      imagenes_publicacion: [],
+    });
+  };
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -119,12 +159,23 @@ export function MatchingResultsPage() {
 
             <div className="space-y-3">
               {candidates.map((candidate) => (
-                <CandidateCard key={candidate.id} candidate={candidate} />
+                <CandidateCard
+                  key={candidate.id}
+                  candidate={candidate}
+                  onViewDetails={handleViewDetails}
+                />
               ))}
             </div>
           </div>
         )}
       </div>
+
+      {selectedPublication && (
+        <PublicationDetailModal
+          publication={selectedPublication}
+          onClose={() => setSelectedPublication(null)}
+        />
+      )}
     </div>
   );
 }

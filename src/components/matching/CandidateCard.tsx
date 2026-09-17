@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import type { Candidate } from '@/lib/n8n';
-import { ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { ChevronDown, ChevronUp, Check, Eye } from 'lucide-react';
 
 interface CandidateCardProps {
   candidate: Candidate;
   onAccept?: (candidateId: string) => void;
+  onViewDetails?: (candidate: Candidate) => void;
 }
 
-export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
+export function CandidateCard({ candidate, onAccept, onViewDetails }: CandidateCardProps) {
   const [showDetails, setShowDetails] = useState(false);
   const [isAccepting, setIsAccepting] = useState(false);
 
@@ -45,7 +46,10 @@ export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
 
           {/* Info */}
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-tinta line-clamp-2">
+            <h3
+              onClick={() => onViewDetails?.(candidate)}
+              className={`font-semibold text-tinta line-clamp-2 ${onViewDetails ? 'cursor-pointer hover:text-primario transition-colors' : ''}`}
+            >
               {candidate.titulo}
             </h3>
             <p className="text-xs text-texto-suave mt-0.5">
@@ -57,22 +61,34 @@ export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
           </div>
         </div>
 
-        {/* Botón Expandir + Aceptar */}
+        {/* Botones de acción */}
         <div className="flex gap-2 mt-3">
+          {onViewDetails && (
+            <button
+              type="button"
+              onClick={() => onViewDetails(candidate)}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 px-2 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors text-xs sm:text-sm font-medium text-tinta"
+            >
+              <Eye className="w-4 h-4 text-texto-medio" />
+              Ver detalle
+            </button>
+          )}
           <button
+            type="button"
             onClick={() => setShowDetails(!showDetails)}
-            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors text-sm font-medium text-tinta"
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 px-2 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors text-xs sm:text-sm font-medium text-tinta"
           >
             {showDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            Detalles
+            Puntaje
           </button>
           <button
+            type="button"
             onClick={handleAccept}
             disabled={isAccepting}
-            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-primario hover:bg-primario/90 disabled:bg-gray-300 rounded-md transition-colors text-sm font-medium text-white"
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 px-2 bg-primario hover:bg-primario/90 disabled:bg-gray-300 rounded-md transition-colors text-xs sm:text-sm font-medium text-white"
           >
             <Check className="w-4 h-4" />
-            {isAccepting ? 'Procesando...' : 'Aceptar'}
+            {isAccepting ? '...' : 'Aceptar'}
           </button>
         </div>
       </div>
