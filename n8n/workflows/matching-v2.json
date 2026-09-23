@@ -1,5 +1,5 @@
 {
-  "name": "VaiVen - Motor de Matching v2.2",
+  "name": "VaiVen - Motor de Matching v2.3",
   "nodes": [
     {
       "parameters": {
@@ -480,7 +480,7 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"necesidad\": {\n    \"titulo\": \"Necesito una heladera\",\n    \"descripcion\": \"Se rompió la heladera y no tenemos forma de conservar comida para la familia\",\n    \"categoria\": \"Electrodomésticos\",\n    \"cantidad\": 1\n  },\n  \"donacion\": {\n    \"titulo\": \"Dono heladera en buen estado\",\n    \"descripcion\": \"Heladera de dos puertas, funciona perfecto, la cambiamos por una más chica\",\n    \"categoria\": \"Electrodomésticos\",\n    \"cantidad\": 1,\n    \"estado_objeto\": \"buen estado\"\n  }\n}\n",
+        "jsonOutput": "{\n  \"necesidad\": { \"titulo\": \"Necesito una heladera\", \"descripcion\": \"Se rompió la heladera y no tenemos forma de conservar comida para la familia\", \"categoria\": \"Electrodomésticos\", \"cantidad\": 1 },\n  \"donacion\": { \"titulo\": \"Dono una heladera rota\", \"descripcion\": \"No enfría, la doy para repuestos\", \"categoria\": \"Electrodomésticos\", \"cantidad\": 1, \"estado_objeto\": \"requiere reparación\" }\n}\n",
         "options": {}
       },
       "type": "n8n-nodes-base.set",
@@ -495,7 +495,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Evaluá el par y devolvé nivel y justificación.\n\nNecesidad: {{ JSON.stringify($json.necesidad) }}\nDonación: {{ JSON.stringify($json.donacion) }}\n",
+        "text": "=Sos un evaluador que decide si una donación resuelve una necesidad concreta.\n\nTu única pregunta es: ¿este objeto resuelve esta necesidad?, considerando su estado, su tamaño y su cantidad.\n\nNo evalúes si los objetos se parecen entre sí. Dos heladeras pueden parecerse mucho y una no resolver nada si está rota.\n\nAsigná un nivel de 0 a 4 según estas anclas:\n\n4 — Resuelve lo que la persona pidió\n3 — Lo resuelve con una salvedad menor: talle, estado o cantidad\n2 — Resuelve parte del problema declarado\n1 — Categoría vecina, no resuelve lo pedido\n0 — Sin relación, o funcionalmente inservible para lo pedido\n\nDevolvé el nivel junto con su justificación en la misma respuesta.\n\nNecesidad: {{ JSON.stringify($json.necesidad) }}\nDonación: {{ JSON.stringify($json.donacion) }}\n",
         "hasOutputParser": true,
         "messages": {
           "messageValues": []
@@ -786,7 +786,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "0f42ed25-f190-4776-b206-9bef8ede7547",
+  "versionId": "d0bc48c7-452b-4677-ab91-8cc81654452e",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "82ddc52f7ef47cefc3fdf890580c41c82465c2415f82b6c789a6386fc759b827"
