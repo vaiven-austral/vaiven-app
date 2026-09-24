@@ -32,7 +32,6 @@ export function AnalysisPanel({ candidate, open, onOpenChange, onAccept }: Analy
       onOpenChange={onOpenChange}
       swipeDirection={isMobile ? 'down' : 'right'}
       showSwipeHandle={isMobile}
-      snapPoints={isMobile ? [0.6, 0.95] : undefined}
     >
       <DrawerContent className={isMobile ? 'max-h-[90dvh]' : undefined}>
         <DrawerHeader>
