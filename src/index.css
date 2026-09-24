@@ -5,3 +5,41 @@
 body {
   margin: 0;
 }
+
+@layer base {
+  :root {
+    /* Tokens semánticos de shadcn/Base UI, mapeados 1:1 a docs/ui/tokens.md.
+       HSL "suelto" (sin hsl() alrededor): Tailwind necesita ese formato
+       para poder inyectar el canal de opacidad de modificadores como
+       outline-ring/50 en build. No hay variante .dark: sin modo oscuro. */
+    --background: 210 20% 98%;      /* superficie #F9FAFB */
+    --foreground: 221 39% 11%;      /* tinta #111827 */
+    --card: 0 0% 100%;              /* tarjeta #FFFFFF */
+    --card-foreground: 221 39% 11%; /* tinta */
+    --popover: 0 0% 100%;           /* tarjeta */
+    --popover-foreground: 221 39% 11%; /* tinta */
+    --primary: 152 37% 46%;         /* primario #49A078 */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 181 52% 27%;       /* secundario #216869 */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 14% 96%;           /* lienzo #F3F4F6 */
+    --muted-foreground: 220 9% 46%; /* texto-medio #6B7280 */
+    --accent: 220 14% 96%;          /* lienzo */
+    --accent-foreground: 221 39% 11%; /* tinta */
+    --destructive: 0 72% 51%;       /* critico #DC2626 */
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 13% 94%;          /* borde #EEF0F2 */
+    --input: 220 13% 91%;           /* borde-fuerte #E5E7EB */
+    --ring: 152 37% 46%;            /* primario */
+    --radius: 0.875rem;             /* 14px, mismo valor que rounded-boton */
+  }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}

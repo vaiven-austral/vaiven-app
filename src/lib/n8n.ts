@@ -31,6 +31,11 @@ export interface Candidate {
     f5_calidad: number;
     f6_categoria: number;
   };
+  justificacion: {
+    narrativa: string;
+    fortalezas: string[];
+    consideraciones: string[];
+  } | null;
 }
 
 export interface MatchingResponse {
