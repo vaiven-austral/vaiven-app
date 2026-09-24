@@ -18,10 +18,10 @@ export const RAMPAS: Record<RangoScore, string[]> = {
   bajo: ['#8F1D1D', '#B91C1C', '#DC2626', '#EC6B6B', '#F4A5A5', '#F9D0D0'],
 };
 
-export const NUMERO_POR_RANGO: Record<RangoScore, 'exito' | 'atencion' | 'critico'> = {
-  alto: 'exito',
-  medio: 'atencion',
-  bajo: 'critico',
+export const NUMERO_POR_RANGO: Record<RangoScore, 'text-exito' | 'text-atencion' | 'text-critico'> = {
+  alto: 'text-exito',
+  medio: 'text-atencion',
+  bajo: 'text-critico',
 };
 
 export const CANALETA = '#F3F4F6';

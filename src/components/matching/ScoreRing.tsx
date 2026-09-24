@@ -62,7 +62,7 @@ export function ScoreRing({ score, factores, size = 'tarjeta', className = '' }:
         y={centro}
         textAnchor="middle"
         dominantBaseline="central"
-        className={`font-800 fill-current text-${NUMERO_POR_RANGO[rango]}`}
+        className={`font-800 fill-current ${NUMERO_POR_RANGO[rango]}`}
         style={{ fontSize: size === 'drawer' ? 22 : 14 }}
       >
         {Math.round(score)}
