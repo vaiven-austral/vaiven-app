@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Candidate } from '@/lib/n8n';
 import { ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { ScoreRing } from './ScoreRing';
 
 interface CandidateCardProps {
   candidate: Candidate;
@@ -11,7 +12,6 @@ export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
   const [showDetails, setShowDetails] = useState(false);
   const [isAccepting, setIsAccepting] = useState(false);
 
-  const scorePercentage = Math.round(candidate.score_total);
   const location = candidate.zonas
     ? `${candidate.zonas.partido} · ${candidate.zonas.localidad}`
     : 'Ubicación no disponible';
@@ -31,16 +31,9 @@ export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
       <div className="p-4">
         <div className="flex gap-3 items-start">
 
-          {/* Score Circular */}
+          {/* Anillo de puntaje */}
           <div className="flex-shrink-0">
-            <div className="w-14 h-14 rounded-full border-4 border-primario flex items-center justify-center bg-gradient-to-br from-primario/10 to-white">
-              <div className="text-center">
-                <div className="text-base font-bold text-primario">
-                  {scorePercentage}
-                </div>
-                <div className="text-xs text-texto-suave">pts</div>
-              </div>
-            </div>
+            <ScoreRing score={candidate.score_total} factores={candidate.factores} size="tarjeta" />
           </div>
 
           {/* Info */}

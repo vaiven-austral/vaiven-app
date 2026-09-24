@@ -8,6 +8,17 @@ import { Badge } from '../components/ui/badge';
 import { CategorySelect } from '../components/forms/CategorySelect';
 import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
 import { PublicationCard, type Publication } from '../components/publications/PublicationCard';
+import { ScoreRing } from '../components/matching/ScoreRing';
+
+// Pesos reales del motor (docs/motor/contrato.md): 40/10/20/10/5/15 sobre 100.
+// Se escalan al score de prueba para que el anillo se vea proporcionado.
+const PESOS_MOTOR = { f1: 40, f2: 10, f3: 20, f4: 10, f5: 5, f6: 15 };
+function factoresDeMuestra(score: number) {
+  const escala = score / 100;
+  return Object.fromEntries(
+    Object.entries(PESOS_MOTOR).map(([k, max]) => [k, max * escala])
+  );
+}
 
 const mockPublications: Publication[] = [
   {
@@ -193,6 +204,35 @@ export function ComponentShowcase() {
             <p className="text-sm text-texto-medio">
               Salida: <code className="text-xs">{JSON.stringify({ categoria_id: categoriaId, zona_id: zonaId })}</code>
             </p>
+          </div>
+        </section>
+
+        {/* SCORE RING */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">ScoreRing</h2>
+
+          <div className="flex flex-wrap items-end gap-10">
+            {[85, 55, 20].map((score) => (
+              <div key={score} className="flex flex-col items-center gap-2">
+                <ScoreRing score={score} factores={factoresDeMuestra(score)} size="tarjeta" />
+                <span className="text-xs text-texto-suave">{score} · tarjeta</span>
+              </div>
+            ))}
+            <div className="flex flex-col items-center gap-2">
+              <ScoreRing score={null} factores={{}} size="tarjeta" />
+              <span className="text-xs text-texto-suave">null · tarjeta</span>
+            </div>
+
+            {[85, 55, 20].map((score) => (
+              <div key={`drawer-${score}`} className="flex flex-col items-center gap-2">
+                <ScoreRing score={score} factores={factoresDeMuestra(score)} size="drawer" />
+                <span className="text-xs text-texto-suave">{score} · drawer</span>
+              </div>
+            ))}
+            <div className="flex flex-col items-center gap-2">
+              <ScoreRing score={null} factores={{}} size="drawer" />
+              <span className="text-xs text-texto-suave">null · drawer</span>
+            </div>
           </div>
         </section>
 
