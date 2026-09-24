@@ -60,7 +60,7 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
       }}
     >
       <div
-        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-tarjeta bg-tarjeta shadow-lg flex flex-col"
+        className="w-full sm:max-w-[390px] max-h-[90vh] overflow-y-auto rounded-tarjeta bg-tarjeta shadow-lg flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-end p-2 border-b border-borde">
@@ -74,13 +74,13 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
           </button>
         </div>
 
-        <div className="flex flex-col sm:flex-row">
-        <div className="relative w-full shrink-0 bg-lienzo sm:w-1/2">
+        <div className="flex flex-col">
+        <div className="relative w-full shrink-0 bg-lienzo">
           <PublicationImage
             rutaStorage={rutaActual}
             categoria={categorias?.nombre}
             fit="contain"
-            className="h-56 w-full sm:h-full sm:min-h-[320px]"
+            className="h-56 w-full"
           />
 
           {imagenes.length > 1 && (
