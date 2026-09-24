@@ -54,7 +54,7 @@ export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
         candidate={candidate}
         open={panelOpen}
         onOpenChange={setPanelOpen}
-        onAccept={onAccept ? async () => onAccept(candidate.id) : undefined}
+        onAccept={onAccept}
       />
     </div>
   );

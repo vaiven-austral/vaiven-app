@@ -69,7 +69,16 @@ export function AnalysisPanel({ candidate, open, onOpenChange, onAccept }: Analy
             </>
           )}
 
-          <PanelActions onAccept={onAccept ? () => onAccept(candidate.id) : undefined} />
+          <PanelActions
+            onAccept={
+              onAccept
+                ? async () => {
+                    await onAccept(candidate.id);
+                    onOpenChange(false);
+                  }
+                : undefined
+            }
+          />
         </div>
       </DrawerContent>
     </Drawer>
