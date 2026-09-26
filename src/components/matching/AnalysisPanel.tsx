@@ -5,6 +5,7 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer';
@@ -68,7 +69,9 @@ export function AnalysisPanel({ candidate, open, onOpenChange, onAccept }: Analy
               <Reasoning narrativa={candidate.justificacion.narrativa} />
             </>
           )}
+        </div>
 
+        <DrawerFooter className="border-t border-borde pt-4">
           <PanelActions
             onAccept={
               onAccept
@@ -79,7 +82,7 @@ export function AnalysisPanel({ candidate, open, onOpenChange, onAccept }: Analy
                 : undefined
             }
           />
-        </div>
+        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );
