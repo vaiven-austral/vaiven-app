@@ -10,10 +10,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        2448,
-        -496
+        416,
+        128
       ],
-      "id": "cb979570-01de-4bc3-8406-553664569a81",
+      "id": "f0c753e2-dd23-4bc9-8516-ee991bac7c2e",
       "name": "200"
     },
     {
@@ -25,10 +25,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        1104,
-        -32
+        -928,
+        592
       ],
-      "id": "72ff1131-38db-4020-bc6e-f95c0997f338",
+      "id": "5d586184-1bb7-46f2-a6cb-80a635fcddfc",
       "name": "400"
     },
     {
@@ -40,10 +40,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        880,
-        112
+        -1152,
+        736
       ],
-      "id": "d483965c-632a-4c13-9607-fa37c6f177b8",
+      "id": "0add5dc9-628d-4270-9561-c6bc19414977",
       "name": "401"
     },
     {
@@ -55,10 +55,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        1760,
-        -320
+        -272,
+        304
       ],
-      "id": "dafd8484-e40a-46a5-aaab-76ff0705834f",
+      "id": "5d86fc02-775d-49c3-8f38-582e2aef1568",
       "name": "404"
     },
     {
@@ -72,16 +72,16 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        224,
-        0
+        -1808,
+        624
       ],
-      "id": "5de2886c-2e9e-4e04-96fd-11e6306875fc",
+      "id": "8420e13d-5937-4e19-9aa6-1dafa5ff3614",
       "name": "Webhook",
       "webhookId": "a869b9c1-4a9c-4da7-be8f-cca4682ccb13",
       "credentials": {
         "jwtAuth": {
-          "id": "bluD5ajczYoBiPMf",
-          "name": "JWT Auth account 3"
+          "id": "n1r2lsGvjJ6hKHbh",
+          "name": "JWT Auth account"
         }
       }
     },
@@ -122,10 +122,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        448,
-        0
+        -1584,
+        624
       ],
-      "id": "3637bc15-a5b8-4ad1-b802-1247bbf81717",
+      "id": "56a8f6f4-08c1-4268-a6d6-daf5b10e0ba5",
       "name": "auth"
     },
     {
@@ -135,10 +135,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        880,
-        -32
+        -1152,
+        592
       ],
-      "id": "6cdd39e6-ebd0-46f7-b17b-b932547696ad",
+      "id": "a6e392b5-0510-4bba-a4a2-7ef4a71d69d5",
       "name": "bad request"
     },
     {
@@ -148,10 +148,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        672,
-        112
+        -1360,
+        736
       ],
-      "id": "2ba4010a-426e-48cf-b0a9-5cce4aa06fcd",
+      "id": "9b470c68-7038-4a74-967c-f27a86f99f2f",
       "name": "unauth"
     },
     {
@@ -161,10 +161,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1104,
-        -224
+        -928,
+        400
       ],
-      "id": "7725be28-55a6-4ed2-91f4-8e068da73086",
+      "id": "02fc75f1-7d60-483e-b807-4c989548e67c",
       "name": "bad request1"
     },
     {
@@ -176,10 +176,10 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        1344,
-        -224
+        -688,
+        400
       ],
-      "id": "98405db3-6505-416a-a5d5-d9f3a38f54a2",
+      "id": "16f9fa97-5f8f-410c-bdb5-d73184b07b09",
       "name": "400-1"
     },
     {
@@ -189,10 +189,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2224,
-        -624
+        192,
+        0
       ],
-      "id": "7bde3c6d-b228-4301-bda8-134c9ef60a4b",
+      "id": "2a77fccb-9eb2-47f5-aaf0-96827c969389",
       "name": "response"
     },
     {
@@ -235,10 +235,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        1104,
-        -432
+        -928,
+        192
       ],
-      "id": "abb61655-a9f3-4310-81fa-90c56993a7b9",
+      "id": "82ea86aa-7a7f-4f9c-8e4c-d30c64e930b0",
       "name": "Original Post"
     },
     {
@@ -297,10 +297,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.5,
       "position": [
-        1584,
-        -528
+        -448,
+        96
       ],
-      "id": "23ca540c-3f7b-4e83-b0f7-1a5497998c49",
+      "id": "c0303c9c-e56c-4766-acb0-f85c0fcc0057",
       "name": "candidatas"
     },
     {
@@ -331,10 +331,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        1344,
-        -432
+        -688,
+        192
       ],
-      "id": "2be588b3-35c5-444a-a21e-3cd06fb9d80e",
+      "id": "6ca0e83a-d35f-4cdd-a8e6-8cea45259155",
       "name": "existe el post original"
     },
     {
@@ -344,10 +344,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1584,
-        -320
+        -448,
+        304
       ],
-      "id": "728b35d4-9a49-46d0-b872-09cac83d58b9",
+      "id": "bade3cc5-33ac-4bb6-911a-49898bbe2431",
       "name": "not found"
     },
     {
@@ -357,10 +357,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2032,
-        -624
+        0,
+        0
       ],
-      "id": "1f48a047-14c4-4714-8daf-410e564785c9",
+      "id": "f787c683-a29d-4739-9b3d-04226f6031d5",
       "name": "scoring"
     },
     {
@@ -391,10 +391,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        1760,
-        -528
+        -272,
+        96
       ],
-      "id": "f128c0d8-e7a5-4ec3-a105-cd863368510b",
+      "id": "ccf2fcd4-9537-4c82-87f6-1b23481e1261",
       "name": "hayCandidatas"
     },
     {
@@ -404,10 +404,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2032,
-        -448
+        0,
+        176
       ],
-      "id": "98703a68-d8b6-41c9-aacf-492611343579",
+      "id": "31ba3acb-6ecd-413e-88b9-ed378ae22c46",
       "name": "emptyResponse"
     },
     {
@@ -438,10 +438,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        672,
-        -112
+        -1360,
+        512
       ],
-      "id": "33f561a8-b380-448e-923c-b946dbe2ce34",
+      "id": "9996c444-af17-4542-be83-e494d8851cc8",
       "name": "publicacion_id present"
     },
     {
@@ -471,11 +471,101 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        880,
-        -240
+        -1152,
+        384
       ],
-      "id": "bb6a39e4-2581-4313-83ad-d32623fabefe",
+      "id": "4dba384b-a31a-42ae-9271-903a4f028f8c",
       "name": "valid publication_id"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"necesidad\": { \"titulo\": \"Necesito una heladera\", \"descripcion\": \"Se rompió la heladera y no tenemos forma de conservar comida para la familia\", \"categoria\": \"Electrodomésticos\", \"cantidad\": 1 },\n  \"donacion\": { \"titulo\": \"Dono una heladera rota\", \"descripcion\": \"No enfría, la doy para repuestos\", \"categoria\": \"Electrodomésticos\", \"cantidad\": 1, \"estado_objeto\": \"requiere reparación\" }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -1360,
+        1200
+      ],
+      "id": "31683c3d-e482-4e63-98e1-ed2fda377f5d",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Sos un evaluador que decide si una donación resuelve una necesidad concreta.\n\nTu única pregunta es: ¿este objeto resuelve esta necesidad?, considerando su estado, su tamaño y su cantidad.\n\nNo evalúes si los objetos se parecen entre sí. Dos heladeras pueden parecerse mucho y una no resolver nada si está rota.\n\nAsigná un nivel de 0 a 4 según estas anclas:\n\n4 — Resuelve lo que la persona pidió\n3 — Lo resuelve con una salvedad menor: talle, estado o cantidad\n2 — Resuelve parte del problema declarado\n1 — Categoría vecina, no resuelve lo pedido\n0 — Sin relación, o funcionalmente inservible para lo pedido\n\nDevolvé el nivel junto con su justificación en la misma respuesta.\n\nNecesidad: {{ JSON.stringify($json.necesidad) }}\nDonación: {{ JSON.stringify($json.donacion) }}\n",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -1120,
+        1200
+      ],
+      "id": "5742a263-f1e8-4ceb-b16f-7512ae77ec5e",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -1216,
+        1360
+      ],
+      "id": "98cbfdad-a5bb-4302-b260-cb1377955251",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ucrqwv1ZqMvzGHP8",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"nivel\": {\n      \"type\": \"integer\",\n      \"enum\": [0, 1, 2, 3, 4]\n    },\n    \"justificacion\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"narrativa\": { \"type\": \"string\" },\n        \"fortalezas\": {\n          \"type\": \"array\",\n          \"items\": { \"type\": \"string\" }\n        },\n        \"consideraciones\": {\n          \"type\": \"array\",\n          \"items\": { \"type\": \"string\" }\n        }\n      },\n      \"required\": [\"narrativa\", \"fortalezas\", \"consideraciones\"]\n    }\n  },\n  \"required\": [\"nivel\", \"justificacion\"]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1008,
+        1408
+      ],
+      "id": "e6a968f0-1af0-428b-94c5-19e94e553395",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "motor-juicio",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1840,
+        1232
+      ],
+      "id": "0002c70c-c8c5-49ad-951a-e9aad0cb24d7",
+      "name": "Webhook Motor Juicio",
+      "webhookId": "f3a2c9d0-8b1e-4c6a-9d3f-1e2b4a5c6d7e",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "pXWs8h4SLpvFIt30",
+          "name": "Header Auth - motor-juicio (local)"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -679,6 +769,39 @@
           }
         ]
       ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -686,12 +809,12 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "7b676ff6-66fb-45f9-b389-664f9e6ed32c",
+  "versionId": "61726853-ba54-4d6e-8460-1782dc2fafac",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "618168d9f03a7f7ca92cb8070924ed70992ba5a5e3f7fcada607da4123af789e"
+    "instanceId": "82ddc52f7ef47cefc3fdf890580c41c82465c2415f82b6c789a6386fc759b827"
   },
   "nodeGroups": [],
-  "id": "XRFe8IUhCLn2qM4l",
+  "id": "W1NAqx1tZqOrSgwA",
   "tags": []
 }
