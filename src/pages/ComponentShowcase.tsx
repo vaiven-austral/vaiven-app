@@ -9,6 +9,8 @@ import { CategorySelect } from '../components/forms/CategorySelect';
 import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
 import { PublicationCard, type Publication } from '../components/publications/PublicationCard';
 import { ScoreRing } from '../components/matching/ScoreRing';
+import { CandidateCard } from '../components/matching/CandidateCard';
+import type { Candidate } from '../lib/n8n';
 
 // Pesos reales del motor (docs/motor/contrato.md): 40/10/20/10/5/15 sobre 100.
 // Se escalan al score de prueba para que el anillo se vea proporcionado.
@@ -19,6 +21,43 @@ function factoresDeMuestra(score: number) {
     Object.entries(PESOS_MOTOR).map(([k, max]) => [k, max * escala])
   );
 }
+
+const candidatoConJuicio: Candidate = {
+  id: 'test-candidato-1',
+  titulo: 'Notebook Lenovo i5 para carrera',
+  descripcion: 'Notebook en buen estado, con cargador incluido.',
+  tipo: 'donacion',
+  categoria_id: 5,
+  zona_id: 1178,
+  estado_objeto: 'bueno',
+  cantidad: 1,
+  usuario_id: 'usuario-test',
+  vence_en: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+  perfiles: { zona_id: 1178, avatar_ruta: '/avatars/test.webp' },
+  zonas: { id: 1178, region: 'AMBA', partido: 'Comuna 6', localidad: 'Caballito' },
+  score_total: 87,
+  factores: {
+    f1_resolucion: 40,
+    f2_urgencia: 7,
+    f3_proximidad: 13,
+    f4_confianza: 10,
+    f5_calidad: 2,
+    f6_categoria: 15,
+  },
+  justificacion: {
+    narrativa:
+      'Este candidato es el match más fuerte para esta notebook. Su solicitud coincide plenamente con la categoría y las especificaciones del equipo, y su historia académica —finales en agosto, sin equipo desde marzo— muestra un impacto directo y verificable. Su perfil está verificado y tiene historial positivo, lo que reduce el riesgo de reventa. El único punto a considerar es que otros dos receptores declararon urgencia mayor, aunque ninguno alcanza su nivel de compatibilidad técnica ni de cercanía. Este párrafo se extiende deliberadamente para probar que el panel hace scroll interno y que el texto no se corta con una narrativa larga, tal como pide el criterio de aceptación del ticket.',
+    fortalezas: [
+      'Coincidencia exacta de categoría: pidió "Notebook para carrera" en Electrónica.',
+      'Identidad verificada (DNI + correo) y 4.8★ en 6 intercambios previos.',
+      'A 3,2 km del punto de entrega: retiro posible sin logística.',
+    ],
+    consideraciones: [
+      'Su pedido tiene 14 días: hay dos receptores con urgencia declarada mayor.',
+      'No especificó si necesita cargador ni sistema operativo preferido.',
+    ],
+  },
+};
 
 const mockPublications: Publication[] = [
   {
@@ -233,6 +272,17 @@ export function ComponentShowcase() {
               <ScoreRing score={null} factores={{}} size="drawer" />
               <span className="text-xs text-texto-suave">null · drawer</span>
             </div>
+          </div>
+        </section>
+
+        {/* ANALYSIS PANEL (SCRUM-75) */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">AnalysisPanel (Drawer)</h2>
+          <p className="text-sm text-texto-medio mb-4">
+            Candidato de prueba con justificación completa (narrativa larga incluida, para probar el scroll interno).
+          </p>
+          <div className="max-w-md">
+            <CandidateCard candidate={candidatoConJuicio} onAccept={() => {}} />
           </div>
         </section>
 

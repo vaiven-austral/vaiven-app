@@ -24,7 +24,7 @@ export function MatchConfirmModal({ publicationId, tipo, titulo, onClose }: Matc
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm rounded-tarjeta bg-tarjeta p-6 shadow-lg"
+        className="w-full sm:max-w-[390px] rounded-tarjeta bg-tarjeta p-6 shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="font-700 text-lg text-tinta mb-2">¿Querés hacer el matcheo?</h2>

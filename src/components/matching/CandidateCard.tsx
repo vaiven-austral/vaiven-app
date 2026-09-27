@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import type { Candidate } from '@/lib/n8n';
-import { ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { ScoreRing } from './ScoreRing';
+import { AnalysisPanel } from './AnalysisPanel';
 
 interface CandidateCardProps {
   candidate: Candidate;
@@ -9,28 +10,16 @@ interface CandidateCardProps {
 }
 
 export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
-  const [showDetails, setShowDetails] = useState(false);
-  const [isAccepting, setIsAccepting] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
 
   const location = candidate.zonas
     ? `${candidate.zonas.partido} · ${candidate.zonas.localidad}`
     : 'Ubicación no disponible';
 
-  const handleAccept = async () => {
-    setIsAccepting(true);
-    if (onAccept) {
-      await onAccept(candidate.id);
-    }
-    setIsAccepting(false);
-  };
-
   return (
     <div className="bg-tarjeta rounded-tarjeta shadow-md mb-4 overflow-hidden border border-gray-200">
-
-      {/* Header: Score + Info */}
       <div className="p-4">
         <div className="flex gap-3 items-start">
-
           {/* Anillo de puntaje */}
           <div className="flex-shrink-0">
             <ScoreRing score={candidate.score_total} factores={candidate.factores} size="tarjeta" />
@@ -50,105 +39,23 @@ export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
           </div>
         </div>
 
-        {/* Botón Expandir + Aceptar */}
-        <div className="flex gap-2 mt-3">
-          <button
-            onClick={() => setShowDetails(!showDetails)}
-            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors text-sm font-medium text-tinta"
-          >
-            {showDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            Detalles
-          </button>
-          <button
-            onClick={handleAccept}
-            disabled={isAccepting}
-            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-primario hover:bg-primario/90 disabled:bg-gray-300 rounded-md transition-colors text-sm font-medium text-white"
-          >
-            <Check className="w-4 h-4" />
-            {isAccepting ? 'Procesando...' : 'Aceptar'}
-          </button>
-        </div>
+        {/* Botón para abrir el panel de análisis */}
+        <button
+          type="button"
+          onClick={() => setPanelOpen(true)}
+          className="mt-3 flex w-full items-center justify-center gap-2 py-2 px-3 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors text-sm font-medium text-tinta"
+        >
+          <Sparkles className="w-4 h-4" />
+          Ver análisis de IA
+        </button>
       </div>
 
-      {/* Desglose Expandible */}
-      {showDetails && (
-        <div className="border-t border-gray-200 bg-gray-50 p-4 space-y-4">
-
-          {/* Factores de Scoring */}
-          <div>
-            <h4 className="text-xs font-bold text-tinta uppercase mb-2">Factores de Scoring</h4>
-            <div className="space-y-1.5">
-              {[
-                { label: 'Resolución', value: candidate.factores.f1_resolucion, max: 40, color: '#0d9488' },
-                {
-                  label: candidate.tipo === 'necesidad' ? 'Urgencia' : 'Estado del objeto',
-                  value: candidate.factores.f2_urgencia,
-                  max: 10,
-                  color: '#f97316',
-                },
-                { label: 'Proximidad', value: candidate.factores.f3_proximidad, max: 20, color: '#3b82f6' },
-                { label: 'Confianza', value: candidate.factores.f4_confianza, max: 10, color: '#22c55e' },
-                { label: 'Calidad', value: candidate.factores.f5_calidad, max: 5, color: '#a855f7' },
-                { label: 'Categoría', value: candidate.factores.f6_categoria, max: 15, color: '#ec4899' },
-              ].map((factor) => (
-                <div key={factor.label} className="flex items-center justify-between text-xs">
-                  <span className="text-texto-medio">{factor.label}</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-16 h-1.5 bg-gray-300 rounded-full overflow-hidden">
-                      <div
-                        className="h-full"
-                        style={{
-                          backgroundColor: factor.color,
-                          width: `${(factor.value / factor.max) * 100}%`,
-                        }}
-                      ></div>
-                    </div>
-                    <span className="text-tinta font-semibold w-10 text-right">
-                      {factor.value.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-2 pt-2 border-t border-gray-300">
-              <div className="flex justify-between text-xs font-bold text-tinta">
-                <span>Total</span>
-                <span>{candidate.score_total.toFixed(2)} pts</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Fortalezas (Placeholder para IA) */}
-          <div>
-            <h4 className="text-xs font-bold text-tinta uppercase mb-2">✅ Fortalezas</h4>
-            <div className="bg-white p-3 rounded-md border border-green-200 text-xs text-texto-medio">
-              <p className="text-texto-suave italic">
-                [Análisis de IA pendiente - se mostrarán los puntos fuertes del match aquí]
-              </p>
-            </div>
-          </div>
-
-          {/* Consideraciones (Placeholder para IA) */}
-          <div>
-            <h4 className="text-xs font-bold text-tinta uppercase mb-2">⚠️ Consideraciones</h4>
-            <div className="bg-white p-3 rounded-md border border-orange-200 text-xs text-texto-medio">
-              <p className="text-texto-suave italic">
-                [Análisis de IA pendiente - se mostrarán las limitaciones o riesgos aquí]
-              </p>
-            </div>
-          </div>
-
-          {/* Razonamiento de IA (Placeholder) */}
-          <div>
-            <h4 className="text-xs font-bold text-tinta uppercase mb-2">🤖 Razonamiento de IA</h4>
-            <div className="bg-white p-3 rounded-md border border-blue-200 text-xs text-texto-medio">
-              <p className="text-texto-suave italic">
-                [Análisis de IA pendiente - explicación detallada del matching aquí]
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
+      <AnalysisPanel
+        candidate={candidate}
+        open={panelOpen}
+        onOpenChange={setPanelOpen}
+        onAccept={onAccept}
+      />
     </div>
   );
 }

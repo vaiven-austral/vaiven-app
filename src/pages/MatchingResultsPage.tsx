@@ -119,7 +119,7 @@ export function MatchingResultsPage() {
 
             <div className="space-y-3">
               {candidates.map((candidate) => (
-                <CandidateCard key={candidate.id} candidate={candidate} />
+                <CandidateCard key={candidate.id} candidate={candidate}  onAccept={() => {} } />
               ))}
             </div>
           </div>
