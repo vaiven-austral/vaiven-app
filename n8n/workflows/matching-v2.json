@@ -543,6 +543,29 @@
       ],
       "id": "e6a968f0-1af0-428b-94c5-19e94e553395",
       "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "motor-juicio",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1840,
+        1232
+      ],
+      "id": "0002c70c-c8c5-49ad-951a-e9aad0cb24d7",
+      "name": "Webhook Motor Juicio",
+      "webhookId": "f3a2c9d0-8b1e-4c6a-9d3f-1e2b4a5c6d7e",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "pXWs8h4SLpvFIt30",
+          "name": "Header Auth - motor-juicio (local)"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -786,7 +809,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "d0bc48c7-452b-4677-ab91-8cc81654452e",
+  "versionId": "61726853-ba54-4d6e-8460-1782dc2fafac",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "82ddc52f7ef47cefc3fdf890580c41c82465c2415f82b6c789a6386fc759b827"
