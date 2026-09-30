@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useOwnProfile } from '../hooks/useOwnProfile';
 import { supabase } from '../lib/supabaseClient';
 import { getPortada } from '../lib/imagenesPublicacion';
 import {
@@ -29,8 +30,8 @@ function getPrimerNombre(nombre?: string | null, email?: string | null): string 
 
 export function HomeFeed() {
   const { user } = useAuth();
-  const nombreVisible = user?.user_metadata?.nombre_visible as string | undefined;
-  const primerNombre = getPrimerNombre(nombreVisible, user?.email);
+  const { profile } = useOwnProfile();
+  const primerNombre = getPrimerNombre(profile?.nombre_visible, user?.email);
 
   const [publicaciones, setPublicaciones] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(true);
