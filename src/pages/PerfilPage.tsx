@@ -1,5 +1,5 @@
 import { useNavigate, Link } from 'react-router-dom';
-import { MapPin, ChevronRight } from 'lucide-react';
+import { MapPin, ChevronRight, LogOut } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useOwnProfile } from '../hooks/useOwnProfile';
 import { useZonaLabel } from '../hooks/useZonaLabel';
@@ -118,8 +118,9 @@ export function PerfilPage() {
         <button
           type="button"
           onClick={handleLogout}
-          className="w-full text-left px-4 py-3 border-t border-borde font-600 text-tinta hover:bg-lienzo transition-colors"
+          className="flex w-full items-center gap-2 px-4 py-3 border-t border-borde font-600 text-critico hover:bg-lienzo transition-colors"
         >
+          <LogOut className="h-4 w-4" />
           Cerrar sesión
         </button>
       </div>
