@@ -1,3 +1,5 @@
+export const NOMBRE_MAX_LENGTH = 50;
+
 export function getInitials(nombre?: string | null, email?: string | null): string {
   if (nombre) {
     const parts = nombre.trim().split(/\s+/);
