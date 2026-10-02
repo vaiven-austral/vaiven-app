@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type SubmitEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Pencil } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useOwnProfile } from '../hooks/useOwnProfile';
 import { useUpdateProfile } from '../hooks/useUpdateProfile';
@@ -138,15 +139,27 @@ export function EditarPerfil() {
 
       <form onSubmit={handleSubmit} noValidate className="space-y-6">
         <div className="flex flex-col items-center">
-          {avatarMostrado ? (
-            <img src={avatarMostrado} alt="" className="h-28 w-28 rounded-pill object-cover" />
-          ) : (
-            <div className="flex h-28 w-28 items-center justify-center rounded-pill bg-secundario font-700 text-3xl text-tarjeta">
-              {initials}
+          <button
+            type="button"
+            aria-label="Cambiar foto de perfil"
+            onClick={() => galeriaInputRef.current?.click()}
+            className="group relative h-28 w-28 rounded-pill"
+          >
+            {avatarMostrado ? (
+              <img src={avatarMostrado} alt="" className="h-28 w-28 rounded-pill object-cover" />
+            ) : (
+              <div className="flex h-28 w-28 items-center justify-center rounded-pill bg-secundario font-700 text-3xl text-tarjeta">
+                {initials}
+              </div>
+            )}
+            <div className="absolute inset-0 flex items-center justify-center rounded-pill bg-tinta/50 opacity-0 transition-opacity group-hover:opacity-100">
+              <Pencil className="h-6 w-6 text-tarjeta" />
             </div>
-          )}
+          </button>
 
-          <div className="flex gap-3 mt-4">
+          <p className="font-600 text-tinta text-sm mt-4">Editar foto de perfil:</p>
+
+          <div className="flex gap-3 mt-2">
             <Button
               type="button"
               variant="outline"
@@ -192,6 +205,7 @@ export function EditarPerfil() {
           label="Nombre visible"
           value={nombreVisible ?? ''}
           onChange={(e) => setNombreVisible(e.target.value)}
+          maxLength={NOMBRE_MAX_LENGTH}
           error={nombreError}
         />
 

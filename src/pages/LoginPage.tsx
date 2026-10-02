@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
 import { Button } from '../components/ui/button';
 import { Logo } from '../components/Logo';
+import { EMAIL_MAX_LENGTH, PASSWORD_MAX_LENGTH } from '../lib/authLimits';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
@@ -67,6 +68,7 @@ export function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              maxLength={EMAIL_MAX_LENGTH}
               className="w-full px-4 py-2 border border-borde rounded-boton focus:outline-none focus:ring-2 focus:ring-primario"
               placeholder="tu@email.com"
             />
@@ -80,6 +82,7 @@ export function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                maxLength={PASSWORD_MAX_LENGTH}
                 className="w-full px-4 py-2 pr-11 border border-borde rounded-boton focus:outline-none focus:ring-2 focus:ring-primario"
                 placeholder="••••••••"
               />
