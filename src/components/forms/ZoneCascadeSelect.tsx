@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Select } from '../ui/select';
 import { supabase } from '../../lib/supabaseClient';
 
@@ -11,9 +11,10 @@ interface Zona {
 
 interface ZoneCascadeSelectProps {
   onChange: (zonaId: number | null) => void;
+  valorInicial?: number | null;
 }
 
-export function ZoneCascadeSelect({ onChange }: ZoneCascadeSelectProps) {
+export function ZoneCascadeSelect({ onChange, valorInicial = null }: ZoneCascadeSelectProps) {
   const [zonas, setZonas] = useState<Zona[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -21,6 +22,8 @@ export function ZoneCascadeSelect({ onChange }: ZoneCascadeSelectProps) {
   const [region, setRegion] = useState('');
   const [partido, setPartido] = useState('');
   const [localidad, setLocalidad] = useState('');
+
+  const precargada = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -46,6 +49,20 @@ export function ZoneCascadeSelect({ onChange }: ZoneCascadeSelectProps) {
       cancelled = true;
     };
   }, []);
+
+  // Precarga la zona actual si se le paso un valor inicial
+  useEffect(() => {
+    if (precargada.current || valorInicial == null || zonas.length === 0) return;
+    precargada.current = true;
+
+    const zona = zonas.find((z) => z.id === valorInicial);
+    if (zona) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setRegion(zona.region);
+      setPartido(zona.partido);
+      setLocalidad(zona.localidad ?? '');
+    }
+  }, [zonas, valorInicial]);
 
   const regiones = useMemo(
     () => Array.from(new Set(zonas.map((zona) => zona.region))).sort(),

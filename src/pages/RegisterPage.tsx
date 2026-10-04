@@ -5,6 +5,8 @@ import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
 import { Button } from '../components/ui/button';
 import { Logo } from '../components/Logo';
+import { NOMBRE_MAX_LENGTH } from '../lib/userDisplay';
+import { EMAIL_MAX_LENGTH, PASSWORD_MAX_LENGTH } from '../lib/authLimits';
 
 export function RegisterPage() {
   const [nombreVisible, setNombreVisible] = useState('');
@@ -39,8 +41,16 @@ export function RegisterPage() {
       setError('El nombre visible es requerido');
       return false;
     }
+    if (nombreVisible.trim().length > NOMBRE_MAX_LENGTH) {
+      setError(`El nombre visible no puede tener más de ${NOMBRE_MAX_LENGTH} caracteres`);
+      return false;
+    }
     if (!email.trim()) {
       setError('El email es requerido');
+      return false;
+    }
+    if (email.trim().length > EMAIL_MAX_LENGTH) {
+      setError(`El email no puede tener más de ${EMAIL_MAX_LENGTH} caracteres`);
       return false;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -51,6 +61,10 @@ export function RegisterPage() {
       setError('La contraseña debe tener al menos 8 caracteres');
       return false;
     }
+    if (password.length > PASSWORD_MAX_LENGTH) {
+      setError(`La contraseña no puede tener más de ${PASSWORD_MAX_LENGTH} caracteres`);
+      return false;
+    }
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
       return false;
@@ -58,7 +72,7 @@ export function RegisterPage() {
     return true;
   }
 
-  async function handleRegister(e: React.FormEvent) {
+  async function handleRegister(e: React.SubmitEvent) {
     e.preventDefault();
     setError('');
 
@@ -108,6 +122,7 @@ export function RegisterPage() {
                 setNombreVisible(e.target.value);
                 clearError();
               }}
+              maxLength={NOMBRE_MAX_LENGTH}
               className="w-full px-4 py-2 border border-borde rounded-boton focus:outline-none focus:ring-2 focus:ring-primario"
               placeholder="Tu nombre"
               disabled={submitting}
@@ -123,6 +138,7 @@ export function RegisterPage() {
                 setEmail(e.target.value);
                 clearError();
               }}
+              maxLength={EMAIL_MAX_LENGTH}
               className="w-full px-4 py-2 border border-borde rounded-boton focus:outline-none focus:ring-2 focus:ring-primario"
               placeholder="tu@email.com"
               disabled={submitting}
@@ -139,6 +155,7 @@ export function RegisterPage() {
                   setPassword(e.target.value);
                   clearError();
                 }}
+                maxLength={PASSWORD_MAX_LENGTH}
                 className="w-full px-4 py-2 pr-11 border border-borde rounded-boton focus:outline-none focus:ring-2 focus:ring-primario"
                 placeholder="••••••••"
                 disabled={submitting}
@@ -164,6 +181,7 @@ export function RegisterPage() {
                   setConfirmPassword(e.target.value);
                   clearError();
                 }}
+                maxLength={PASSWORD_MAX_LENGTH}
                 className="w-full px-4 py-2 pr-11 border border-borde rounded-boton focus:outline-none focus:ring-2 focus:ring-primario"
                 placeholder="••••••••"
                 disabled={submitting}

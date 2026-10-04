@@ -12,6 +12,7 @@ import { RankingIAPage } from './pages/RankingIAPage';
 import { OfertasPage } from './pages/OfertasPage';
 import { HistorialPage } from './pages/HistorialPage';
 import { PerfilPage } from './pages/PerfilPage';
+import { EditarPerfil } from './pages/EditarPerfil';
 import { MatchingResultsPage } from './pages/MatchingResultsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -87,6 +88,10 @@ export const router = createBrowserRouter([
           {
             path: '/perfil',
             element: <PerfilPage />,
+          },
+          {
+            path: '/perfil/editar',
+            element: <EditarPerfil />,
           },
           {
             path: '/matching/:publicacionId',
