@@ -969,6 +969,58 @@
       ],
       "id": "af45dce5-5e01-46d7-864f-b0cab1a7b8d6",
       "name": "fin motor-juicio"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:54321/rest/v1/juicios",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "on_conflict",
+              "value": "donacion_id,necesidad_id"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "resolution=merge-duplicates"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ donacion_id: $('Loop Over Items').item.json.donacion_id, necesidad_id: $('Loop Over Items').item.json.necesidad_id, nivel: $json.output.nivel, justificacion: $json.output.justificacion, version_scoring: 'v1', modelo: $('Google Gemini Chat Model').params.modelName }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2832,
+        7440
+      ],
+      "id": "9e822ca8-6045-4687-8a40-a3fbad66c6f4",
+      "name": "Guardar Juicio",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Quzn6tIDeSCxvzxJ",
+          "name": "Header Auth - motor_matching REST (local)"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -1356,6 +1408,17 @@
       ]
     },
     "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Guardar Juicio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Juicio": {
       "main": [
         [
           {
