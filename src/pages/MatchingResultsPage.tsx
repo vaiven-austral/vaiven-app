@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { callN8nWebhook } from '@/lib/n8n';
 import type { Candidate } from '@/lib/n8n';
 import { CandidateCard } from '@/components/matching/CandidateCard';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 
 export function MatchingResultsPage() {
@@ -96,16 +97,7 @@ export function MatchingResultsPage() {
 
         {/* Estado: Sin candidatos */}
         {!loading && !error && candidates.length === 0 && (
-          <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-            <div className="text-4xl mb-3">🔍</div>
-            <h3 className="font-semibold text-gray-900 mb-2">
-              Aún no hay candidatos
-            </h3>
-            <p className="text-gray-600 text-sm">
-              No encontramos publicaciones complementarias que coincidan con tu búsqueda.
-              Intenta más tarde o publica en más categorías.
-            </p>
-          </div>
+          <EmptyState description="Todavía no hay nadie del otro lado. Volvé a mirar en un rato." />
         )}
 
         {/* Estado: Éxito */}

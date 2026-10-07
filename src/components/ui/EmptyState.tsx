@@ -2,10 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from './button';
 
 interface EmptyStateProps {
-  title: string;
+  title?: string;
   description: string;
-  actionLabel: string;
-  actionTo: string;
+  actionLabel?: string;
+  actionTo?: string;
 }
 
 export function EmptyState({ title, description, actionLabel, actionTo }: EmptyStateProps) {
@@ -13,9 +13,11 @@ export function EmptyState({ title, description, actionLabel, actionTo }: EmptyS
 
   return (
     <div className="flex flex-col items-center justify-center text-center px-6 py-16">
-      <p className="font-700 text-tinta text-lg mb-2">{title}</p>
+      {title && <p className="font-700 text-tinta text-lg mb-2">{title}</p>}
       <p className="text-texto-medio text-sm mb-6">{description}</p>
-      <Button onClick={() => navigate(actionTo)}>{actionLabel}</Button>
+      {actionLabel && actionTo && (
+        <Button onClick={() => navigate(actionTo)}>{actionLabel}</Button>
+      )}
     </div>
   );
 }
