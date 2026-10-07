@@ -26,7 +26,8 @@ export const NUMERO_POR_RANGO: Record<RangoScore, 'text-exito' | 'text-atencion'
 
 export const CANALETA = '#F3F4F6';
 
-export function calcularRango(scoreSinRedondear: number): RangoScore {
+export function calcularRango(scoreSinRedondear: number | null): RangoScore {
+  if (scoreSinRedondear === null) return 'bajo';
   if (scoreSinRedondear >= CORTE_ALTO) return 'alto';
   if (scoreSinRedondear >= CORTE_MEDIO) return 'medio';
   return 'bajo';
@@ -50,7 +51,7 @@ export interface AnilloCalculado {
  * final de los tramos de la canaleta, sin caso especial.
  */
 export function construirAnillo(
-  factores: Record<string, number>,
+  factores: Record<string, number | null>,
   rango: RangoScore,
   circunferencia: number,
   corte: number
@@ -58,7 +59,8 @@ export function construirAnillo(
   const rampa = RAMPAS[rango];
   let acumulado = 0;
 
-  const segmentos = Object.values(factores).map((valor, i) => {
+  const segmentos = Object.values(factores).map((rawValor, i) => {
+    const valor = rawValor ?? 0;
     const largoBruto = circunferencia * (valor / 100);
     const largoDibujado = Math.max(largoBruto - corte, 0);
     const segmento: SegmentoAnillo = {

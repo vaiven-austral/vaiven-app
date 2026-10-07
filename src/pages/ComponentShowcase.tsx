@@ -35,6 +35,9 @@ const candidatoConJuicio: Candidate = {
   vence_en: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
   perfiles: { zona_id: 1178, avatar_ruta: '/avatars/test.webp' },
   zonas: { id: 1178, region: 'AMBA', partido: 'Comuna 6', localidad: 'Caballito' },
+  nivel: 4,
+  version_scoring: 'v1',
+  analizando: false,
   score_total: 87,
   factores: {
     f1_resolucion: 40,

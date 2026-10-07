@@ -22,9 +22,12 @@ export interface Candidate {
     partido: string;
     localidad: string;
   };
-  score_total: number;
+  nivel: 0 | 1 | 2 | 3 | 4 | null;
+  version_scoring: string | null;
+  analizando: boolean;
+  score_total: number | null;
   factores: {
-    f1_resolucion: number;
+    f1_resolucion: number | null;
     f2_urgencia: number;
     f3_proximidad: number;
     f4_confianza: number;
