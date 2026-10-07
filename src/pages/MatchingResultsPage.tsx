@@ -4,7 +4,7 @@ import { callN8nWebhook } from '@/lib/n8n';
 import type { Candidate } from '@/lib/n8n';
 import { CandidateCard } from '@/components/matching/CandidateCard';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import { AlertCircle, RefreshCw, Users } from 'lucide-react';
 
 export function MatchingResultsPage() {
   const { publicacionId } = useParams<{ publicacionId: string }>();
@@ -97,7 +97,10 @@ export function MatchingResultsPage() {
 
         {/* Estado: Sin candidatos */}
         {!loading && !error && candidates.length === 0 && (
-          <EmptyState description="Todavía no hay nadie del otro lado. Volvé a mirar en un rato." />
+          <EmptyState
+            icon={<Users className="w-8 h-8" strokeWidth={1.9} />}
+            title="Todavía no hay nadie del otro lado. Volvé a mirar en un rato."
+          />
         )}
 
         {/* Estado: Éxito */}
