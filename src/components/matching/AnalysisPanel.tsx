@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import type { Candidate } from '@/lib/n8n';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import {
@@ -50,7 +51,7 @@ export function AnalysisPanel({ candidate, open, onOpenChange, onAccept }: Analy
                 />
               }
             >
-              <X className="h-4 w-4" />
+              <Icon icon={X} className="h-4 w-4" />
             </DrawerClose>
           </div>
         </DrawerHeader>

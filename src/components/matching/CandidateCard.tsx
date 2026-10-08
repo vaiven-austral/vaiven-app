@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { Candidate } from '@/lib/n8n';
 import { Sparkles } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { ScoreRing } from './ScoreRing';
 import { AnalysisPanel } from './AnalysisPanel';
 
@@ -44,7 +45,7 @@ export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
               <>
                 {/* Aviso IA analizando */}
                 <div className="flex items-center gap-1.5 text-xs text-secundario mt-1">
-                  <Sparkles className="w-3.5 h-3.5 shrink-0" strokeWidth={1.9} />
+                  <Icon icon={Sparkles} className="w-3.5 h-3.5 shrink-0" strokeWidth={1.9} />
                   <span>La IA todavía está analizando este match.</span>
                 </div>
                 {/* Chip Resolución · Pendiente */}
@@ -67,7 +68,7 @@ export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
             onClick={() => setPanelOpen(true)}
             className="mt-3 flex w-full items-center justify-center gap-2 py-2 px-3 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors text-sm font-medium text-tinta"
           >
-            <Sparkles className="w-4 h-4" />
+            <Icon icon={Sparkles} className="w-4 h-4" />
             Ver análisis de IA
           </button>
         )}
