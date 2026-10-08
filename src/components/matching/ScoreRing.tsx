@@ -2,7 +2,7 @@ import { CANALETA, CORTE_PX, calcularRango, construirAnillo, NUMERO_POR_RANGO } 
 
 interface ScoreRingProps {
   score: number | null;
-  factores: Record<string, number>;
+  factores: Record<string, number | null>;
   size?: 'tarjeta' | 'drawer';
   className?: string;
 }

@@ -25,30 +25,43 @@ export function FactorBars({ candidate }: FactorBarsProps) {
   return (
     <div>
       <div className="space-y-1.5">
-        {factores.map((factor, i) => (
-          <div key={factor.label} className="flex items-center justify-between text-xs">
-            <span className="text-texto-medio">{factor.label}</span>
-            <div className="flex items-center gap-2">
-              <div className="w-16 h-1.5 bg-gray-300 rounded-full overflow-hidden">
-                <div
-                  className="h-full"
-                  style={{
-                    backgroundColor: rampa[i] ?? rampa[rampa.length - 1],
-                    width: `${(factor.value / factor.max) * 100}%`,
-                  }}
-                ></div>
+        {factores.map((factor, i) => {
+          const valorNumerico = factor.value ?? 0;
+          const anchoBarra = factor.value !== null ? (valorNumerico / factor.max) * 100 : 0;
+
+          return (
+            <div key={factor.label} className="flex items-center justify-between text-xs">
+              <span className="text-texto-medio">{factor.label}</span>
+              <div className="flex items-center gap-2">
+                <div className="w-16 h-1.5 bg-gray-300 rounded-full overflow-hidden">
+                  <div
+                    className="h-full"
+                    style={{
+                      backgroundColor: rampa[i] ?? rampa[rampa.length - 1],
+                      width: `${anchoBarra}%`,
+                    }}
+                  ></div>
+                </div>
+                <span className="text-tinta font-semibold min-w-[3.5rem] text-right whitespace-nowrap">
+                  {factor.value === null
+                    ? 'Pendiente'
+                    : factor.value === 0
+                    ? '0 puntos'
+                    : factor.value.toFixed(2)}
+                </span>
               </div>
-              <span className="text-tinta font-semibold w-10 text-right">
-                {factor.value.toFixed(2)}
-              </span>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <div className="mt-2 pt-2 border-t border-gray-300">
         <div className="flex justify-between text-xs font-bold text-tinta">
           <span>Total</span>
-          <span>{candidate.score_total.toFixed(2)} pts</span>
+          <span>
+            {candidate.score_total !== null
+              ? `${Math.round(candidate.score_total)} pts`
+              : 'Pendiente'}
+          </span>
         </div>
       </div>
     </div>
