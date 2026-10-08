@@ -1,5 +1,15 @@
 import { supabase } from './supabaseClient';
 
+export class WebhookError extends Error {
+  public statusCode?: number;
+  constructor(message: string, statusCode?: number) {
+    super(message);
+    this.name = 'WebhookError';
+    this.statusCode = statusCode;
+  }
+}
+
+
 export interface Candidate {
   id: string;
   titulo: string;
@@ -78,10 +88,16 @@ export async function callN8nWebhook(
   });
 
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(
-      errorData.body?.message || `Error en webhook (${response.status})`
-    );
+    let errorMessage = `Error en webhook (${response.status})`;
+    try {
+      const errorData = await response.json();
+      if (errorData.body?.message) {
+        errorMessage = errorData.body.message;
+      }
+    } catch {
+      // Ignorar si no hay JSON
+    }
+    throw new WebhookError(errorMessage, response.status);
   }
 
   const data: MatchingResponse = await response.json();
