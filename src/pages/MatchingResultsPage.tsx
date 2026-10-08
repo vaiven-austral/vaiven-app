@@ -3,7 +3,9 @@ import { useParams } from 'react-router-dom';
 import { callN8nWebhook } from '@/lib/n8n';
 import type { Candidate } from '@/lib/n8n';
 import { CandidateCard } from '@/components/matching/CandidateCard';
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { AlertCircle, RefreshCw, Users } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 
 export function MatchingResultsPage() {
   const { publicacionId } = useParams<{ publicacionId: string }>();
@@ -78,7 +80,7 @@ export function MatchingResultsPage() {
         {error && !loading && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex gap-3">
-              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <Icon icon={AlertCircle} className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
                 <h3 className="font-semibold text-red-900">Error al buscar candidatos</h3>
                 <p className="text-sm text-red-700 mt-1">{error}</p>
@@ -88,7 +90,7 @@ export function MatchingResultsPage() {
               onClick={handleRefresh}
               className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
             >
-              <RefreshCw className="w-4 h-4" />
+              <Icon icon={RefreshCw} className="w-4 h-4" />
               Reintentar
             </button>
           </div>
@@ -96,16 +98,10 @@ export function MatchingResultsPage() {
 
         {/* Estado: Sin candidatos */}
         {!loading && !error && candidates.length === 0 && (
-          <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-            <div className="text-4xl mb-3">🔍</div>
-            <h3 className="font-semibold text-gray-900 mb-2">
-              Aún no hay candidatos
-            </h3>
-            <p className="text-gray-600 text-sm">
-              No encontramos publicaciones complementarias que coincidan con tu búsqueda.
-              Intenta más tarde o publica en más categorías.
-            </p>
-          </div>
+          <EmptyState
+            icon={<Icon icon={Users} className="w-8 h-8" strokeWidth={1.9} />}
+            title="Todavía no hay nadie del otro lado. Volvé a mirar en un rato."
+          />
         )}
 
         {/* Estado: Éxito */}

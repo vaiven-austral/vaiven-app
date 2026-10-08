@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Check } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 
 interface PanelActionsProps {
@@ -24,7 +25,7 @@ export function PanelActions({ onAccept }: PanelActionsProps) {
       disabled={isAccepting}
       isLoading={isAccepting}
     >
-      <Check className="h-4 w-4" />
+      <Icon icon={Check} className="h-4 w-4" />
       {isAccepting ? 'Procesando...' : 'Aceptar'}
     </Button>
   );

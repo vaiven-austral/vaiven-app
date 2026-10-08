@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { Badge } from '../ui/badge';
 import { PublicationImage } from './PublicationImage';
 import { isPublicationExpired } from '../../lib/publicationState';
@@ -70,7 +71,7 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
             aria-label="Cerrar"
             className="flex h-8 w-8 items-center justify-center rounded-pill text-texto-medio hover:bg-lienzo"
           >
-            <X size={18} />
+            <Icon icon={X} size={18} />
           </button>
         </div>
 
@@ -91,7 +92,7 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
                 aria-label="Foto anterior"
                 className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-pill bg-tinta/60 text-tarjeta"
               >
-                <ChevronLeft size={18} />
+                <Icon icon={ChevronLeft} size={18} />
               </button>
               <button
                 type="button"
@@ -99,7 +100,7 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
                 aria-label="Foto siguiente"
                 className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-pill bg-tinta/60 text-tarjeta"
               >
-                <ChevronRight size={18} />
+                <Icon icon={ChevronRight} size={18} />
               </button>
               <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1.5">
                 {imagenes.map((imagen, i) => (

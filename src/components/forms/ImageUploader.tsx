@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
 import { X } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { MAX_IMAGENES_POR_PUBLICACION } from '../../lib/imagenesPublicacion';
 
 interface ImageUploaderProps {
@@ -109,7 +110,7 @@ export function ImageUploader({
               aria-label="Quitar foto"
               className="absolute top-0.5 right-0.5 h-5 w-5 flex items-center justify-center rounded-pill bg-tinta/70 text-tarjeta"
             >
-              <X size={12} />
+              <Icon icon={X} size={12} />
             </button>
           </div>
         ))}

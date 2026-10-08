@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
 import { Button } from '../components/ui/button';
@@ -92,7 +93,7 @@ export function LoginPage() {
                 aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-texto-suave hover:text-texto-medio"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <Icon icon={EyeOff} size={18} /> : <Icon icon={Eye} size={18} />}
               </button>
             </div>
           </div>

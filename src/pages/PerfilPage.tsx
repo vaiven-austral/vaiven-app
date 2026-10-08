@@ -1,5 +1,6 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { MapPin, ChevronRight, LogOut } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { useAuth } from '../hooks/useAuth';
 import { useOwnProfile } from '../hooks/useOwnProfile';
 import { useZonaLabel } from '../hooks/useZonaLabel';
@@ -63,7 +64,7 @@ export function PerfilPage() {
 
         {zonaLabel && (
           <p className="flex items-center gap-1 text-texto-medio text-sm mt-1">
-            <MapPin className="h-4 w-4" />
+            <Icon icon={MapPin} className="h-4 w-4" />
             {zonaLabel}
           </p>
         )}
@@ -113,14 +114,14 @@ export function PerfilPage() {
             <p className="font-600 text-tinta">Editar perfil</p>
             <p className="text-texto-suave text-sm">Nombre, foto y zona</p>
           </div>
-          <ChevronRight className="h-5 w-5 text-texto-suave shrink-0" />
+          <Icon icon={ChevronRight} className="h-5 w-5 text-texto-suave shrink-0" />
         </Link>
         <button
           type="button"
           onClick={handleLogout}
           className="flex w-full items-center gap-2 px-4 py-3 border-t border-borde font-600 text-critico hover:bg-lienzo transition-colors"
         >
-          <LogOut className="h-4 w-4" />
+          <Icon icon={LogOut} className="h-4 w-4" />
           Cerrar sesión
         </button>
       </div>

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type SubmitEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Pencil } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { useAuth } from '../hooks/useAuth';
 import { useOwnProfile } from '../hooks/useOwnProfile';
 import { useUpdateProfile } from '../hooks/useUpdateProfile';
@@ -153,7 +154,7 @@ export function EditarPerfil() {
               </div>
             )}
             <div className="absolute inset-0 flex items-center justify-center rounded-pill bg-tinta/50 opacity-0 transition-opacity group-hover:opacity-100">
-              <Pencil className="h-6 w-6 text-tarjeta" />
+              <Icon icon={Pencil} className="h-6 w-6 text-tarjeta" />
             </div>
           </button>
 

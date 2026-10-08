@@ -1,4 +1,5 @@
 import { Check, TriangleAlert } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 
 interface BulletTextBlockProps {
   variant: 'fortalezas' | 'consideraciones';
@@ -23,7 +24,7 @@ const CONFIG = {
 export function BulletTextBlock({ variant, items }: BulletTextBlockProps) {
   if (items.length === 0) return null;
 
-  const { titulo, icon: Icon, border, text } = CONFIG[variant];
+  const { titulo, icon: IconComponent, border, text } = CONFIG[variant];
 
   return (
     <div className={`rounded-tarjeta border ${border} bg-tarjeta p-4`}>
@@ -31,7 +32,7 @@ export function BulletTextBlock({ variant, items }: BulletTextBlockProps) {
       <ul className="space-y-2">
         {items.map((item, i) => (
           <li key={i} className="flex items-start gap-2 text-sm text-texto-medio">
-            <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${text}`} />
+            <Icon icon={IconComponent} className={`mt-0.5 h-4 w-4 shrink-0 ${text}`} />
             <span>{item}</span>
           </li>
         ))}

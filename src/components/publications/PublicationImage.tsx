@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Image, Refrigerator, Sofa, Shirt, Baby, Laptop, BookOpen, HeartPulse, Hammer, House, Bike, Package } from 'lucide-react';
+import { Icon } from '@/components/ui/icon';
 import { getPublicationImageUrl } from '../../lib/storage';
 
 const iconoPorCategoria: Record<string, typeof Image> = {
@@ -57,7 +58,7 @@ export function PublicationImage({
       <div
         className={`flex items-center justify-center bg-[rgba(73,160,120,0.1)] text-primario ${className}`}
       >
-        <IconoCategoria size={28} strokeWidth={1.5} />
+        <Icon icon={IconoCategoria} size={28} strokeWidth={1.5} />
       </div>
     );
   }
