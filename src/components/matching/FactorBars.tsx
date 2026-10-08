@@ -42,7 +42,7 @@ export function FactorBars({ candidate }: FactorBarsProps) {
                     }}
                   ></div>
                 </div>
-                <span className="text-tinta font-semibold min-w-[3.5rem] text-right">
+                <span className="text-tinta font-semibold min-w-[3.5rem] text-right whitespace-nowrap">
                   {factor.value === null
                     ? 'Pendiente'
                     : factor.value === 0

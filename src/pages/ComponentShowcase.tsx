@@ -62,6 +62,34 @@ const candidatoConJuicio: Candidate = {
   },
 };
 
+const candidatoPendiente: Candidate = {
+  id: 'test-candidato-2',
+  titulo: 'Mesa de luz (Pendiente)',
+  descripcion: 'En buen estado',
+  tipo: 'donacion',
+  categoria_id: 2,
+  zona_id: 1178,
+  estado_objeto: 'bueno',
+  cantidad: 1,
+  usuario_id: 'usuario-test-2',
+  vence_en: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+  perfiles: { zona_id: 1178, avatar_ruta: '/avatars/test.webp' },
+  zonas: { id: 1178, region: 'AMBA', partido: 'Comuna 6', localidad: 'Caballito' },
+  nivel: null,
+  version_scoring: null,
+  analizando: true,
+  score_total: null,
+  factores: {
+    f1_resolucion: null,
+    f2_urgencia: 0,
+    f3_proximidad: 0,
+    f4_confianza: 0,
+    f5_calidad: 0,
+    f6_categoria: 0,
+  },
+  justificacion: null,
+};
+
 const mockPublications: Publication[] = [
   {
     id: '1',
@@ -284,8 +312,13 @@ export function ComponentShowcase() {
           <p className="text-sm text-texto-medio mb-4">
             Candidato de prueba con justificación completa (narrativa larga incluida, para probar el scroll interno).
           </p>
-          <div className="max-w-md">
+          <div className="max-w-md flex flex-col gap-6">
             <CandidateCard candidate={candidatoConJuicio} onAccept={() => {}} />
+            
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Estado Analizando / Pendiente</p>
+              <CandidateCard candidate={candidatoPendiente} onAccept={() => {}} />
+            </div>
           </div>
         </section>
 
