@@ -7,15 +7,24 @@ import { AnalysisPanel } from './AnalysisPanel';
 
 interface CandidateCardProps {
   candidate: Candidate;
+  categoriaNombre?: string;
   onAccept?: (candidateId: string) => void;
 }
 
-export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
+export function CandidateCard({ candidate, categoriaNombre, onAccept }: CandidateCardProps) {
   const [panelOpen, setPanelOpen] = useState(false);
 
-  const location = candidate.zonas
-    ? `${candidate.zonas.partido} · ${candidate.zonas.localidad}`
-    : 'Ubicación no disponible';
+  let zonaTexto = candidate.zonas?.localidad || 'Ubicación no disponible';
+  const f3 = candidate.factores?.f3_proximidad;
+
+  if (f3 !== undefined && f3 !== null) {
+    const prox = Math.floor(f3);
+    if (prox === 20) zonaTexto = 'Misma localidad';
+    else if (prox === 13) zonaTexto = 'Mismo partido';
+    else if (prox === 6) zonaTexto = 'Misma región';
+  }
+
+  const categoriaTexto = categoriaNombre || `Categoría ${candidate.categoria_id}`;
 
   const isPending = candidate.analizando === true;
 
@@ -38,7 +47,7 @@ export function CandidateCard({ candidate, onAccept }: CandidateCardProps) {
               {candidate.titulo}
             </h3>
             <p className="text-xs text-texto-suave mt-0.5">
-              {candidate.tipo === 'donacion' ? '🎁' : '🤲'} {location}
+              {categoriaTexto} · {zonaTexto}
             </p>
 
             {isPending ? (

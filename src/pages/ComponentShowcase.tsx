@@ -313,7 +313,7 @@ export function ComponentShowcase() {
             Candidato de prueba con justificación completa (narrativa larga incluida, para probar el scroll interno).
           </p>
           <div className="max-w-md flex flex-col gap-6">
-            <CandidateCard candidate={candidatoConJuicio} onAccept={() => {}} />
+            <CandidateCard candidate={candidatoConJuicio} categoriaNombre="Tecnología" onAccept={() => {}} />
             
             <div>
               <p className="text-sm font-600 text-texto-medio mb-3">Estado Analizando / Pendiente</p>
