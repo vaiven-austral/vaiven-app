@@ -14,7 +14,7 @@ interface CandidateCardProps {
 export function CandidateCard({ candidate, categoriaNombre, onAccept }: CandidateCardProps) {
   const [panelOpen, setPanelOpen] = useState(false);
 
-  let zonaTexto = candidate.zonas?.localidad || 'Ubicación no disponible';
+  let zonaTexto = candidate.zonas?.localidad || candidate.zonas?.partido || 'Ubicación no disponible';
   const f3 = candidate.factores?.f3_proximidad;
 
   if (f3 !== undefined && f3 !== null) {
