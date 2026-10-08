@@ -1,21 +1,22 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
-import { callN8nWebhook } from '@/lib/n8n';
+import { useParams, useNavigate } from 'react-router-dom';
+import { callN8nWebhook, WebhookError } from '@/lib/n8n';
 import type { Candidate } from '@/lib/n8n';
 import { CandidateCard } from '@/components/matching/CandidateCard';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { AlertCircle, RefreshCw, Users } from 'lucide-react';
+import { Users, Lock, FileX, AlertCircle, WifiOff } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
 
 export function MatchingResultsPage() {
   const { publicacionId } = useParams<{ publicacionId: string }>();
+  const navigate = useNavigate();
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<{ message: string; status?: number } | null>(null);
 
   const handleRefresh = useCallback(async () => {
     if (!publicacionId) {
-      setError('ID de publicación no válido');
+      setError({ message: 'ID de publicación no válido', status: 400 });
       setLoading(false);
       return;
     }
@@ -27,7 +28,11 @@ export function MatchingResultsPage() {
       const data = await callN8nWebhook(publicacionId);
       setCandidates(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error desconocido');
+      if (err instanceof WebhookError) {
+        setError({ message: err.message, status: err.statusCode });
+      } else {
+        setError({ message: err instanceof Error ? err.message : 'Error desconocido' });
+      }
       setCandidates([]);
     } finally {
       setLoading(false);
@@ -39,15 +44,64 @@ export function MatchingResultsPage() {
     handleRefresh();
   }, [handleRefresh]);
 
+  const renderErrorState = () => {
+    if (!error) return null;
+
+    if (error.status === 401) {
+      return (
+        <EmptyState
+          variant="error"
+          icon={<Icon icon={Lock} className="w-8 h-8" strokeWidth={1.9} />}
+          title="Tu sesión venció. Volvé a iniciar sesión."
+          actionLabel="Iniciar sesión"
+          actionTo="/login"
+        />
+      );
+    }
+    if (error.status === 404) {
+      return (
+        <EmptyState
+          variant="error"
+          icon={<Icon icon={FileX} className="w-8 h-8" strokeWidth={1.9} />}
+          title="Esta publicación ya no existe o no está activa."
+          actionLabel="Volver"
+          onAction={() => navigate(-1)}
+        />
+      );
+    }
+    if (error.status === 400) {
+      return (
+        <EmptyState
+          variant="error"
+          icon={<Icon icon={AlertCircle} className="w-8 h-8" strokeWidth={1.9} />}
+          title="No pudimos abrir esta publicación."
+          actionLabel="Volver"
+          onAction={() => navigate(-1)}
+        />
+      );
+    }
+    
+    // Red caída u otro
+    return (
+      <EmptyState
+        variant="error"
+        icon={<Icon icon={WifiOff} className="w-8 h-8" strokeWidth={1.9} />}
+        title="No pudimos buscar candidatos. Probá de nuevo."
+        actionLabel="Reintentar"
+        onAction={handleRefresh}
+      />
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-superficie pb-20">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-tarjeta border-b border-borde">
         <div className="max-w-2xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-tinta">
             Motor de Match
           </h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-texto-medio mt-1">
             Candidatos sugeridos ordenados por compatibilidad
           </p>
         </div>
@@ -61,14 +115,14 @@ export function MatchingResultsPage() {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="bg-white rounded-lg border border-gray-200 p-4 animate-pulse"
+                className="bg-tarjeta rounded-tarjeta border border-borde p-4 animate-pulse"
               >
                 <div className="flex gap-4">
-                  <div className="w-16 h-16 bg-gray-200 rounded-full flex-shrink-0"></div>
+                  <div className="w-16 h-16 bg-lienzo rounded-full flex-shrink-0"></div>
                   <div className="flex-1">
-                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-gray-100 rounded w-1/2 mb-2"></div>
-                    <div className="h-3 bg-gray-100 rounded w-full"></div>
+                    <div className="h-4 bg-lienzo rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-superficie rounded w-1/2 mb-2"></div>
+                    <div className="h-3 bg-superficie rounded w-full"></div>
                   </div>
                 </div>
               </div>
@@ -77,24 +131,7 @@ export function MatchingResultsPage() {
         )}
 
         {/* Estado: Error */}
-        {error && !loading && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex gap-3">
-              <Icon icon={AlertCircle} className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <h3 className="font-semibold text-red-900">Error al buscar candidatos</h3>
-                <p className="text-sm text-red-700 mt-1">{error}</p>
-              </div>
-            </div>
-            <button
-              onClick={handleRefresh}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
-            >
-              <Icon icon={RefreshCw} className="w-4 h-4" />
-              Reintentar
-            </button>
-          </div>
-        )}
+        {!loading && error && renderErrorState()}
 
         {/* Estado: Sin candidatos */}
         {!loading && !error && candidates.length === 0 && (
@@ -107,9 +144,9 @@ export function MatchingResultsPage() {
         {/* Estado: Éxito */}
         {!loading && !error && candidates.length > 0 && (
           <div>
-            <div className="mb-4 p-3 bg-teal-50 border border-teal-200 rounded-lg">
-              <p className="text-sm text-teal-900">
-                <span className="font-semibold">{candidates.length} candidato{candidates.length !== 1 ? 's' : ''}</span> encontrado{candidates.length !== 1 ? 's' : ''}
+            <div className="mb-4 p-3 bg-lienzo border border-borde rounded-tarjeta">
+              <p className="text-sm text-texto-medio">
+                <span className="font-600">{candidates.length} candidato{candidates.length !== 1 ? 's' : ''}</span> encontrado{candidates.length !== 1 ? 's' : ''}
               </p>
             </div>
 
