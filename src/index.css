@@ -43,3 +43,10 @@ body {
     @apply font-sans;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .score-ring-segment {
+    transition: none !important;
+    animation: none !important;
+  }
+}
