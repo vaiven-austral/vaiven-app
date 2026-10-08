@@ -1,0 +1,55 @@
+# Reporter de KPIs de VaiVen. Lo entrega dirección: no se edita.
+# Variables del repo: KPI_URL, KPI_PUBLISHABLE_KEY, KPI_ENV, KPI_API_URL, KPI_APP_URL.
+# Secrets del repo: KPI_PROJECT_KEY, VERTEX_SA_JSON.
+name: Reporter de KPIs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * *" # 09:00 en Buenos Aires
+    - cron: "0 23 * * *" # 20:00 en Buenos Aires: respaldo si la primera falló
+
+concurrency:
+  group: reporter-kpis
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  reportar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      KPI_URL: ${{ vars.KPI_URL }}
+      KPI_PUBLISHABLE_KEY: ${{ vars.KPI_PUBLISHABLE_KEY }}
+      KPI_ENV: ${{ vars.KPI_ENV }}
+      KPI_API_URL: ${{ vars.KPI_API_URL }}
+      KPI_APP_URL: ${{ vars.KPI_APP_URL }}
+      KPI_REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+      SUDO: sudo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.116.0
+      - name: Stack y demo
+        env:
+          VERTEX_SA_JSON: ${{ secrets.VERTEX_SA_JSON }}
+        run: bash reporter-kpis/stack.sh demo
+      - name: KPIs de la demo
+        run: bash reporter-kpis/reportar.sh
+      - name: Golden set
+        run: bash reporter-kpis/stack.sh golden
+      - name: KPI del golden set y envío
+        env:
+          PROJECT_KEY: ${{ secrets.KPI_PROJECT_KEY }}
+        run: bash reporter-kpis/reportar.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: envio-${{ github.run_id }}
+          path: salida/
+          retention-days: 90
