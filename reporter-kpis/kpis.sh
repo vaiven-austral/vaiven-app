@@ -17,29 +17,71 @@ sin_implementar() { echo "sin implementar" >&2; return 1; }
 # ---- H4-KPI.1 -----------------------------------------------------------------------
 
 candidatos_por_donacion() {
-  sin_implementar
+  # Promedio, sobre las donaciones activas con al menos un juicio, de los juicios con nivel >= 2.
+  local v
+  v=$(sql_app "select round(avg(c), 2) from (
+      select count(*) filter (where j.nivel >= 2) as c
+      from publicaciones p join juicios j on j.donacion_id = p.id
+      where p.tipo = 'donacion' and p.estado = 'activa'
+      group by p.id) t") || { echo "candidatos_por_donacion: falló la consulta" >&2; return 1; }
+  [ -n "$v" ] || { echo "candidatos_por_donacion: no hay donaciones activas con juicios" >&2; return 1; }
+  echo "$v"
 }
 
 latencia_p95() {
-  sin_implementar
+  # p95 (posición ceil(0,95 × N)) de la duración de las últimas 20 ejecuciones exitosas de lectura.
+  # Lectura = el historial menciona "Webhook" y no "Webhook Motor Juicio" (las de juicio mencionan ambos).
+  local v
+  v=$(sql_n8n "with ult as (
+      select cast(round((julianday(e.stoppedAt) - julianday(e.startedAt)) * 86400000) as integer) as ms
+      from execution_entity e join execution_data d on d.executionId = e.id
+      where e.status = 'success'
+        and d.data like '%\"Webhook\"%' and d.data not like '%\"Webhook Motor Juicio\"%'
+      order by e.startedAt desc limit 20),
+    o as (select ms, row_number() over (order by ms) as rn, count(*) over () as n from ult)
+    select ms from o where rn = (n * 95 + 99) / 100") || { echo "latencia_p95: falló la consulta al historial de n8n" >&2; return 1; }
+  [ -n "$v" ] || { echo "latencia_p95: no hay ejecuciones exitosas de lectura" >&2; return 1; }
+  echo "$v"
 }
 
 juicios_generados() {
-  sin_implementar
+  local v
+  v=$(sql_app "select count(*) from juicios where creado_en > now() - interval '24 hours'") \
+    || { echo "juicios_generados: falló la consulta" >&2; return 1; }
+  echo "$v"
 }
 
 ci_builds_exitosos() {
-  sin_implementar
+  # % de corridas success sobre las últimas 20 terminadas de los workflows "Check …", sin skipped ni cancelled.
+  local runs
+  runs=$(gh_api "repos/$KPI_REPO/actions/runs?status=completed&per_page=100") \
+    || { echo "ci_builds_exitosos: falló la API de GitHub" >&2; return 1; }
+  echo "$runs" | jq -er '
+    [.workflow_runs[] | select(.name | startswith("Check ")) | select(.conclusion != "skipped" and .conclusion != "cancelled")][:20]
+    | if length == 0 then error("no hay corridas Check") else ((map(select(.conclusion == "success")) | length) * 1000 / length | round) / 10 end' \
+    || { echo "ci_builds_exitosos: no se pudo calcular" >&2; return 1; }
+}
+
+# Milisegundos hasta un 200 (máx. 10 s). URL vacía, error de red o código distinto de 200: 10000.
+medir_http() {
+  local url="$1" out
+  [ -n "$url" ] || { echo 10000; return 0; }
+  out=$(LC_ALL=C curl -s -o /dev/null --max-time 10 -w '%{http_code} %{time_total}' "$url") || { echo 10000; return 0; }
+  if [ "${out%% *}" = 200 ]; then
+    LC_ALL=C awk -v t="${out#* }" 'BEGIN { printf "%d\n", t * 1000 + 0.5 }'
+  else
+    echo 10000
+  fi
 }
 
 api_tiempo_respuesta() {
   # URL en KPI_API_URL. Vacía o sin 200 en 10 s: imprime 10000.
-  sin_implementar
+  medir_http "${KPI_API_URL:-}"
 }
 
 app_tiempo_respuesta() {
   # URL en KPI_APP_URL. Vacía o sin 200 en 10 s: imprime 10000.
-  sin_implementar
+  medir_http "${KPI_APP_URL:-}"
 }
 
 # ---- H4-KPI.2 -----------------------------------------------------------------------
