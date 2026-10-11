@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
 import { Button } from '../components/ui/button';
 import { Logo } from '../components/Logo';
+import { SplashScreen } from '../components/ui/SplashScreen';
 import { NOMBRE_MAX_LENGTH } from '../lib/userDisplay';
 import { EMAIL_MAX_LENGTH, PASSWORD_MAX_LENGTH } from '../lib/authLimits';
 
@@ -30,11 +31,7 @@ export function RegisterPage() {
 
   // Mientras AuthContext carga, muestra spinner
   if (authLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin">⟳</div>
-      </div>
-    );
+    return <SplashScreen />;
   }
 
   function validateForm(): boolean {

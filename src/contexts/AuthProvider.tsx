@@ -58,7 +58,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     // Leer sesión existente (cuando la app carga o recarga)
     supabase.auth.getSession()
-      .then(({ data: { session } }) => applySession(session))
+      .then(({ data: { session } }) => {
+        applySession(session);
+      })
       .catch((error) => {
         console.error('Error al obtener sesión:', error);
         setLoading(false);
