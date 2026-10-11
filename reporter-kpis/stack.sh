@@ -7,12 +7,16 @@
 #                                        espera al motor y carga la tabla referencia_golden_set.
 #
 # Variables: APP_DIR (raíz de vaiven-app, por defecto «.»), VERTEX_SA_JSON (service account del modelo; sin ella
-# el motor no juzga y la corrida sigue, con los KPIs del motor reflejando el error).
+# el motor no juzga y la corrida sigue, con los KPIs del motor reflejando el error), WORKFLOW_MOTOR (ruta del
+# workflow a importar; por defecto, el matching-v<N>.json más reciente de n8n/workflows/).
 set -euo pipefail
 AQUI="$(cd "$(dirname "$0")" && pwd)"
 APP_DIR="$(cd "${APP_DIR:-.}" && pwd)"
 SALIDA="${SALIDA:-$PWD/salida}"; mkdir -p "$SALIDA"
 N8N_DATA="${N8N_DATA:-$PWD/n8n-data}"
+# Workflow del motor: WORKFLOW_MOTOR lo fija; si no, el matching-v<N>.json de mayor versión de n8n/workflows/.
+WORKFLOW_MOTOR="${WORKFLOW_MOTOR:-$(ls "$APP_DIR"/n8n/workflows/matching-v*.json 2>/dev/null | sort -V | tail -1 || true)}"
+[ -f "$WORKFLOW_MOTOR" ] || { echo "ERROR: no encuentro el workflow del motor (matching-v*.json en $APP_DIR/n8n/workflows)" >&2; exit 1; }
 DB=supabase_db_vaiven-app
 RED=supabase_network_vaiven-app
 SUDO="${SUDO:-}"
@@ -66,7 +70,7 @@ demo() {
   openssl rand -hex 24 > "$N8N_DATA/.secreto"
   curl -s localhost:54321/auth/v1/.well-known/jwks.json > "$N8N_DATA/.jwks.json"
   python3 -I "$AQUI/datos/credenciales.py" "$SB_JWT_SECRET" "$(cat "$N8N_DATA/.secreto")" \
-    "$N8N_DATA/.jwks.json" "$APP_DIR/n8n/workflows/matching-v2.json" "$N8N_DATA"
+    "$N8N_DATA/.jwks.json" "$WORKFLOW_MOTOR" "$N8N_DATA"
   docker exec n8n n8n import:credentials --input=/home/node/.n8n/creds.json
   docker exec n8n n8n import:workflow --input=/home/node/.n8n/wf.json
   docker exec n8n n8n publish:workflow --id=W1NAqx1tZqOrSgwA
