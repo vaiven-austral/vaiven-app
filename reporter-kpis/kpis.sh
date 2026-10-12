@@ -87,18 +87,61 @@ app_tiempo_respuesta() {
 # ---- H4-KPI.2 -----------------------------------------------------------------------
 
 acuerdo_golden_set() {
-  # Se calcula en la fase del golden set (existe la tabla referencia_golden_set).
-  sin_implementar
+  # Pares del golden set donde el nivel del motor coincide con el de referencia, dividido por 31.
+  local v
+  v=$(sql_app "with ref as (
+      select count(*) as n from referencia_golden_set
+    )
+    select case
+      when (select n from ref) != 31 then null
+      else round(count(*) filter (where j.nivel = r.nivel)::numeric / 31, 3)
+    end
+    from referencia_golden_set r
+    join juicios j on j.donacion_id = r.donacion_id and j.necesidad_id = r.necesidad_id") \
+    || { echo "acuerdo_golden_set: falló la consulta" >&2; return 1; }
+  [ -n "$v" ] || { echo "acuerdo_golden_set: la referencia no tiene 31 filas o no se pudo calcular" >&2; return 1; }
+  echo "$v"
 }
 
 tiempo_hasta_primer_juicio_p95() {
-  sin_implementar
+  # p95 (en segundos) de la espera entre publicación y su primer juicio, sobre las últimas 20 publicaciones juzgadas.
+  local v
+  v=$(sql_app "with w as (
+      select p.id, extract(epoch from min(j.creado_en) - p.creada_en) as s
+      from publicaciones p join juicios j on p.id in (j.donacion_id, j.necesidad_id)
+      group by p.id, p.creada_en order by p.creada_en desc limit 20)
+    select round(percentile_disc(0.95) within group (order by s)::numeric, 1) from w") \
+    || { echo "tiempo_hasta_primer_juicio_p95: falló la consulta" >&2; return 1; }
+  [ -n "$v" ] || { echo "tiempo_hasta_primer_juicio_p95: no hay publicaciones con juicio" >&2; return 1; }
+  echo "$v"
 }
 
 errores_5xx() {
-  sin_implementar
+  # % de ejecuciones del motor con status = 'error' sobre el total en las últimas 24 h.
+  local v
+  v=$(sql_n8n "with ult as (
+      select status
+      from execution_entity
+      where julianday('now') - julianday(startedAt) <= 1.0)
+    select case
+      when count(*) = 0 then ''
+      when sum(case when status = 'error' then 1 else 0 end) = 0 then '0'
+      else cast(round(100.0 * sum(case when status = 'error' then 1 else 0 end) / count(*), 2) as text)
+    end
+    from ult") || { echo "errores_5xx: falló la consulta al historial de n8n" >&2; return 1; }
+  [ -n "$v" ] || { echo "errores_5xx: no hay ejecuciones en las últimas 24 h" >&2; return 1; }
+  echo "$v"
 }
 
 ultima_ejecucion_antiguedad() {
-  sin_implementar
+  # Segundos entre ahora y el stoppedAt de la última ejecución exitosa del motor.
+  local v
+  v=$(sql_n8n "select case
+      when max(stoppedAt) is null then ''
+      else cast(round((julianday('now') - julianday(max(stoppedAt))) * 86400) as integer)
+    end
+    from execution_entity
+    where status = 'success'") || { echo "ultima_ejecucion_antiguedad: falló la consulta a n8n" >&2; return 1; }
+  [ -n "$v" ] || { echo "ultima_ejecucion_antiguedad: no hay ejecuciones exitosas" >&2; return 1; }
+  echo "$v"
 }
