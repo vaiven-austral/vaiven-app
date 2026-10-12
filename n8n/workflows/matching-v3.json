@@ -1,0 +1,1455 @@
+{
+  "name": "VaiVen - Motor de Matching v3",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2800,
+        6368
+      ],
+      "id": "ba71b05b-d118-4b6f-9f44-a1a57ee6988c",
+      "name": "200"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1456,
+        6832
+      ],
+      "id": "9a332dff-77eb-49fb-9803-9771fe2ff086",
+      "name": "400"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 401
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1232,
+        6976
+      ],
+      "id": "88d51f1e-ab6a-4c47-9eb0-b33f102e28f3",
+      "name": "401"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 404
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        2112,
+        6544
+      ],
+      "id": "bd7b0431-dea6-4f7e-8de4-2f057be483d7",
+      "name": "404"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "matching-v1",
+        "authentication": "jwtAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        576,
+        6864
+      ],
+      "id": "2f249401-f522-423e-afbd-c7d38d613fa3",
+      "name": "Webhook",
+      "webhookId": "a869b9c1-4a9c-4da7-be8f-cca4682ccb13",
+      "credentials": {
+        "jwtAuth": {
+          "id": "n1r2lsGvjJ6hKHbh",
+          "name": "JWT Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b503b791-f877-4bba-91cb-1089c0c5fb45",
+              "leftValue": "={{ $json.jwtPayload.aud }}",
+              "rightValue": "authenticated",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "590874f7-e188-4338-afb7-645d3aff91f6",
+              "leftValue": "={{ $json.jwtPayload.role }}",
+              "rightValue": "authenticated",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        800,
+        6864
+      ],
+      "id": "b13b5c1c-72f1-451a-953e-6ba4b09cacf1",
+      "name": "auth"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  statusCode: 400,\n  body: {\n    error: 'Bad Request',\n    message: 'publicacion_id is required'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        6832
+      ],
+      "id": "2d0c0dac-6b82-40e7-b6c4-d84f2fee0696",
+      "name": "bad request"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  statusCode: 401,\n  body: {\n    error: 'Unauthorized',\n    message: 'Invalid JWT claims: aud or role missing/invalid'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        6976
+      ],
+      "id": "aea77e9d-d471-4d48-b2f0-22ccfbc43c96",
+      "name": "unauth"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  statusCode: 400,\n  body: {\n    error: 'Bad Request',\n    message: 'publicacion_id must be a valid UUID'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        6640
+      ],
+      "id": "63829ebd-5c3e-409a-80ff-31977f7da06a",
+      "name": "bad request1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1696,
+        6640
+      ],
+      "id": "382eff72-66ba-4eda-b3e0-c6a10e8fd97e",
+      "name": "400-1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allCandidates = $input.all().map(item => item.json);\nreturn [{\n  json: {\n    statusCode: 200,\n    body: {\n      success: true,\n      candidates: allCandidates,\n      count: allCandidates.length\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2576,
+        6240
+      ],
+      "id": "89eeb865-b21e-4d07-ada8-f70b0d1fd3f1",
+      "name": "response"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:54321/rest/v1/publicaciones",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{  'eq.' + $json.body.publicacion_id }}"
+            },
+            {
+              "name": "select",
+              "value": "id,tipo,estado,titulo,descripcion,categoria_id,zona_id,urgencia,estado_objeto,zonas:zona_id(id,region,partido,localidad)"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$json.headers.authorization.split(' ')[1]}} "
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1456,
+        6432
+      ],
+      "id": "dfc1890f-82e2-43b2-9902-3dc34a6af0ac",
+      "name": "Original Post"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:54321/rest/v1/publicaciones",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "id,tipo,estado,titulo,descripcion,categoria_id,zona_id,urgencia,estado_objeto,cantidad,usuario_id,creada_en,vence_en,perfiles:usuario_id(avatar_ruta,zona_id),zonas:zona_id(id,region,partido,localidad),imagenes_publicacion(id)"
+            },
+            {
+              "name": "tipo",
+              "value": "={{ $json.body[0].tipo === 'necesidad' ? 'eq.donacion' : 'eq.necesidad' }}"
+            },
+            {
+              "name": "estado",
+              "value": "eq.activa"
+            },
+            {
+              "name": "vence_en",
+              "value": "={{'gt.' + $now.toISO() }}"
+            },
+            {
+              "name": "usuario_id",
+              "value": "={{ 'neq.' + $('Webhook').item.json.jwtPayload.sub}}"
+            },
+            {
+              "name": "imagenes_publicacion.limit",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $('Webhook').item.json.headers.authorization }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1936,
+        6336
+      ],
+      "id": "c6eda37f-fcf1-404f-83e8-adecb19582f6",
+      "name": "candidatas"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "cond-1",
+              "leftValue": "={{ $json.body }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1696,
+        6432
+      ],
+      "id": "a96d2759-f280-41a5-bf5f-3978e83f8a89",
+      "name": "existe el post original"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  statusCode: 404,\n  body: {\n    error: 'Not Found',\n    message: 'Publicación no encontrada'\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1936,
+        6544
+      ],
+      "id": "ca8ae487-5ee2-4bbf-8af6-1323407e79a9",
+      "name": "not found"
+    },
+    {
+      "parameters": {
+        "jsCode": "const origen = $('Original Post').first().json.body[0];\nconst candidatos = $('candidatas').first().json.body;\nconst juicios = $('juicios').first().json.body;\n\nif (candidatos.length === 0) return [];\n\n// ============================================\n// CONFIGURACIÓN CENTRALIZADA DE PESOS\n// ============================================\nconst PESOS = {\n  RESOLUCION: 40.0,\n  NIVELES_RESOLUCION: { // Nivel del juicio del modelo (0-4) -> puntos sobre 100. motor/contrato.md, \"Los seis factores\"\n    0: 0,\n    1: 25,\n    2: 50,\n    3: 75,\n    4: 100,\n  },\n  FACTOR_2: {\n    max: 10.0,\n    \n    URGENCIA: { // Si el post original es una donacion se usa este\n      sin_apuro: 1 / 3,\n      media: 2 / 3,\n      alta: 3 / 3\n        },\n    ESTADO: { // Si el post original es una necesidad se usa este\n      requiere_reparacion: 1 / 5,\n      usado: 2 / 5,\n      bueno: 3 / 5,\n      como_nuevo: 4 / 5,\n      nuevo: 5 / 5\n      }\n  },\n  PROXIMIDAD: {\n    max: 20,\n    localidad: 1,\n    partido: 2 / 3,\n    region: 1 / 3,\n    ninguna: 0,\n  },\n  CONFIANZA: {\n    max: 10,\n    campos_totales: 2, // perfiles.avatar_ruta + perfiles.zona_id\n  },\n  CALIDAD: {\n    max: 5,\n    largo: 0.60,\n    imagen: 0.40,\n  },\n  CATEGORIA: {\n    max: 15\n  }\n};\n\n// El juicio se busca por el id del otro lado del par: si el origen es una\n// donacion, el candidato es una necesidad y se matchea contra necesidad_id.\nconst juicioPorCandidatoId = new Map();\nfor (const juicio of juicios) {\n  const otroLadoId = origen.tipo === 'donacion' ? juicio.necesidad_id : juicio.donacion_id;\n  juicioPorCandidatoId.set(otroLadoId, juicio);\n}\n\nfunction calcularFactorProximidad(zonaOrigen, zonaCandidato) {\n  if (!zonaOrigen || !zonaCandidato) return PESOS.PROXIMIDAD.max * PESOS.PROXIMIDAD.ninguna;\n\n  // Misma localidad (Mismo ID exacto)\n  if (zonaOrigen.id === zonaCandidato.id) {\n    return PESOS.PROXIMIDAD.max * PESOS.PROXIMIDAD.localidad;\n  }\n\n  // Mismo partido (y region)\n  if (zonaOrigen.partido === zonaCandidato.partido && zonaOrigen.region === zonaCandidato.region) {\n    return PESOS.PROXIMIDAD.max * PESOS.PROXIMIDAD.partido;\n  }\n\n  // Solo misma region\n  if (zonaOrigen.region === zonaCandidato.region) {\n    return PESOS.PROXIMIDAD.max * PESOS.PROXIMIDAD.region;\n  }\n\n  // Sin coincidencias\n  return PESOS.PROXIMIDAD.max * PESOS.PROXIMIDAD.ninguna;\n}\n\nfunction calcularFactorUrgencia(urgencia) {\n  return PESOS.FACTOR_2.URGENCIA[urgencia] ?? 0;\n}\n\nfunction calcularFactorEstadoObjeto(estadoObjeto) {\n  return PESOS.FACTOR_2.ESTADO[estadoObjeto] ?? 0;\n}\n  \nfunction calcularFactorPrioridad(candidato) {\n  return candidato.tipo === 'necesidad'\n    ? calcularFactorUrgencia(candidato.urgencia)\n    : calcularFactorEstadoObjeto(candidato.estado_objeto);\n}\n\n\nconst resultados = candidatos.map(candidato => {\n\n  const juicio = juicioPorCandidatoId.get(candidato.id) ?? null;\n\n  const f1_resolucion = juicio\n    ? PESOS.RESOLUCION * PESOS.NIVELES_RESOLUCION[juicio.nivel] / 100\n    : null;\n\n  const f2_urgencia = calcularFactorPrioridad(candidato) * PESOS.FACTOR_2.max;\n\n  const f3_proximidad = calcularFactorProximidad(origen.zonas, candidato.zonas);\n\n  let f4_confianza = 0.0;\n  if (candidato.perfiles) {\n    let campos = 0;\n    if (candidato.perfiles.avatar_ruta) campos++;\n    if (candidato.perfiles.zona_id) campos++;\n    f4_confianza = PESOS.CONFIANZA.max * (campos / PESOS.CONFIANZA.campos_totales);\n  }\n\n  const largo = Math.min((candidato.descripcion || '').length / 100, 1);\n  const tiene_imagen = Array.isArray(candidato.imagenes_publicacion) && candidato.imagenes_publicacion.length > 0 ? 1 : 0;\n\n  const f5_calidad = PESOS.CALIDAD.max * (PESOS.CALIDAD.largo * largo + PESOS.CALIDAD.imagen * tiene_imagen); \n  \n  const f6_categoria = candidato.categoria_id === origen.categoria_id ? PESOS.CATEGORIA.max : 0;\n\n  const score_total = juicio\n    ? f1_resolucion + f2_urgencia + f3_proximidad + f4_confianza + f5_calidad + f6_categoria\n    : null;\n\n  return {\n    ...candidato,\n    score_total: score_total,\n    factores: {\n      f1_resolucion,\n      f2_urgencia,\n      f3_proximidad,\n      f4_confianza,\n      f5_calidad, \n      f6_categoria\n    },\n    nivel: juicio ? juicio.nivel : null,\n    justificacion: juicio ? juicio.justificacion : null,\n    version_scoring: juicio ? juicio.version_scoring : null,\n    analizando: !juicio,\n  };\n}); \n\n// Los juzgados van primero, ordenados por score_total descendente.\n// Los que todavía no tienen juicio van todos después, sin score con el que ordenarlos.\nconst juzgados = resultados.filter(r => !r.analizando);\nconst sinJuzgar = resultados.filter(r => r.analizando);\n\njuzgados.sort((a, b) => b.score_total - a.score_total);\n\n// Transformamos de vuelta al formato que entiende n8n\nreturn [...juzgados, ...sinJuzgar].map(item => ({ json: item }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2384,
+        6240
+      ],
+      "id": "04ab5e3b-ed98-4592-9aac-df29e1ce5a9b",
+      "name": "scoring"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1dcc6843-3892-49a9-beb6-dd8e8aa45ef1",
+              "leftValue": "={{ $json.body }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2112,
+        6336
+      ],
+      "id": "377c38a1-339f-4e00-8cf2-7524b5f28118",
+      "name": "hayCandidatas"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n    statusCode: 200,\n    body: {\n      success: true,\n      candidates: [],\n      count: 0\n    }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2384,
+        6416
+      ],
+      "id": "2a429f04-26a0-4bd7-babe-dac2ab2f3c9f",
+      "name": "emptyResponse"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "18c37b04-a965-4f68-bf79-2a6a90242754",
+              "leftValue": "={{ $json.body.publicacion_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1024,
+        6752
+      ],
+      "id": "808e921c-13cf-48c7-b846-ee72b44a81b1",
+      "name": "publicacion_id present"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3b02ac38-5e53-4fa1-8065-9d7e7f67e2a1",
+              "leftValue": "={{ $json.body.publicacion_id }}",
+              "rightValue": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1232,
+        6624
+      ],
+      "id": "dcf4ebc2-2b0c-46b6-969c-ee795d422c52",
+      "name": "valid publication_id"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ JSON.stringify({ necesidad: $json.necesidad, donacion: $json.donacion }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2352,
+        7440
+      ],
+      "id": "9935eaf6-d3ea-4502-87f7-fea1782e9a1b",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Sos un evaluador que decide si una donación resuelve una necesidad concreta.\n\nTu única pregunta es: ¿este objeto resuelve esta necesidad?, considerando su estado, su tamaño y su cantidad.\n\nNo evalúes si los objetos se parecen entre sí. Dos heladeras pueden parecerse mucho y una no resolver nada si está rota.\n\nAsigná un nivel de 0 a 4 según estas anclas:\n\n4 — Resuelve lo que la persona pidió\n3 — Lo resuelve con una salvedad menor: talle, estado o cantidad\n2 — Resuelve parte del problema declarado\n1 — Categoría vecina, no resuelve lo pedido\n0 — Sin relación, o funcionalmente inservible para lo pedido\n\nDevolvé el nivel junto con su justificación en la misma respuesta.\n\nNecesidad: {{ JSON.stringify($json.necesidad) }}\nDonación: {{ JSON.stringify($json.donacion) }}\n",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        2592,
+        7440
+      ],
+      "id": "094e28fe-c263-4859-948a-5069446f0689",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "projectId": {
+          "__rl": true,
+          "value": "gen-lang-client-0722296873",
+          "mode": "id"
+        },
+        "modelName": "gemini-3.1-flash-lite",
+        "location": "global",
+        "options": {
+          "temperature": 0,
+          "thinkingBudget": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleVertex",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        7600
+      ],
+      "id": "cd1dce80-28b1-4693-bc2c-b444c61f3710",
+      "name": "Google Vertex Chat Model",
+      "credentials": {
+        "googleApi": {
+          "id": "rptrVertexSA00001",
+          "name": "Google Service Account Vertex"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"nivel\": {\n      \"type\": \"integer\",\n      \"enum\": [0, 1, 2, 3, 4]\n    },\n    \"justificacion\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"narrativa\": { \"type\": \"string\" },\n        \"fortalezas\": {\n          \"type\": \"array\",\n          \"items\": { \"type\": \"string\" }\n        },\n        \"consideraciones\": {\n          \"type\": \"array\",\n          \"items\": { \"type\": \"string\" }\n        }\n      },\n      \"required\": [\"narrativa\", \"fortalezas\", \"consideraciones\"]\n    }\n  },\n  \"required\": [\"nivel\", \"justificacion\"]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2688,
+        7648
+      ],
+      "id": "0c1bad19-5c03-4391-8ef8-26198c64a7a3",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "motor-juicio",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        544,
+        7472
+      ],
+      "id": "cae865d5-72b8-47d9-aecf-c957f631f2a6",
+      "name": "Webhook Motor Juicio",
+      "webhookId": "f3a2c9d0-8b1e-4c6a-9d3f-1e2b4a5c6d7e",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "pXWs8h4SLpvFIt30",
+          "name": "Header Auth - motor-juicio (local)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:54321/rest/v1/juicios",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "={{ $('Original Post').first().json.body[0].tipo === 'donacion' ? 'donacion_id' : 'necesidad_id' }}",
+              "value": "={{ 'eq.' + $('Original Post').first().json.body[0].id }}"
+            },
+            {
+              "name": "select",
+              "value": "donacion_id,necesidad_id,nivel,justificacion,version_scoring"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $('Webhook').item.json.headers.authorization }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2288,
+        6336
+      ],
+      "id": "ddbb0bc1-9448-4408-b792-0a93c7b50b92",
+      "name": "juicios"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:54321/rest/v1/publicaciones",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{ 'eq.' + $json.body.id }}"
+            },
+            {
+              "name": "estado",
+              "value": "eq.activa"
+            },
+            {
+              "name": "vence_en",
+              "value": "={{ 'gt.' + $now.toISO() }}"
+            },
+            {
+              "name": "select",
+              "value": "id,tipo,titulo,descripcion,categoria_id,cantidad,usuario_id,estado_objeto,categorias:categoria_id(nombre)"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        736,
+        7472
+      ],
+      "id": "b78de460-3497-45b3-a2cc-0c4c54643da0",
+      "name": "Origen",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Quzn6tIDeSCxvzxJ",
+          "name": "Header Auth - motor_matching REST (local)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "1e9d5bc6-b403-4aa0-a954-a44ab2bfac75",
+              "leftValue": "={{ $json.body }}",
+              "operator": {
+                "operation": "notEmpty",
+                "singleValue": true,
+                "type": "array"
+              },
+              "rightValue": 0
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        912,
+        7472
+      ],
+      "id": "05a48291-14eb-4cd6-9b22-c6d059e8340a",
+      "name": "existe origen"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        912,
+        7664
+      ],
+      "id": "d55dc5de-0664-427d-963d-b338a9b777e9",
+      "name": "origen inexistente, inactivo o vencido"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:54321/rest/v1/publicaciones",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "tipo",
+              "value": "={{ $('Origen').first().json.body[0].tipo === 'necesidad' ? 'eq.donacion' : 'eq.necesidad' }}"
+            },
+            {
+              "name": "estado",
+              "value": "eq.activa"
+            },
+            {
+              "name": "vence_en",
+              "value": "={{ 'gt.' + $now.toISO() }}"
+            },
+            {
+              "name": "usuario_id",
+              "value": "={{ 'neq.' + $('Origen').first().json.body[0].usuario_id }}"
+            },
+            {
+              "name": "select",
+              "value": "id,titulo,descripcion,categoria_id,cantidad,estado_objeto,categorias:categoria_id(nombre)"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1088,
+        7472
+      ],
+      "id": "73002532-ad78-41a4-bb04-7c034e14c6d1",
+      "name": "Candidatas Motor",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Quzn6tIDeSCxvzxJ",
+          "name": "Header Auth - motor_matching REST (local)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "1de43a10-f2b0-4e60-9dfe-a813d9bec81e",
+              "leftValue": "={{ $json.body }}",
+              "operator": {
+                "operation": "notEmpty",
+                "singleValue": true,
+                "type": "array"
+              },
+              "rightValue": 0
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1264,
+        7472
+      ],
+      "id": "6b567b8c-1b89-4eb1-8d22-402c96dd0c2c",
+      "name": "hayCandidatos Motor"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1264,
+        7664
+      ],
+      "id": "58b13ba5-ba8f-4570-8573-2a10657b1daf",
+      "name": "sin candidatos"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:54321/rest/v1/juicios",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "={{ $('Origen').first().json.body[0].tipo === 'donacion' ? 'donacion_id' : 'necesidad_id' }}",
+              "value": "={{ 'eq.' + $('Origen').first().json.body[0].id }}"
+            },
+            {
+              "name": "select",
+              "value": "donacion_id,necesidad_id"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1456,
+        7472
+      ],
+      "id": "42117e95-5f69-4509-aee9-1eebc0a12521",
+      "name": "Juicios Existentes",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Quzn6tIDeSCxvzxJ",
+          "name": "Header Auth - motor_matching REST (local)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const origen = $('Origen').first().json.body[0];\nconst candidatos = $('Candidatas Motor').first().json.body;\nconst juicios = $('Juicios Existentes').first().json.body;\n\nconst esOrigenDonacion = origen.tipo === 'donacion';\n\n// Un par ya juzgado se identifica por el id del candidato, del lado\n// contrario al de origen: si el origen es donación, el candidato es\n// necesidad y su id vive en necesidad_id (y viceversa).\nconst yaJuzgados = new Set(\n  juicios.map((j) => (esOrigenDonacion ? j.necesidad_id : j.donacion_id))\n);\n\nconst pendientes = candidatos\n  .filter((candidato) => !yaJuzgados.has(candidato.id))\n  .map((candidato) => {\n    const donacion = esOrigenDonacion ? origen : candidato;\n    const necesidad = esOrigenDonacion ? candidato : origen;\n\n    return {\n      donacion_id: donacion.id,\n      necesidad_id: necesidad.id,\n      donacion: {\n        titulo: donacion.titulo,\n        descripcion: donacion.descripcion,\n        categoria: donacion.categorias ? donacion.categorias.nombre : null,\n        cantidad: donacion.cantidad,\n        estado_objeto: donacion.estado_objeto,\n      },\n      necesidad: {\n        titulo: necesidad.titulo,\n        descripcion: necesidad.descripcion,\n        categoria: necesidad.categorias ? necesidad.categorias.nombre : null,\n        cantidad: necesidad.cantidad,\n      },\n    };\n  });\n\nreturn [{ json: { pares: pendientes } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1632,
+        7472
+      ],
+      "id": "96d39013-9334-40d6-9e20-6065b4c6fe47",
+      "name": "Armar Pares Pendientes"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "79476ff0-a4a3-46ed-aa45-6ace048b1d5f",
+              "leftValue": "={{ $json.pares }}",
+              "operator": {
+                "operation": "notEmpty",
+                "singleValue": true,
+                "type": "array"
+              },
+              "rightValue": 0
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1808,
+        7472
+      ],
+      "id": "d8279147-8a7d-48ad-ab69-93b94f165bba",
+      "name": "hayParesPendientes"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1808,
+        7664
+      ],
+      "id": "7c154e05-ed07-4df7-a064-bb0bc78b46b3",
+      "name": "sin pares pendientes"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "pares",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1984,
+        7472
+      ],
+      "id": "3e87646b-4818-4db9-98e6-5376dae531d7",
+      "name": "Split Out Pares"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2176,
+        7472
+      ],
+      "id": "09e7d9bf-ae34-4b4c-823c-306d332d7d60",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2176,
+        7664
+      ],
+      "id": "af45dce5-5e01-46d7-864f-b0cab1a7b8d6",
+      "name": "fin motor-juicio"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:54321/rest/v1/juicios",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "on_conflict",
+              "value": "donacion_id,necesidad_id"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "resolution=merge-duplicates"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ donacion_id: $('Loop Over Items').item.json.donacion_id, necesidad_id: $('Loop Over Items').item.json.necesidad_id, nivel: $json.output.nivel, justificacion: $json.output.justificacion, version_scoring: 'v1', modelo: $('Google Vertex Chat Model').params.modelName }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2832,
+        7440
+      ],
+      "id": "9e822ca8-6045-4687-8a40-a3fbad66c6f4",
+      "name": "Guardar Juicio",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Quzn6tIDeSCxvzxJ",
+          "name": "Header Auth - motor_matching REST (local)"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "auth",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "auth": {
+      "main": [
+        [
+          {
+            "node": "publicacion_id present",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "unauth",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "bad request": {
+      "main": [
+        [
+          {
+            "node": "400",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "unauth": {
+      "main": [
+        [
+          {
+            "node": "401",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "bad request1": {
+      "main": [
+        [
+          {
+            "node": "400-1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "response": {
+      "main": [
+        [
+          {
+            "node": "200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Original Post": {
+      "main": [
+        [
+          {
+            "node": "existe el post original",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "candidatas": {
+      "main": [
+        [
+          {
+            "node": "hayCandidatas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "existe el post original": {
+      "main": [
+        [
+          {
+            "node": "candidatas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "not found": {
+      "main": [
+        [
+          {
+            "node": "404",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "scoring": {
+      "main": [
+        [
+          {
+            "node": "response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hayCandidatas": {
+      "main": [
+        [
+          {
+            "node": "juicios",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "emptyResponse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "emptyResponse": {
+      "main": [
+        [
+          {
+            "node": "200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "publicacion_id present": {
+      "main": [
+        [
+          {
+            "node": "valid publication_id",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "bad request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "valid publication_id": {
+      "main": [
+        [
+          {
+            "node": "Original Post",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "bad request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "juicios": {
+      "main": [
+        [
+          {
+            "node": "scoring",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Motor Juicio": {
+      "main": [
+        [
+          {
+            "node": "Origen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Origen": {
+      "main": [
+        [
+          {
+            "node": "existe origen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "existe origen": {
+      "main": [
+        [
+          {
+            "node": "Candidatas Motor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "origen inexistente, inactivo o vencido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Candidatas Motor": {
+      "main": [
+        [
+          {
+            "node": "hayCandidatos Motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hayCandidatos Motor": {
+      "main": [
+        [
+          {
+            "node": "Juicios Existentes",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "sin candidatos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Juicios Existentes": {
+      "main": [
+        [
+          {
+            "node": "Armar Pares Pendientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Armar Pares Pendientes": {
+      "main": [
+        [
+          {
+            "node": "hayParesPendientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "hayParesPendientes": {
+      "main": [
+        [
+          {
+            "node": "Split Out Pares",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "sin pares pendientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out Pares": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "fin motor-juicio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Guardar Juicio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardar Juicio": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Vertex Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "8c1e0baf-ab3f-4232-a3ba-bb57a933188c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "88133f57fd1309335dc045567d96b3f5529697f64191dea2caf695977e62918a"
+  },
+  "nodeGroups": [],
+  "id": "W1NAqx1tZqOrSgwA",
+  "tags": []
+}
