@@ -29,7 +29,7 @@ export function CandidateCard({ candidate, categoriaNombre, onAccept }: Candidat
   const isPending = candidate.analizando === true;
 
   return (
-    <div className="bg-tarjeta rounded-tarjeta shadow-md mb-4 overflow-hidden border border-gray-200">
+    <div className="bg-tarjeta rounded-tarjeta shadow-md mb-4 overflow-hidden border border-borde">
       <div className="p-4">
         <div className="flex gap-3 items-start">
           {/* Anillo de puntaje */}
@@ -75,7 +75,7 @@ export function CandidateCard({ candidate, categoriaNombre, onAccept }: Candidat
           <button
             type="button"
             onClick={() => setPanelOpen(true)}
-            className="mt-3 flex w-full items-center justify-center gap-2 py-2 px-3 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors text-sm font-medium text-tinta"
+            className="mt-3 flex w-full items-center justify-center gap-2 py-2 px-3 bg-lienzo hover:bg-superficie rounded-md transition-colors text-sm font-medium text-tinta"
           >
             <Icon icon={Sparkles} className="w-4 h-4" />
             Ver análisis de IA
