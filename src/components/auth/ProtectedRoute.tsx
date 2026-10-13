@@ -1,12 +1,15 @@
 import { useAuth } from '../../hooks/useAuth';
 import { Navigate, Outlet } from 'react-router-dom';
-import { SplashScreen } from '../ui/SplashScreen';
 
 export function ProtectedRoute() {
   const { session, loading } = useAuth();
 
   if (loading) {
-    return <SplashScreen />;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin">⟳</div>
+      </div>
+    );
   }
 
   if (!session) {

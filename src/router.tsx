@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import { ComponentShowcase } from './pages/ComponentShowcase';
 import { Home } from './pages/Home';
 import { HomeFeed } from './pages/HomeFeed';
@@ -15,10 +15,16 @@ import { PerfilPage } from './pages/PerfilPage';
 import { EditarPerfil } from './pages/EditarPerfil';
 import { MatchingResultsPage } from './pages/MatchingResultsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { RootPage } from './pages/RootPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { AppLayout } from './layouts/AppLayout';
 
 export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <RootPage />,
+  },
+
   // Rutas públicas
   {
     path: '/login',
@@ -41,10 +47,6 @@ export const router = createBrowserRouter([
       {
         element: <AppLayout />,
         children: [
-          {
-            path: '/',
-            element: <Navigate to="/feed" replace />,
-          },
           {
             path: '/feed',
             element: <HomeFeed />,
