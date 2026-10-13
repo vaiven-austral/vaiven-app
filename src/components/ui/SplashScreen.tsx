@@ -1,4 +1,5 @@
 import logo from '@/assets/Logo_Vaiven1.webp';
+import { APP_VERSION } from '@/lib/version';
 
 export function SplashScreen() {
   return (
@@ -16,7 +17,7 @@ export function SplashScreen() {
       <div className="absolute bottom-10 left-0 right-0 flex flex-col items-center">
         <div className="w-9 h-9 rounded-full border-[4px] border-white/90 border-t-primario animate-spin" />
         <p className="text-white/60 tracking-widest text-[10px] mt-4">
-          v1.0 MVP
+          {APP_VERSION}
         </p>
       </div>
     </div>
