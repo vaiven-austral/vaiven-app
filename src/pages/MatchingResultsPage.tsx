@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { supabase } from '@/lib/supabaseClient';
 import { callN8nWebhook, WebhookError } from '@/lib/n8n';
 import type { Candidate } from '@/lib/n8n';
 import { CandidateCard } from '@/components/matching/CandidateCard';
@@ -13,6 +14,22 @@ export function MatchingResultsPage() {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<{ message: string; status?: number } | null>(null);
+  const [categorias, setCategorias] = useState<Record<number, string>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    supabase
+      .from('categorias')
+      .select('id, nombre')
+      .then(({ data }) => {
+        if (!cancelled && data) {
+          const dict: Record<number, string> = {};
+          data.forEach(c => { dict[c.id] = c.nombre; });
+          setCategorias(dict);
+        }
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   const handleRefresh = useCallback(async () => {
     if (!publicacionId) {
@@ -152,7 +169,7 @@ export function MatchingResultsPage() {
 
             <div className="space-y-3">
               {candidates.map((candidate) => (
-                <CandidateCard key={candidate.id} candidate={candidate}  onAccept={() => {} } />
+                <CandidateCard key={candidate.id} candidate={candidate} categoriaNombre={categorias[candidate.categoria_id]} onAccept={() => {} } />
               ))}
             </div>
           </div>
