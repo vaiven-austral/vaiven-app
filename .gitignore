@@ -34,3 +34,8 @@ dist-ssr
 
 # Snippets locales del SQL Editor de Supabase Studio
 supabase/snippets/
+
+# Reporter de KPIs: datos efímeros del stack y credencial local
+n8n-data/
+salida/
+VERTEX_SA_JSON

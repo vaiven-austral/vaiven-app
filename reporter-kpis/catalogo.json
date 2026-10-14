@@ -1,0 +1,12 @@
+[
+  {"id": "acuerdo_golden_set", "kind": "business", "unit": "ratio", "aggregation": "last", "description": "Pares del golden set v1 (31) en los que el nivel del motor coincide con el nivel de referencia de un panel de modelos, sobre 31. Mide coincidencia con el panel, no juicio de usuarios reales. Se recalcula en cada corrida sobre un stack efímero."},
+  {"id": "candidatos_por_donacion", "kind": "business", "unit": "count", "aggregation": "last", "description": "Promedio de candidatos con nivel 2 o más por donación activa juzgada, sobre la semilla de la demo. Meta del proyecto: 3 o más."},
+  {"id": "tiempo_hasta_primer_juicio_p95", "kind": "business", "unit": "s", "aggregation": "last", "description": "p95 de la espera entre la publicación y su primer juicio del motor, sobre las últimas 20 publicaciones juzgadas. En el stack efímero mide una carga masiva de la semilla."},
+  {"id": "latencia_p95", "kind": "technical", "unit": "ms", "aggregation": "last", "description": "p95 de la duración de las últimas 20 lecturas del motor en n8n. En el stack efímero son lecturas sintéticas con n8n recién levantado."},
+  {"id": "errores_5xx", "kind": "technical", "unit": "%", "aggregation": "last", "description": "Ejecuciones del motor en n8n terminadas en error sobre el total, últimas 24 h. Se mide del historial de ejecuciones, no de códigos HTTP. En el stack efímero cubre sólo la corrida."},
+  {"id": "juicios_generados", "kind": "technical", "unit": "count", "aggregation": "sum", "description": "Juicios guardados en las últimas 24 h. En el stack efímero es el tamaño de la semilla juzgada en la corrida."},
+  {"id": "ci_builds_exitosos", "kind": "technical", "unit": "%", "aggregation": "last", "description": "Corridas en verde sobre las últimas 20 terminadas de los workflows de CI (Check ...) de vaiven-app, sin skipped ni cancelled."},
+  {"id": "api_tiempo_respuesta", "kind": "health", "unit": "ms", "aggregation": "avg", "description": "ms hasta un 200 de un GET mínimo a la API desplegada; 10000 si no responde en 10 s. Hasta el despliegue vale 10000."},
+  {"id": "app_tiempo_respuesta", "kind": "health", "unit": "ms", "aggregation": "avg", "description": "ms hasta un 200 de la app publicada; 10000 si no responde en 10 s. Hasta el despliegue vale 10000."},
+  {"id": "ultima_ejecucion_antiguedad", "kind": "health", "unit": "s", "aggregation": "last", "description": "Segundos desde la última ejecución exitosa del motor. En el stack efímero da segundos, porque n8n se crea en cada corrida."}
+]
