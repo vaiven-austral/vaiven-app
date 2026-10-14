@@ -1,4 +1,47 @@
 -- ============================================================
+-- RECETA: CARGAR LA DEMO PARA QUE EL MOTOR LA JUZGUE
+-- ============================================================
+-- `supabase db reset` carga esta semilla sola, apenas termina de migrar. En ese
+-- momento Vault todavía no tiene motor_webhook_url ni motor_webhook_secret: las
+-- publicaciones se crean, pero el aviso al motor no sale y la demo queda sin
+-- juicios, sin ningún error que lo indique.
+--
+-- Para que el motor juzgue la demo, seguir este orden (en este repo el CLI se
+-- corre con `pnpm supabase`):
+--
+--   1. Migrar sin cargar la semilla:
+--        supabase db reset --no-seed
+--
+--   2. Cargar en Vault los dos secretos que lee el trigger avisar_motor_juicio
+--      (valores de ejemplo; el secreto real es el de la credencial Header Auth
+--      del webhook motor-juicio en tu n8n, nunca se guarda en el repo):
+--        select vault.create_secret('http://host.docker.internal:5678/webhook/motor-juicio', 'motor_webhook_url');
+--        select vault.create_secret('<secreto-del-aviso>', 'motor_webhook_secret');
+--      La URL de ejemplo es para Mac, con n8n en el puerto 5678. Si n8n corre en
+--      la red de Docker de Supabase (como en la Action del reporter de KPIs),
+--      usar http://n8n:5678/webhook/motor-juicio.
+--
+--   3. Con n8n levantado y el workflow del motor activo, cargar la semilla a mano:
+--        docker exec -i supabase_db_vaiven-app psql -U postgres < supabase/seed.sql
+--
+--   4. Esperar a que `select count(*) from juicios;` deje de crecer (alrededor de
+--      un minuto). Los juicios los genera el motor: no se cargan filas a mano.
+--
+-- Comprobaciones:
+--   select count(*) as juicios from juicios;     -- 99 en la demo
+--   select status_code, count(*) from net._http_response group by 1;
+--     -- un aviso por publicación; 200 si n8n responde antes de los 5 s de pg_net
+--     -- (con todos los avisos a la vez, una máquina lenta puede dejar status_code
+--     -- vacío aunque n8n haya recibido y juzgado igual)
+--   select p.id from publicaciones p            -- tiene que devolver 0 filas
+--     where p.tipo = 'donacion' and p.estado = 'activa'
+--       and not exists (select 1 from juicios j where j.donacion_id = p.id);
+--
+-- El reset común (`supabase db reset`, sin --no-seed) sigue cargando la demo sin
+-- juicios. Sirve para trabajar en el frontend y no cambia.
+-- ============================================================
+
+-- ============================================================
 -- SCRIPT DE SEMILLA PARA DEMO DE MATCHING (6 Usuarios + 20 Publicaciones)
 -- ============================================================
 
