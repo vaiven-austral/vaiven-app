@@ -6,7 +6,7 @@ import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
 import { Button } from '../components/ui/button';
 import { Logo } from '../components/Logo';
-import { SplashScreen } from '../components/ui/SplashScreen';
+import { SplashScreen, useSplashScreen } from '../components/ui/SplashScreen';
 import { NOMBRE_MAX_LENGTH } from '../lib/userDisplay';
 import { EMAIL_MAX_LENGTH, PASSWORD_MAX_LENGTH } from '../lib/authLimits';
 
@@ -21,6 +21,7 @@ export function RegisterPage() {
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
   const { session, loading: authLoading } = useAuth();
+  const showSplash = useSplashScreen(authLoading);
 
   // Si ya hay sesión activa, redirige a home
   useEffect(() => {
@@ -29,8 +30,8 @@ export function RegisterPage() {
     }
   }, [session, navigate]);
 
-  // Mientras AuthContext carga, muestra spinner
-  if (authLoading) {
+  // Mientras AuthContext carga o el splash concluye, muestra SplashScreen
+  if (showSplash) {
     return <SplashScreen />;
   }
 
