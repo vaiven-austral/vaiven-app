@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Candidate } from '@/lib/n8n';
+import type { PublicacionOrigen } from '@/lib/eleccion';
 import { Sparkles } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
 import { ScoreRing } from './ScoreRing';
@@ -8,10 +9,10 @@ import { AnalysisPanel } from './AnalysisPanel';
 interface CandidateCardProps {
   candidate: Candidate;
   categoriaNombre?: string;
-  onAccept?: (candidateId: string) => void;
+  origen?: PublicacionOrigen;
 }
 
-export function CandidateCard({ candidate, categoriaNombre, onAccept }: CandidateCardProps) {
+export function CandidateCard({ candidate, categoriaNombre, origen }: CandidateCardProps) {
   const [panelOpen, setPanelOpen] = useState(false);
 
   let zonaTexto = candidate.zonas?.localidad || candidate.zonas?.partido || 'Ubicación no disponible';
@@ -89,7 +90,7 @@ export function CandidateCard({ candidate, categoriaNombre, onAccept }: Candidat
           candidate={candidate}
           open={panelOpen}
           onOpenChange={setPanelOpen}
-          onAccept={onAccept}
+          origen={origen}
         />
       )}
     </div>

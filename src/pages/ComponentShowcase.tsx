@@ -10,7 +10,9 @@ import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
 import { PublicationCard, type Publication } from '../components/publications/PublicationCard';
 import { ScoreRing } from '../components/matching/ScoreRing';
 import { CandidateCard } from '../components/matching/CandidateCard';
+import { ConfirmarEleccionModal } from '../components/matching/ConfirmarEleccionModal';
 import type { Candidate } from '../lib/n8n';
+import type { PublicacionOrigen } from '../lib/eleccion';
 
 // Pesos reales del motor (docs/motor/contrato.md): 40/10/20/10/5/15 sobre 100.
 // Se escalan al score de prueba para que el anillo se vea proporcionado.
@@ -90,6 +92,19 @@ const candidatoPendiente: Candidate = {
   justificacion: null,
 };
 
+// El mismo candidato del lado de una necesidad, para verlo desde una donación.
+const candidatoNecesidad: Candidate = {
+  ...candidatoConJuicio,
+  id: 'test-candidato-necesidad',
+  titulo: 'Compu para que mi hija estudie',
+  tipo: 'necesidad',
+  estado_objeto: undefined,
+  urgencia: 'alta',
+};
+
+const origenDonacion: PublicacionOrigen = { id: 'demo-donacion', titulo: 'PC de escritorio completa', tipo: 'donacion' };
+const origenNecesidad: PublicacionOrigen = { id: 'demo-necesidad', titulo: 'Compu para estudiar', tipo: 'necesidad' };
+
 const mockPublications: Publication[] = [
   {
     id: '1',
@@ -126,6 +141,7 @@ const mockPublications: Publication[] = [
 
 export function ComponentShowcase() {
   const [inputValue, setInputValue] = useState('');
+  const [confirmarOpen, setConfirmarOpen] = useState(false);
   const [selectValue, setSelectValue] = useState('opcion1');
   const [categoriaId, setCategoriaId] = useState<number | null>(null);
   const [zonaId, setZonaId] = useState<number | null>(null);
@@ -313,13 +329,37 @@ export function ComponentShowcase() {
             Candidato de prueba con justificación completa (narrativa larga incluida, para probar el scroll interno).
           </p>
           <div className="max-w-md flex flex-col gap-6">
-            <CandidateCard candidate={candidatoConJuicio} categoriaNombre="Tecnología" onAccept={() => {}} />
-            
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Desde una donación: «Elegir a esta persona»</p>
+              <CandidateCard candidate={candidatoNecesidad} categoriaNombre="Tecnología" origen={origenDonacion} />
+            </div>
+
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Desde una necesidad: texto, sin botón</p>
+              <CandidateCard candidate={candidatoConJuicio} categoriaNombre="Tecnología" origen={origenNecesidad} />
+            </div>
+
             <div>
               <p className="text-sm font-600 text-texto-medio mb-3">Estado Analizando / Pendiente</p>
-              <CandidateCard candidate={candidatoPendiente} onAccept={() => {}} />
+              <CandidateCard candidate={candidatoPendiente} />
             </div>
           </div>
+        </section>
+
+        {/* CONFIRMAR ELECCIÓN (SCRUM-90) */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">ConfirmarEleccionModal</h2>
+          <p className="text-sm text-texto-medio mb-4">
+            «Sí, elegir» navega a /contacto/:donacionId con los dos títulos en el state; no guarda nada.
+          </p>
+          <Button variant="outline" onClick={() => setConfirmarOpen(true)}>Abrir modal</Button>
+          <ConfirmarEleccionModal
+            open={confirmarOpen}
+            onOpenChange={setConfirmarOpen}
+            donacionId={origenDonacion.id}
+            tituloDonacion={origenDonacion.titulo}
+            tituloNecesidad={candidatoNecesidad.titulo}
+          />
         </section>
 
         {/* PUBLICATION CARD */}
