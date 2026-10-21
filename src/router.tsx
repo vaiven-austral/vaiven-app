@@ -5,6 +5,7 @@ import { HomeFeed } from './pages/HomeFeed';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { RecuperarPage } from './pages/RecuperarPage';
+import { NuevaContrasenaPage } from './pages/NuevaContrasenaPage';
 import { PublicarPage } from './pages/PublicarPage';
 import { CreateDonation } from './pages/CreateDonation';
 import { CreateNeed } from './pages/CreateNeed';
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
   {
     path: '/recuperar',
     element: <RecuperarPage />,
+  },
+  {
+    path: '/nueva-contrasena',
+    element: <NuevaContrasenaPage />,
   },
   {
     path: '/dev/components',
