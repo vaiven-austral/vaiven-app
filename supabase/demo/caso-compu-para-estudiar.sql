@@ -45,6 +45,15 @@ UPDATE public.perfiles
 SET avatar_ruta = NULL, zona_id = NULL
 WHERE id = 'ff3041a6-febe-4e85-925b-ae5216b73361';
 
+-- 0b. PERFIL DE LA MAMÁ SIN FOTO (para el salto de puntaje en vivo)
+-- La semilla deja a A con un avatar de mentira. Se lo saca para que su pedido arranque con
+-- confianza 5: en la pantalla de Dev 1 sale con ~93 y queda segunda, detrás del pedido rival
+-- (ver el bloque 6, ~95). Cuando A sube su foto, la confianza pasa a 10, el pedido sube a ~98
+-- y pasa al primer lugar. Dev 1 lo ve al recargar su pantalla de compatibles.
+UPDATE public.perfiles
+SET avatar_ruta = NULL
+WHERE id = 'f3b6d105-625f-400e-8d1d-dd5a3d0364a0';
+
 -- 1. LA DONACIÓN (Usuario B: ff3041a6-febe-4e85-925b-ae5216b73361)
 INSERT INTO public.publicaciones (
   id, usuario_id, tipo, estado, titulo, descripcion,
@@ -108,4 +117,20 @@ INSERT INTO public.publicaciones (
   'Notebook liviana para ver series y pelis',
   'Busco una notebook liviana con buena batería para ver series y pelis. Si puedo llevarla de viaje los fines de semana, mejor.',
   5, 550, 'sin_apuro', 1, now() + interval '30 days'
+) ON CONFLICT (id) DO NOTHING;
+
+-- 6. NECESIDAD RIVAL, CABEZA A CABEZA CON LA DE LA MAMÁ (Usuario F: 76e7c5c3-4acf-40da-9115-638c442c866a)
+-- Un pedido de estudio casi igual al de la mamá, de un perfil con confianza 5 (tiene zona, no foto)
+-- y con una foto cargada (calidad 5). Sale con ~95: queda primero mientras la mamá no tenga foto
+-- (~93) y segundo cuando la sube (~98). Su foto la sube subir-fotos.sh.
+INSERT INTO public.publicaciones (
+  id, usuario_id, tipo, estado, titulo, descripcion,
+  categoria_id, zona_id, urgencia, cantidad, vence_en
+) VALUES (
+  'a1000000-0000-0000-0000-000000000005',
+  '76e7c5c3-4acf-40da-9115-638c442c866a',
+  'necesidad', 'activa',
+  'Compu sencilla para que mi hijo curse la facultad',
+  'Mi hijo arranca la facultad el mes que viene y necesitamos una computadora sencilla para que pueda hacer los trabajos, entrar a las clases por Zoom y buscar información. Con que ande bien nos alcanza, hoy se arregla con el celular.',
+  5, 1178, 'alta', 1, now() + interval '30 days'
 ) ON CONFLICT (id) DO NOTHING;

@@ -25,6 +25,7 @@ usuario-b@vaiven.dev|ff3041a6-febe-4e85-925b-ae5216b73361|b1000000-0000-0000-000
 usuario-c@vaiven.dev|78d026a5-c05c-4705-b32b-b518bd05bc3b|a1000000-0000-0000-0000-000000000002|0|pedido-gamer-pc-rgb.jpg
 usuario-d@vaiven.dev|6723bd6b-18f7-486a-806b-dbab31d35620|a1000000-0000-0000-0000-000000000003|0|pedido-diseno-tableta-con-lapiz.jpg
 usuario-e@vaiven.dev|acc5626b-15d6-40f6-bba8-080859c55539|a1000000-0000-0000-0000-000000000004|0|pedido-ocio-notebook-en-la-cama.jpg
+usuario-f@vaiven.dev|76e7c5c3-4acf-40da-9115-638c442c866a|a1000000-0000-0000-0000-000000000005|0|pedido-estudiante-facultad.jpg
 "
 
 subidas=0; faltan=0

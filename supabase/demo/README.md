@@ -1,6 +1,6 @@
 # Demo «La compu para estudiar»
 
-Una PC de escritorio donada contra cuatro pedidos de compu que compiten. Sirve para mostrar cómo el motor
+Una PC de escritorio donada contra cinco pedidos de compu que compiten, dos de ellos cabeza a cabeza. Sirve para mostrar cómo el motor
 de matching (Gemini en Vertex AI) distingue entre pedidos parecidos y explica su juicio.
 
 Con un solo comando se rehace todo el estado de la demo en la base local:
@@ -16,9 +16,9 @@ bash supabase/demo/preparar-demo.sh
 | Archivo | Para qué |
 |---|---|
 | `preparar-demo.sh` | Rehace todo con un comando (receta de `supabase/seed.sql`, caso, fotos y verificación) |
-| `caso-compu-para-estudiar.sql` | Las 5 publicaciones del caso y el ajuste del perfil del donante |
+| `caso-compu-para-estudiar.sql` | Las 6 publicaciones del caso y el ajuste de los perfiles de la mamá y del donante |
 | `subir-fotos.sh` | Sube las fotos al Storage local y las asocia a sus publicaciones |
-| `fotos/` | Las 6 fotos. **No están en el repo** (ver más abajo) |
+| `fotos/` | Las 7 fotos. **No están en el repo** (ver más abajo) |
 
 El caso va **aparte** de `supabase/seed.sql` a propósito: la Action del reporter de KPIs carga esa semilla, y
 agregarle publicaciones cambiaría los valores que mide el reporter.
@@ -69,8 +69,9 @@ y abrí la app en dos navegadores, uno por usuario.
 
 | Usuario | Papel en la demo |
 |---|---|
-| `usuario-b@vaiven.dev` | **Dev 1, el donante.** Su PC es la donación. Arranca sin foto ni zona en el perfil |
-| `usuario-a@vaiven.dev` | **Dev 2, la mamá necesitada.** Pide una compu para su hija de 14 años |
+| `usuario-b@vaiven.dev` | **Dev 1, el donante.** Su PC es la donación. Mira la lista de compatibles y recarga cuando la mamá sube su foto |
+| `usuario-a@vaiven.dev` | **Dev 2, la mamá necesitada.** Pide una compu para su hija de 14 años. **Arranca sin foto de perfil y la sube en vivo** |
+| `usuario-f@vaiven.dev` | Pedido rival, cabeza a cabeza con el de la mamá: compu para un hijo que entra a la facultad. No inicia sesión |
 | `usuario-c@vaiven.dev` | Pedido que compite: PC gamer. No inicia sesión |
 | `usuario-d@vaiven.dev` | Pedido que compite: notebook táctil para diseño. No inicia sesión |
 | `usuario-e@vaiven.dev` | Pedido que compite: notebook para series y pelis. No inicia sesión |
@@ -82,15 +83,18 @@ final. Con los datos actuales:
 
 | Pantalla | Resultado |
 |---|---|
-| Dev 1, «Ver compatibles» de la PC | Mamá **98** (verde), Ocio **50**, Diseño **48**, Gamer **45** (ámbar) y recién después los pedidos que no son del caso |
+| Dev 1, «Ver compatibles» de la PC (antes de la foto) | Rival (facultad) **95** primero, mamá **93** segunda, y después Ocio **50**, Diseño **48** y Gamer **45** (ámbar) |
+| Dev 1, después de que la mamá sube su foto y se recarga | Mamá **98** primera, rival **95** segundo: la mamá pasa al primer lugar |
 | Dev 2, «Ver compatibles» de su pedido | La PC con **88** (verde); el siguiente apenas pasa de 30 |
 
-El rango verde empieza en 70, el ámbar en 40 y el rojo es menor a 40. El paso de la foto de perfil: cuando Dev 1
-sube su foto en Editar perfil, la PC sube de 88 a **93** en la pantalla de Dev 2 (a 98 si además carga la zona).
+El rango verde empieza en 70, el ámbar en 40 y el rojo es menor a 40. El paso de la foto de perfil: Dev 2 (la mamá)
+sube su foto en Editar perfil (JPG o PNG, hasta 5 MB). Eso suma 5 puntos de confianza a su pedido y Dev 1 lo ve al
+recargar. Para repetir el momento hay que volver a dejar a la mamá sin foto: lo más simple es correr de nuevo
+`preparar-demo.sh`.
 
 ## Las fotos
 
-Las 6 fotos no se suben al repo porque algunas tienen marca de agua o logos de terceros. Pedile la carpeta
+Las 7 fotos no se suben al repo porque algunas tienen marca de agua o logos de terceros. Pedile la carpeta
 `fotos/` a quien armó la demo (llega como zip) y descomprimila en `supabase/demo/`:
 
 ```bash
@@ -107,6 +111,7 @@ Tiene que quedar `supabase/demo/fotos/` con estos archivos:
 | `pedido-gamer-pc-rgb.jpg` | Pedido gamer |
 | `pedido-diseno-tableta-con-lapiz.jpg` | Pedido de diseño |
 | `pedido-ocio-notebook-en-la-cama.jpg` | Pedido de ocio |
+| `pedido-estudiante-facultad.jpg` | Pedido rival de la facultad (hoy es una copia de la del pedido de ocio: se puede cambiar por otra) |
 
 Si falta alguna, `subir-fotos.sh` lo avisa y sigue sin esa foto. Se puede probar con otra carpeta:
 `FOTOS_DIR=/otra/carpeta bash supabase/demo/subir-fotos.sh`.

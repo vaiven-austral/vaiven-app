@@ -101,13 +101,15 @@ esperar_motor 1500
 paso "3. Fotos"
 SALIDA_FOTOS=$(bash supabase/demo/subir-fotos.sh 2>&1) || { echo "$SALIDA_FOTOS" >&2; falla "Falló la subida de fotos (corré bash supabase/demo/subir-fotos.sh para ver el error)."; }
 SUBIDAS=$(grep -c '^ok:' <<<"$SALIDA_FOTOS" || true)
-if [ "$SUBIDAS" = 6 ]; then
-  ok "6 fotos subidas"
+if [ "$SUBIDAS" = 7 ]; then
+  ok "7 fotos subidas"
 else
-  aviso "se subieron $SUBIDAS de 6 fotos: faltan archivos en supabase/demo/fotos/ (ver supabase/demo/README.md). La demo funciona igual, sin esas fotos."
+  aviso "se subieron $SUBIDAS de 7 fotos: faltan archivos en supabase/demo/fotos/ (ver supabase/demo/README.md). La demo funciona igual, sin esas fotos."
 fi
 [ "$(Q -At -c "select avatar_ruta is null from perfiles where id='ff3041a6-febe-4e85-925b-ae5216b73361'")" = t ] \
   && ok "Dev 1 (usuario B) arranca sin foto de perfil" || aviso "Dev 1 ya tiene foto de perfil"
+[ "$(Q -At -c "select avatar_ruta is null from perfiles where id='f3b6d105-625f-400e-8d1d-dd5a3d0364a0'")" = t ] \
+  && ok "la mamá (usuario A) arranca sin foto de perfil: la va a subir en vivo" || aviso "la mamá (usuario A) ya tiene foto de perfil: no habrá salto de puntaje en vivo"
 
 # ---------------------------------------------------------------- 4. puntajes reales
 paso "4. Puntajes con el endpoint de la pantalla"
@@ -117,7 +119,8 @@ login() { curl -fsS "$SB_API_URL/auth/v1/token?grant_type=password" -H "apikey: 
 candidatos() { curl -s -X POST localhost:5678/webhook/matching-v1 -H "Authorization: Bearer $(login "$1")" -H "Content-Type: application/json" -d "{\"publicacion_id\":\"$2\"}"; }
 FMT='"  \(.score_total|round)\t(nivel \(.nivel))\t\(.titulo[0:60])"'
 echo "  Dev 1 (donante) · «Ver compatibles» de la PC:"
-candidatos usuario-b@vaiven.dev b1000000-0000-0000-0000-000000000001 | jq -r ".body.candidates[:6][] | $FMT"
+RESP1=$(candidatos usuario-b@vaiven.dev b1000000-0000-0000-0000-000000000001)
+echo "$RESP1" | jq -r ".body.candidates[:6][] | $FMT"
 echo "  Dev 2 (necesitada) · «Ver compatibles» del pedido de la mamá:"
 RESP=$(candidatos usuario-a@vaiven.dev a1000000-0000-0000-0000-000000000001)
 echo "$RESP" | jq -r ".body.candidates[:3][] | $FMT"
@@ -127,6 +130,16 @@ if [ "${TITULO:0:6}" = "PC de " ] && [ "$NIVEL" = 4 ] && [ "$PUNTAJE" -ge 70 ]; 
   ok "la PC es el primer match de la mamá (nivel 4, $PUNTAJE puntos, rango verde)"
 else
   aviso "la PC no salió primera con nivel 4 y 70 o más (salió: «$TITULO», nivel $NIVEL, $PUNTAJE puntos)"
+fi
+
+# Cabeza a cabeza: el pedido rival (F) queda primero y la mamá (A) segunda; al subir la foto, la mamá pasa primero.
+RIVAL=a1000000-0000-0000-0000-000000000005; MAMA=a1000000-0000-0000-0000-000000000001
+P1=$(echo "$RESP1" | jq -r '.body.candidates[0].id // ""'); P2=$(echo "$RESP1" | jq -r '.body.candidates[1].id // ""')
+S1=$(echo "$RESP1" | jq -r '.body.candidates[0].score_total // 0 | round'); S2=$(echo "$RESP1" | jq -r '.body.candidates[1].score_total // 0 | round')
+if [ "$P1" = "$RIVAL" ] && [ "$P2" = "$MAMA" ]; then
+  ok "cabeza a cabeza: el rival sale primero ($S1) y la mamá segunda ($S2); con su foto la mamá sube unos 5 puntos y pasa al primer lugar"
+else
+  aviso "el cabeza a cabeza no salió como se espera (primero: $P1 con $S1; segundo: $P2 con $S2). Se esperaba el rival primero y la mamá segunda"
 fi
 
 paso "Listo en $(( $(date +%s) - INICIO )) s"
