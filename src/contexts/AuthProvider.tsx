@@ -27,6 +27,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
+  const [enRecuperacion, setEnRecuperacion] = useState(false);
 
   const loadProfile = useCallback(async (userId: string) => {
     setProfileLoading(true);
@@ -69,7 +70,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     // Suscribirse a cambios de autenticación (login, logout, token refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => applySession(session)
+      (event, session) => {
+        // El link del correo llega con una sesión de recuperación: sólo con ella
+        // se puede elegir la contraseña nueva. USER_UPDATED llega cuando
+        // updateUser terminó bien.
+        if (event === 'PASSWORD_RECOVERY') setEnRecuperacion(true);
+        if (event === 'USER_UPDATED' || event === 'SIGNED_OUT') setEnRecuperacion(false);
+        applySession(session);
+      }
     );
 
     return () => subscription?.unsubscribe();
@@ -77,7 +85,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ session, user: session?.user || null, loading, profile, profileLoading, refetchProfile }}
+      value={{ session, user: session?.user || null, loading, profile, profileLoading, refetchProfile, enRecuperacion }}
     >
       {children}
     </AuthContext.Provider>
