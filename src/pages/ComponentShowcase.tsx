@@ -5,6 +5,8 @@ import { Textarea } from '../components/ui/textarea';
 import { Select } from '../components/ui/select';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
+import { InfoHint } from '../components/ui/info-hint';
+import { FACTOR_INFO } from '../lib/factorInfo';
 import { CategorySelect } from '../components/forms/CategorySelect';
 import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
 import { PublicationCard, type Publication } from '../components/publications/PublicationCard';
@@ -377,6 +379,25 @@ export function ComponentShowcase() {
             <Badge variant="warning">Warning</Badge>
             <Badge variant="destructive">Destructive</Badge>
             <Badge variant="neutral">Neutral</Badge>
+          </div>
+        </section>
+
+        {/* INFO HINT (SCRUM-140) */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">InfoHint</h2>
+          <p className="text-sm text-texto-medio mb-4">
+            Ícono de info que abre una explicación corta. Abre con clic, tap o Enter; cierra con Esc o tocando afuera.
+          </p>
+
+          <div className="max-w-md space-y-3">
+            <div className="flex items-center gap-1 text-sm text-texto-medio">
+              Resolución
+              <InfoHint texto={FACTOR_INFO.resolucion} />
+            </div>
+            <div className="flex items-center justify-end gap-1 text-sm text-texto-medio">
+              Pegado al borde derecho
+              <InfoHint texto={FACTOR_INFO.total} />
+            </div>
           </div>
         </section>
 
