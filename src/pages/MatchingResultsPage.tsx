@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabaseClient';
 import { callN8nWebhook, WebhookError } from '@/lib/n8n';
 import type { Candidate } from '@/lib/n8n';
+import type { PublicacionOrigen } from '@/lib/eleccion';
 import { CandidateCard } from '@/components/matching/CandidateCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Users, Lock, FileX, AlertCircle, WifiOff } from 'lucide-react';
@@ -15,6 +16,7 @@ export function MatchingResultsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<{ message: string; status?: number } | null>(null);
   const [categorias, setCategorias] = useState<Record<number, string>>({});
+  const [origen, setOrigen] = useState<PublicacionOrigen | undefined>(undefined);
 
   useEffect(() => {
     let cancelled = false;
@@ -30,6 +32,27 @@ export function MatchingResultsPage() {
       });
     return () => { cancelled = true; };
   }, []);
+
+  // Título y tipo de la publicación de origen: el tipo decide si el drawer
+  // ofrece elegir, y el título va al modal de confirmación.
+  useEffect(() => {
+    if (!publicacionId) return;
+    let cancelled = false;
+    supabase
+      .from('publicaciones')
+      .select('titulo, tipo')
+      .eq('id', publicacionId)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          console.error('Error al leer la publicación de origen:', error);
+          return;
+        }
+        if (data) setOrigen({ id: publicacionId, titulo: data.titulo, tipo: data.tipo });
+      });
+    return () => { cancelled = true; };
+  }, [publicacionId]);
 
   const handleRefresh = useCallback(async () => {
     if (!publicacionId) {
@@ -169,7 +192,7 @@ export function MatchingResultsPage() {
 
             <div className="space-y-3">
               {candidates.map((candidate) => (
-                <CandidateCard key={candidate.id} candidate={candidate} categoriaNombre={categorias[candidate.categoria_id]} onAccept={() => {} } />
+                <CandidateCard key={candidate.id} candidate={candidate} categoriaNombre={categorias[candidate.categoria_id]} origen={origen} />
               ))}
             </div>
           </div>

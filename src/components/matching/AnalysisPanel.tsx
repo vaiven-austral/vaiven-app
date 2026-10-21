@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
 import type { Candidate } from '@/lib/n8n';
+import type { PublicacionOrigen } from '@/lib/eleccion';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import {
   Drawer,
@@ -20,12 +21,12 @@ interface AnalysisPanelProps {
   candidate: Candidate;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAccept?: (candidateId: string) => Promise<void> | void;
+  origen?: PublicacionOrigen;
 }
 
 // Un solo Drawer para los dos casos: sube desde abajo en mobile, entra desde
 // la derecha en desktop (swipeDirection), en vez de un componente aparte.
-export function AnalysisPanel({ candidate, open, onOpenChange, onAccept }: AnalysisPanelProps) {
+export function AnalysisPanel({ candidate, open, onOpenChange, origen }: AnalysisPanelProps) {
   const isMobile = useIsMobile();
 
   return (
@@ -73,16 +74,7 @@ export function AnalysisPanel({ candidate, open, onOpenChange, onAccept }: Analy
         </div>
 
         <DrawerFooter className="border-t border-borde pt-4">
-          <PanelActions
-            onAccept={
-              onAccept
-                ? async () => {
-                    await onAccept(candidate.id);
-                    onOpenChange(false);
-                  }
-                : undefined
-            }
-          />
+          <PanelActions origen={origen} tituloCandidato={candidate.titulo} />
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
