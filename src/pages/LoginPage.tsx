@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
 import { useAuth } from '../hooks/useAuth';
@@ -92,6 +92,11 @@ export function LoginPage() {
               >
                 {showPassword ? <Icon icon={EyeOff} size={18} /> : <Icon icon={Eye} size={18} />}
               </button>
+            </div>
+            <div className="mt-2 text-right">
+              <Link to="/recuperar" className="text-sm text-primario font-medium hover:underline">
+                ¿Olvidaste tu contraseña?
+              </Link>
             </div>
           </div>
 
