@@ -17,6 +17,9 @@ export interface AuthContextType {
   profile: Profile | null;
   profileLoading: boolean;
   refetchProfile: () => Promise<void>;
+  // true desde que se abre el link de recuperación (PASSWORD_RECOVERY) hasta
+  // que se cambia la contraseña (USER_UPDATED) o se cierra la sesión.
+  enRecuperacion: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
