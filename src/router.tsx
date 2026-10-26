@@ -16,6 +16,7 @@ import { HistorialPage } from './pages/HistorialPage';
 import { PerfilPage } from './pages/PerfilPage';
 import { EditarPerfil } from './pages/EditarPerfil';
 import { MatchingResultsPage } from './pages/MatchingResultsPage';
+import { ContactoPage } from './pages/ContactoPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { RootPage } from './pages/RootPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -108,6 +109,10 @@ export const router = createBrowserRouter([
           {
             path: '/matching/:publicacionId',
             element: <MatchingResultsPage />,
+          },
+          {
+            path: '/contacto/:donacionId',
+            element: <ContactoPage />,
           },
         ],
       },
