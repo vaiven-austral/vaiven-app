@@ -10,7 +10,9 @@ import { validateAvatarFile, subirAvatar, borrarAvatar } from '../lib/avatarUplo
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
+import { CategoriasInteresSelect } from '../components/forms/CategoriasInteresSelect';
 import { getInitials, NOMBRE_MAX_LENGTH } from '../lib/userDisplay';
+import { mismasCategorias, ordenarCategorias } from '../lib/categoriasInteres';
 
 export function EditarPerfil() {
   const navigate = useNavigate();
@@ -20,6 +22,7 @@ export function EditarPerfil() {
   const { url: currentAvatarUrl } = useAvatarUrl(profile?.avatar_ruta ?? null);
   const [nombreVisible, setNombreVisible] = useState<string | null>(null);
   const [zonaId, setZonaId] = useState<number | null>(null);
+  const [categoriasInteres, setCategoriasInteres] = useState<number[] | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarFileError, setAvatarFileError] = useState('');
   const [nombreError, setNombreError] = useState('');
@@ -32,6 +35,9 @@ export function EditarPerfil() {
 
   if (profile && nombreVisible === null) {
     setNombreVisible(profile.nombre_visible);
+  }
+  if (profile && categoriasInteres === null) {
+    setCategoriasInteres(profile.categorias_interes);
   }
 
   const avatarPreviewUrl = useMemo(
@@ -94,10 +100,18 @@ export function EditarPerfil() {
     }
 
     const nombreTrim = (nombreVisible ?? '').trim();
-    const changes: { nombre_visible?: string; zona_id?: number | null; avatar_ruta?: string } = {};
+    const changes: {
+      nombre_visible?: string;
+      zona_id?: number | null;
+      avatar_ruta?: string;
+      categorias_interes?: number[];
+    } = {};
     if (nombreTrim !== profile.nombre_visible) changes.nombre_visible = nombreTrim;
     if (zonaId !== profile.zona_id) changes.zona_id = zonaId;
     if (nuevaRutaAvatar) changes.avatar_ruta = nuevaRutaAvatar;
+    if (categoriasInteres && !mismasCategorias(categoriasInteres, profile.categorias_interes)) {
+      changes.categorias_interes = ordenarCategorias(categoriasInteres);
+    }
 
     if (Object.keys(changes).length === 0) {
       navigate('/perfil');
@@ -211,6 +225,14 @@ export function EditarPerfil() {
         />
 
         <ZoneCascadeSelect onChange={setZonaId} valorInicial={profile.zona_id} />
+
+        <div className="rounded-tarjeta border border-borde bg-tarjeta p-5">
+          <h2 className="font-700 text-lg text-tinta">Categorías que te interesan</h2>
+          <p className="text-texto-suave text-sm mt-1 mb-4">
+            Elegí todas las que quieras. Podés cambiarlas en cualquier momento.
+          </p>
+          <CategoriasInteresSelect value={categoriasInteres ?? []} onChange={setCategoriasInteres} />
+        </div>
 
         {submitError && (
           <div className="rounded-tarjeta border-2 border-critico bg-[rgba(220,38,38,0.06)] p-4 text-critico text-sm font-500">
