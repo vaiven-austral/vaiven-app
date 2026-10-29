@@ -1,11 +1,12 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { SplashScreen } from '../components/ui/SplashScreen';
+import { SplashScreen, useSplashScreen } from '../components/ui/SplashScreen';
 
 export function RootPage() {
   const { session, loading } = useAuth();
+  const showSplash = useSplashScreen(loading);
 
-  if (loading) {
+  if (showSplash) {
     return <SplashScreen />;
   }
 

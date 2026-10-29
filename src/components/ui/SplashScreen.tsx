@@ -1,5 +1,21 @@
+import { useEffect, useState } from 'react';
 import logo from '@/assets/Logo_Vaiven1.webp';
 import { APP_VERSION } from '@/lib/version';
+
+// Hook para garantizar un tiempo de visualización adecuado del Splash en la demo
+export function useSplashScreen(loading: boolean, minDuration = 1500): boolean {
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMinTimeElapsed(true);
+    }, minDuration);
+
+    return () => clearTimeout(timer);
+  }, [minDuration]);
+
+  return loading || !minTimeElapsed;
+}
 
 export function SplashScreen() {
   return (
