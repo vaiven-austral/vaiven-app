@@ -20,6 +20,12 @@ export interface AuthContextType {
   // true desde que se abre el link de recuperación (PASSWORD_RECOVERY) hasta
   // que se cambia la contraseña (USER_UPDATED) o se cierra la sesión.
   enRecuperacion: boolean;
+  // true cuando la sesión se perdió sin que el usuario la cerrara (venció el
+  // token, o se cerró desde otro dispositivo). Vuelve a false al iniciar sesión.
+  sesionVencida: boolean;
+  // El único lugar de la app que llama a supabase.auth.signOut. 'local' cierra
+  // sólo este dispositivo; 'global', todos los del usuario.
+  cerrarSesion: (alcance: 'local' | 'global') => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
