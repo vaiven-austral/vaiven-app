@@ -5,7 +5,9 @@ import { useAuth } from '../hooks/useAuth';
 import { useOwnProfile } from '../hooks/useOwnProfile';
 import { useZonaLabel } from '../hooks/useZonaLabel';
 import { useAvatarUrl } from '../hooks/useAvatarUrl';
+import { useOwnContacto } from '../hooks/useOwnContacto';
 import { usePublicationsSummary } from '../hooks/usePublicationsSummary';
+import { tieneContacto } from '../lib/contacto';
 import { formatTipoBreakdown } from '../lib/publicationsSummary';
 import { getProfileCompleteness } from '../lib/profileCompleteness';
 import { supabase } from '../lib/supabaseClient';
@@ -24,6 +26,7 @@ export function PerfilPage() {
   const { label: zonaLabel } = useZonaLabel(profile?.zona_id ?? null);
   const { url: avatarUrl } = useAvatarUrl(profile?.avatar_ruta ?? null);
   const { summary } = usePublicationsSummary();
+  const { contacto, loading: contactoLoading } = useOwnContacto();
 
   async function handleLogout() {
     const { error } = await supabase.auth.signOut();
@@ -46,7 +49,7 @@ export function PerfilPage() {
 
   const initials = getInitials(profile.nombre_visible, user?.email);
   const miembroDesde = formatMiembroDesde(new Date(profile.creado_en));
-  const completeness = getProfileCompleteness(profile);
+  const completeness = getProfileCompleteness(profile, tieneContacto(contacto));
 
   return (
     <div className="p-4 space-y-4">
@@ -86,23 +89,25 @@ export function PerfilPage() {
         </div>
       </div>
 
-      {/* Perfil completo */}
-      <div className="bg-tarjeta rounded-tarjeta border border-borde p-4 shadow-sm">
-        <p className="font-700 text-texto-suave text-xs uppercase">Perfil completo</p>
-        <p className="font-800 text-3xl text-primario mt-1">{completeness.percent}%</p>
-        <div className="h-2 rounded-pill bg-lienzo mt-3 overflow-hidden">
-          <div
-            className="h-full rounded-pill bg-gradient-to-r from-primario to-secundario"
-            style={{ width: `${completeness.percent}%` }}
-          />
+      {/* Perfil completo: sin el contacto cargado el porcentaje saldría mal */}
+      {!contactoLoading && (
+        <div className="bg-tarjeta rounded-tarjeta border border-borde p-4 shadow-sm">
+          <p className="font-700 text-texto-suave text-xs uppercase">Perfil completo</p>
+          <p className="font-800 text-3xl text-primario mt-1">{completeness.percent}%</p>
+          <div className="h-2 rounded-pill bg-lienzo mt-3 overflow-hidden">
+            <div
+              className="h-full rounded-pill bg-gradient-to-r from-primario to-secundario"
+              style={{ width: `${completeness.percent}%` }}
+            />
+          </div>
+          <p className="text-texto-medio text-sm mt-2">{completeness.message}</p>
+          {completeness.percent < 100 && (
+            <Link to="/perfil/editar" className="inline-block font-600 text-primario text-sm mt-1">
+              Completar perfil →
+            </Link>
+          )}
         </div>
-        <p className="text-texto-medio text-sm mt-2">{completeness.message}</p>
-        {completeness.percent < 100 && (
-          <Link to="/perfil/editar" className="inline-block font-600 text-primario text-sm mt-1">
-            Completar perfil →
-          </Link>
-        )}
-      </div>
+      )}
 
       {/* Menú */}
       <div className="bg-tarjeta rounded-tarjeta border border-borde shadow-sm overflow-hidden">
@@ -112,7 +117,7 @@ export function PerfilPage() {
         >
           <div>
             <p className="font-600 text-tinta">Editar perfil</p>
-            <p className="text-texto-suave text-sm">Nombre, foto y zona</p>
+            <p className="text-texto-suave text-sm">Nombre, foto, zona y contacto</p>
           </div>
           <Icon icon={ChevronRight} className="h-5 w-5 text-texto-suave shrink-0" />
         </Link>
