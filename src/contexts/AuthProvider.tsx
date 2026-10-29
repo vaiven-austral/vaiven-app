@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabaseClient';
@@ -28,6 +28,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [enRecuperacion, setEnRecuperacion] = useState(false);
+  const [sesionVencida, setSesionVencida] = useState(false);
+  // Marca que el SIGNED_OUT que viene lo pidió el usuario: sin ella, es una
+  // sesión que se perdió sola.
+  const cierreVoluntario = useRef(false);
 
   const loadProfile = useCallback(async (userId: string) => {
     setProfileLoading(true);
@@ -56,6 +60,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
     await loadProfile(session.user.id);
   }, [session, loadProfile]);
 
+  const cerrarSesion = useCallback(async (alcance: 'local' | 'global') => {
+    cierreVoluntario.current = true;
+    const { error } = await supabase.auth.signOut({ scope: alcance });
+    // El SIGNED_OUT ya limpió la marca; si signOut falló antes de emitirlo no
+    // puede quedar encendida, o el próximo cierre involuntario saldría sin aviso.
+    cierreVoluntario.current = false;
+    if (error) {
+      console.error('Error al cerrar sesión:', error);
+      return false;
+    }
+    return true;
+  }, []);
+
   useEffect(() => {
     // Leer sesión existente (cuando la app carga o recarga)
     supabase.auth.getSession()
@@ -76,6 +93,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         // updateUser terminó bien.
         if (event === 'PASSWORD_RECOVERY') setEnRecuperacion(true);
         if (event === 'USER_UPDATED' || event === 'SIGNED_OUT') setEnRecuperacion(false);
+        // Un SIGNED_OUT que el usuario no pidió es una sesión vencida. Al abrir
+        // la app sin sesión no llega SIGNED_OUT, así que ahí no hay aviso.
+        if (event === 'SIGNED_OUT') {
+          setSesionVencida(!cierreVoluntario.current);
+          cierreVoluntario.current = false;
+        }
+        if (event === 'SIGNED_IN') setSesionVencida(false);
         applySession(session);
       }
     );
@@ -85,7 +109,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ session, user: session?.user || null, loading, profile, profileLoading, refetchProfile, enRecuperacion }}
+      value={{
+        session,
+        user: session?.user || null,
+        loading,
+        profile,
+        profileLoading,
+        refetchProfile,
+        enRecuperacion,
+        sesionVencida,
+        cerrarSesion,
+      }}
     >
       {children}
     </AuthContext.Provider>

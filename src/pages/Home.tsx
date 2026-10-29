@@ -1,21 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useN8n } from '../hooks/useN8n';
-import { supabase } from '../lib/supabaseClient';
 import { Button } from '../components/ui/button';
 import { Logo } from '../components/Logo';
 
 
 export function Home() {
   const navigate = useNavigate();
-  const { user, session } = useAuth();
+  const { user, session, cerrarSesion } = useAuth();
   const { loading: testing, error: testError, data: testData, callWebhook } = useN8n();
 
   async function handleLogout() {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Error al cerrar sesión:', error);
-    }
+    await cerrarSesion('local');
     navigate('/login');
   }
 
