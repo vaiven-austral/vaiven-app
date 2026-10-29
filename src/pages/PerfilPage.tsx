@@ -8,7 +8,6 @@ import { useAvatarUrl } from '../hooks/useAvatarUrl';
 import { usePublicationsSummary } from '../hooks/usePublicationsSummary';
 import { formatTipoBreakdown } from '../lib/publicationsSummary';
 import { getProfileCompleteness } from '../lib/profileCompleteness';
-import { supabase } from '../lib/supabaseClient';
 import { getInitials } from '../lib/userDisplay';
 
 const FORMATO_MES = new Intl.DateTimeFormat('es-AR', { month: 'long' });
@@ -19,17 +18,14 @@ function formatMiembroDesde(fecha: Date): string {
 
 export function PerfilPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, cerrarSesion } = useAuth();
   const { profile, loading: profileLoading } = useOwnProfile();
   const { label: zonaLabel } = useZonaLabel(profile?.zona_id ?? null);
   const { url: avatarUrl } = useAvatarUrl(profile?.avatar_ruta ?? null);
   const { summary } = usePublicationsSummary();
 
   async function handleLogout() {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error('Error al cerrar sesión:', error);
-    }
+    await cerrarSesion('local');
     navigate('/login');
   }
 
