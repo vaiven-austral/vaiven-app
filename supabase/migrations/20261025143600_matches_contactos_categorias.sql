@@ -85,6 +85,7 @@ CREATE POLICY "Dueño de donacion en proceso inserta match con necesidad"
       SELECT 1 FROM public.publicaciones
       WHERE publicaciones.id = matches.necesidad_id
         AND publicaciones.tipo = 'necesidad'
+        AND publicaciones.usuario_id <> auth.uid()
     )
   );
 
