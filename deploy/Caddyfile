@@ -1,7 +1,9 @@
 # El editor de n8n queda detrás de usuario y contraseña desde el primer arranque; los webhooks, abiertos
 # (el motor y la app los llaman sin esta contraseña: su puerta es el secreto del aviso y el JWT del usuario).
+# El listado y la lectura de ejecuciones (/api/v1/executions) también salen del basic auth: piden su propia
+# key (X-N8N-API-KEY) para el reporter de KPIs. El resto de la API, el editor y /rest/* siguen protegidos.
 {$N8N_HOST} {
-	@editor not path /webhook/* /webhook-test/*
+	@editor not path /webhook/* /webhook-test/* /api/v1/executions*
 	basic_auth @editor {
 		{$CADDY_USER} {$CADDY_HASH}
 	}
