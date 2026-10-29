@@ -48,6 +48,7 @@ export default {
 
         // Tokens propios de VaiVen (docs/ui/tokens.md)
         primario: "#49A078",
+        "primario-claro": "#DDEDE4",
         secundario: "#216869",
         terciario: {
           DEFAULT: "#785964",

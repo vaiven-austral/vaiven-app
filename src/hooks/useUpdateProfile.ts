@@ -4,7 +4,9 @@ import { useOwnProfile } from './useOwnProfile';
 import { supabase } from '../lib/supabaseClient';
 import type { Profile } from '../contexts/auth';
 
-type ProfileChanges = Partial<Pick<Profile, 'nombre_visible' | 'avatar_ruta' | 'zona_id'>>;
+type ProfileChanges = Partial<
+  Pick<Profile, 'nombre_visible' | 'avatar_ruta' | 'zona_id' | 'categorias_interes'>
+>;
 
 // Guarda solo los campos que cambiaron (los decide quien llama), filtrado
 // por el id del usuario de la sesión. Si Supabase devuelve error, se

@@ -11,7 +11,7 @@ interface AuthProviderProps {
 async function fetchProfile(userId: string): Promise<Profile | null> {
   const { data, error } = await supabase
     .from('perfiles')
-    .select('nombre_visible, avatar_ruta, zona_id, creado_en')
+    .select('nombre_visible, avatar_ruta, zona_id, creado_en, categorias_interes')
     .eq('id', userId)
     .single();
 
