@@ -2,7 +2,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Navigate, Outlet } from 'react-router-dom';
 
 export function ProtectedRoute() {
-  const { session, loading } = useAuth();
+  const { session, loading, sesionVencida } = useAuth();
 
   if (loading) {
     return (
@@ -13,7 +13,11 @@ export function ProtectedRoute() {
   }
 
   if (!session) {
-    return <Navigate to="/login" replace />;
+    // El aviso sólo si la sesión se perdió sola: entrar sin haber tenido sesión,
+    // o cerrarla a propósito, llega a /login sin estado.
+    return (
+      <Navigate to="/login" replace state={sesionVencida ? { motivo: 'sesion-vencida' } : undefined} />
+    );
   }
 
   return <Outlet />;

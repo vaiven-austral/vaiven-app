@@ -12,8 +12,10 @@ import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
 import { MedioContactoSelect } from '../components/forms/MedioContactoSelect';
+import { CategoriasInteresSelect } from '../components/forms/CategoriasInteresSelect';
 import { getInitials, NOMBRE_MAX_LENGTH } from '../lib/userDisplay';
 import { normalizarTelefono, validarContacto, type MedioPreferido } from '../lib/contacto';
+import { mismasCategorias, ordenarCategorias } from '../lib/categoriasInteres';
 
 export function EditarPerfil() {
   const navigate = useNavigate();
@@ -28,6 +30,7 @@ export function EditarPerfil() {
   const [medio, setMedio] = useState<MedioPreferido | null>(null);
   const [telefonoError, setTelefonoError] = useState('');
   const [medioError, setMedioError] = useState('');
+  const [categoriasInteres, setCategoriasInteres] = useState<number[] | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarFileError, setAvatarFileError] = useState('');
   const [nombreError, setNombreError] = useState('');
@@ -45,6 +48,9 @@ export function EditarPerfil() {
   if (!contactoLoading && telefono === null) {
     setTelefono(contacto?.telefono ?? '');
     setMedio(contacto?.medio_preferido ?? null);
+  }
+  if (profile && categoriasInteres === null) {
+    setCategoriasInteres(profile.categorias_interes);
   }
 
   const avatarPreviewUrl = useMemo(
@@ -122,10 +128,18 @@ export function EditarPerfil() {
     }
 
     const nombreTrim = (nombreVisible ?? '').trim();
-    const changes: { nombre_visible?: string; zona_id?: number | null; avatar_ruta?: string } = {};
+    const changes: {
+      nombre_visible?: string;
+      zona_id?: number | null;
+      avatar_ruta?: string;
+      categorias_interes?: number[];
+    } = {};
     if (nombreTrim !== profile.nombre_visible) changes.nombre_visible = nombreTrim;
     if (zonaId !== profile.zona_id) changes.zona_id = zonaId;
     if (nuevaRutaAvatar) changes.avatar_ruta = nuevaRutaAvatar;
+    if (categoriasInteres && !mismasCategorias(categoriasInteres, profile.categorias_interes)) {
+      changes.categorias_interes = ordenarCategorias(categoriasInteres);
+    }
 
     const telefonoNormalizado = normalizarTelefono(telefono ?? '') || null;
     const contactoCambio =
@@ -282,6 +296,14 @@ export function EditarPerfil() {
             )}
             {medioError && <p className="text-critico text-sm mt-1 font-500">{medioError}</p>}
           </div>
+        </div>
+
+        <div className="rounded-tarjeta border border-borde bg-tarjeta p-5">
+          <h2 className="font-700 text-lg text-tinta">Categorías que te interesan</h2>
+          <p className="text-texto-suave text-sm mt-1 mb-4">
+            Elegí todas las que quieras. Podés cambiarlas en cualquier momento.
+          </p>
+          <CategoriasInteresSelect value={categoriasInteres ?? []} onChange={setCategoriasInteres} />
         </div>
 
         {submitError && (

@@ -1,0 +1,36 @@
+# n8n detrás de Caddy (HTTPS automático). Los valores salen de .env, que no se versiona (ver .env.example).
+services:
+  n8n:
+    image: n8nio/n8n:2.39.5
+    restart: unless-stopped
+    environment:
+      N8N_HOST: ${N8N_HOST}
+      N8N_PROTOCOL: https
+      WEBHOOK_URL: https://${N8N_HOST}/
+      N8N_PROXY_HOPS: 1
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+      GENERIC_TIMEZONE: America/Argentina/Buenos_Aires
+      TZ: America/Argentina/Buenos_Aires
+    volumes:
+      - n8n_data:/home/node/.n8n
+    # Sin «ports»: el 5678 sólo lo ve Caddy, por la red interna de compose.
+
+  caddy:
+    image: caddy:2.10
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      N8N_HOST: ${N8N_HOST}
+      CADDY_USER: ${CADDY_USER}
+      CADDY_HASH: ${CADDY_HASH}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data      # certificados: si se pierde, Let's Encrypt limita la reemisión
+      - caddy_config:/config
+
+volumes:
+  n8n_data:
+  caddy_data:
+  caddy_config:

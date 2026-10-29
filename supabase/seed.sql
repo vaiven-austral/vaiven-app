@@ -396,3 +396,30 @@ INSERT INTO public.publicaciones (
 -- SQL no puede escribir bytes en Storage. Se generan solas corriendo
 -- ./supabase/scripts/seed_fotos.sh, que lee supabase/datos/fotos/{publicacion_id}/{orden}.ext
 -- ============================================================
+
+-- ============================================================
+-- 8. CONTACTOS (Semilla de prueba para los 6 usuarios de demo)
+-- ============================================================
+INSERT INTO public.contactos (
+  usuario_id, telefono, email_contacto, medio_preferido
+) VALUES
+  ('f3b6d105-625f-400e-8d1d-dd5a3d0364a0', '+5491123456789', NULL, 'whatsapp'),
+  ('ff3041a6-febe-4e85-925b-ae5216b73361', '+5491134567890', NULL, 'telefono'),
+  ('78d026a5-c05c-4705-b32b-b518bd05bc3b', NULL, 'usuario-c@vaiven.dev', 'email'),
+  ('6723bd6b-18f7-486a-806b-dbab31d35620', '+5491145678901', NULL, 'whatsapp'),
+  ('acc5626b-15d6-40f6-bba8-080859c55539', NULL, 'usuario-e@vaiven.dev', 'email'),
+  ('76e7c5c3-4acf-40da-9115-638c442c866a', '+5491156789012', NULL, 'telefono')
+ON CONFLICT (usuario_id) DO NOTHING;
+
+-- ============================================================
+-- 9. MATCHES (Historial con publicación cerrada)
+-- Donación completada de Usuario E con necesidad de Usuario C
+-- ============================================================
+INSERT INTO public.matches (
+  donacion_id, necesidad_id
+) VALUES (
+  'b0000000-0000-0000-0000-000000000000',
+  'a9999999-9999-9999-9999-999999999999'
+)
+ON CONFLICT (donacion_id) DO NOTHING;
+

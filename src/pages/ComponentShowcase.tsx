@@ -8,6 +8,7 @@ import { Badge } from '../components/ui/badge';
 import { InfoHint } from '../components/ui/info-hint';
 import { FACTOR_INFO } from '../lib/factorInfo';
 import { CategorySelect } from '../components/forms/CategorySelect';
+import { CategoriasInteresSelect } from '../components/forms/CategoriasInteresSelect';
 import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
 import { MedioContactoSelect } from '../components/forms/MedioContactoSelect';
 import type { MedioPreferido } from '../lib/contacto';
@@ -148,6 +149,7 @@ export function ComponentShowcase() {
   const [confirmarOpen, setConfirmarOpen] = useState(false);
   const [selectValue, setSelectValue] = useState('opcion1');
   const [categoriaId, setCategoriaId] = useState<number | null>(null);
+  const [categoriasInteres, setCategoriasInteres] = useState<number[]>([]);
   const [medioContacto, setMedioContacto] = useState<MedioPreferido | null>(null);
   const [zonaId, setZonaId] = useState<number | null>(null);
 
@@ -294,6 +296,19 @@ export function ComponentShowcase() {
 
             <p className="text-sm text-texto-medio">
               Salida: <code className="text-xs">{JSON.stringify({ categoria_id: categoriaId, zona_id: zonaId })}</code>
+            </p>
+          </div>
+        </section>
+
+        {/* CATEGORIAS DE INTERES (varias a la vez) */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">CategoriasInteresSelect</h2>
+
+          <div className="space-y-6 max-w-2xl">
+            <CategoriasInteresSelect value={categoriasInteres} onChange={setCategoriasInteres} />
+
+            <p className="text-sm text-texto-medio">
+              Salida: <code className="text-xs">{JSON.stringify(categoriasInteres)}</code>
             </p>
           </div>
         </section>

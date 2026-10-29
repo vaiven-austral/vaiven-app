@@ -1,0 +1,9 @@
+# El editor de n8n queda detrás de usuario y contraseña desde el primer arranque; los webhooks, abiertos
+# (el motor y la app los llaman sin esta contraseña: su puerta es el secreto del aviso y el JWT del usuario).
+{$N8N_HOST} {
+	@editor not path /webhook/* /webhook-test/*
+	basic_auth @editor {
+		{$CADDY_USER} {$CADDY_HASH}
+	}
+	reverse_proxy n8n:5678
+}
