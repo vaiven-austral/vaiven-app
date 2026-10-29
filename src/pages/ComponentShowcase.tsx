@@ -9,6 +9,8 @@ import { InfoHint } from '../components/ui/info-hint';
 import { FACTOR_INFO } from '../lib/factorInfo';
 import { CategorySelect } from '../components/forms/CategorySelect';
 import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
+import { MedioContactoSelect } from '../components/forms/MedioContactoSelect';
+import type { MedioPreferido } from '../lib/contacto';
 import { PublicationCard, type Publication } from '../components/publications/PublicationCard';
 import { ScoreRing } from '../components/matching/ScoreRing';
 import { CandidateCard } from '../components/matching/CandidateCard';
@@ -146,6 +148,7 @@ export function ComponentShowcase() {
   const [confirmarOpen, setConfirmarOpen] = useState(false);
   const [selectValue, setSelectValue] = useState('opcion1');
   const [categoriaId, setCategoriaId] = useState<number | null>(null);
+  const [medioContacto, setMedioContacto] = useState<MedioPreferido | null>(null);
   const [zonaId, setZonaId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -291,6 +294,19 @@ export function ComponentShowcase() {
 
             <p className="text-sm text-texto-medio">
               Salida: <code className="text-xs">{JSON.stringify({ categoria_id: categoriaId, zona_id: zonaId })}</code>
+            </p>
+          </div>
+        </section>
+
+        {/* MEDIO DE CONTACTO (uno solo, se puede desmarcar) */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">MedioContactoSelect</h2>
+
+          <div className="space-y-6 max-w-md">
+            <MedioContactoSelect value={medioContacto} onChange={setMedioContacto} />
+
+            <p className="text-sm text-texto-medio">
+              Salida: <code className="text-xs">{JSON.stringify(medioContacto)}</code>
             </p>
           </div>
         </section>
