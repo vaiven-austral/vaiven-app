@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Clock, Eye, EyeOff } from 'lucide-react';
+import { CircleAlert, Clock, Eye, EyeOff } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
@@ -18,9 +18,20 @@ export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { session, loading: authLoading } = useAuth();
-  // ProtectedRoute manda este motivo cuando la sesión se perdió sin que el
-  // usuario la cerrara.
-  const sesionVencida = location.state?.motivo === 'sesion-vencida';
+  // Avisos que llegan por el estado de navegación: ProtectedRoute manda
+  // 'sesion-vencida' cuando la sesión se perdió sin que el usuario la cerrara;
+  // el perfil manda 'cierre-global-fallido' si no se pudo cerrar en los otros
+  // dispositivos.
+  const motivo = location.state?.motivo;
+  const aviso =
+    motivo === 'sesion-vencida'
+      ? { icono: Clock, texto: 'Tu sesión se cerró. Iniciá sesión de nuevo.' }
+      : motivo === 'cierre-global-fallido'
+        ? {
+            icono: CircleAlert,
+            texto: 'No pudimos cerrar la sesión en tus otros dispositivos. Iniciá sesión y probá de nuevo.',
+          }
+        : null;
 
   // Si ya hay sesión activa, redirige a home
   useEffect(() => {
@@ -62,13 +73,13 @@ export function LoginPage() {
           <Logo size="md" />
         </div>
 
-        {sesionVencida && (
+        {aviso && (
           <div
             role="status"
             className="mb-6 flex items-center gap-2 rounded-boton bg-[rgba(245,158,11,0.13)] px-4 py-3 text-sm font-600 text-atencion-texto"
           >
-            <Icon icon={Clock} className="h-5 w-5 shrink-0" />
-            Tu sesión se cerró. Iniciá sesión de nuevo.
+            <Icon icon={aviso.icono} className="h-5 w-5 shrink-0" />
+            {aviso.texto}
           </div>
         )}
 

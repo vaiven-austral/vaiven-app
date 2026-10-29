@@ -24,8 +24,10 @@ export interface AuthContextType {
   // token, o se cerró desde otro dispositivo). Vuelve a false al iniciar sesión.
   sesionVencida: boolean;
   // El único lugar de la app que llama a supabase.auth.signOut. 'local' cierra
-  // sólo este dispositivo; 'global', todos los del usuario.
-  cerrarSesion: (alcance: 'local' | 'global') => Promise<void>;
+  // sólo este dispositivo; 'global', todos los del usuario. Devuelve false si
+  // Supabase no confirmó el cierre: este dispositivo sale igual, pero en el
+  // global los otros siguen adentro.
+  cerrarSesion: (alcance: 'local' | 'global') => Promise<boolean>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);

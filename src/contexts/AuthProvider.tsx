@@ -68,7 +68,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     cierreVoluntario.current = false;
     if (error) {
       console.error('Error al cerrar sesión:', error);
+      return false;
     }
+    return true;
   }, []);
 
   useEffect(() => {

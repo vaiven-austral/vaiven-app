@@ -30,8 +30,13 @@ export function PerfilPage() {
 
   async function handleLogout(alcance: 'local' | 'global') {
     setCerrando(true);
-    await cerrarSesion(alcance);
-    navigate('/login');
+    const cerro = await cerrarSesion(alcance);
+    // Si el global falló, este dispositivo salió igual pero los otros no: el
+    // login lo avisa. En el local no hace falta, se pidió salir de acá.
+    navigate(
+      '/login',
+      alcance === 'global' && !cerro ? { state: { motivo: 'cierre-global-fallido' } } : undefined
+    );
   }
 
   if (!profile) {
