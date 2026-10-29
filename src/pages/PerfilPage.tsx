@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { MapPin, ChevronRight, LogOut } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
+import { Button } from '../components/ui/button';
 import { useAuth } from '../hooks/useAuth';
 import { useOwnProfile } from '../hooks/useOwnProfile';
 import { useZonaLabel } from '../hooks/useZonaLabel';
@@ -24,8 +26,11 @@ export function PerfilPage() {
   const { url: avatarUrl } = useAvatarUrl(profile?.avatar_ruta ?? null);
   const { summary } = usePublicationsSummary();
 
-  async function handleLogout() {
-    await cerrarSesion('local');
+  const [cerrando, setCerrando] = useState(false);
+
+  async function handleLogout(alcance: 'local' | 'global') {
+    setCerrando(true);
+    await cerrarSesion(alcance);
     navigate('/login');
   }
 
@@ -45,7 +50,7 @@ export function PerfilPage() {
   const completeness = getProfileCompleteness(profile);
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 pb-12 space-y-4">
       {/* Identidad */}
       <div className="bg-tarjeta rounded-tarjeta border border-borde p-6 shadow-sm flex flex-col items-center text-center">
         {avatarUrl ? (
@@ -112,14 +117,32 @@ export function PerfilPage() {
           </div>
           <Icon icon={ChevronRight} className="h-5 w-5 text-texto-suave shrink-0" />
         </Link>
+      </div>
+
+      {/* Cierre de sesión: éste dispositivo, o todos */}
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full !border-borde-fuerte !text-tinta hover:bg-lienzo"
+        disabled={cerrando}
+        onClick={() => handleLogout('local')}
+      >
+        <Icon icon={LogOut} className="h-4 w-4 mr-2" />
+        Cerrar sesión
+      </Button>
+
+      <div className="text-center">
         <button
           type="button"
-          onClick={handleLogout}
-          className="flex w-full items-center gap-2 px-4 py-3 border-t border-borde font-600 text-critico hover:bg-lienzo transition-colors"
+          disabled={cerrando}
+          onClick={() => handleLogout('global')}
+          className="font-600 text-critico disabled:opacity-50"
         >
-          <Icon icon={LogOut} className="h-4 w-4" />
-          Cerrar sesión
+          Cerrar sesión en todos los dispositivos
         </button>
+        <p className="text-texto-suave text-sm mt-2">
+          También se cierra en el celular, la compu o cualquier otro lugar donde hayas entrado.
+        </p>
       </div>
     </div>
   );
