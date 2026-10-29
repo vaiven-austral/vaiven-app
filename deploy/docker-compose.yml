@@ -11,6 +11,7 @@ services:
       N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
       GENERIC_TIMEZONE: America/Argentina/Buenos_Aires
       TZ: America/Argentina/Buenos_Aires
+      N8N_PUBLIC_API_SWAGGERUI_DISABLED: "true"
     volumes:
       - n8n_data:/home/node/.n8n
     # Sin «ports»: el 5678 sólo lo ve Caddy, por la red interna de compose.
