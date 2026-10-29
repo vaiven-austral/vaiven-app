@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Clock, Eye, EyeOff } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
@@ -16,7 +16,11 @@ export function LoginPage() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { session, loading: authLoading } = useAuth();
+  // ProtectedRoute manda este motivo cuando la sesión se perdió sin que el
+  // usuario la cerrara.
+  const sesionVencida = location.state?.motivo === 'sesion-vencida';
 
   // Si ya hay sesión activa, redirige a home
   useEffect(() => {
@@ -57,6 +61,16 @@ export function LoginPage() {
         <div className="mb-8 flex justify-center">
           <Logo size="md" />
         </div>
+
+        {sesionVencida && (
+          <div
+            role="status"
+            className="mb-6 flex items-center gap-2 rounded-boton bg-[rgba(245,158,11,0.13)] px-4 py-3 text-sm font-600 text-atencion-texto"
+          >
+            <Icon icon={Clock} className="h-5 w-5 shrink-0" />
+            Tu sesión se cerró. Iniciá sesión de nuevo.
+          </div>
+        )}
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>

@@ -59,6 +59,7 @@ export default {
         tinta: "#111827",
         exito: "#2F7F5D",
         atencion: "#F59E0B",
+        "atencion-texto": "#92620A",
         critico: "#DC2626",
         superficie: "#F9FAFB",
         tarjeta: "#FFFFFF",
