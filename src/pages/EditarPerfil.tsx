@@ -1,25 +1,33 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type SubmitEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Pencil } from 'lucide-react';
+import { Lock, Pencil } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
 import { useAuth } from '../hooks/useAuth';
 import { useOwnProfile } from '../hooks/useOwnProfile';
 import { useUpdateProfile } from '../hooks/useUpdateProfile';
 import { useAvatarUrl } from '../hooks/useAvatarUrl';
+import { useOwnContacto } from '../hooks/useOwnContacto';
 import { validateAvatarFile, subirAvatar, borrarAvatar } from '../lib/avatarUpload';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
+import { MedioContactoSelect } from '../components/forms/MedioContactoSelect';
 import { getInitials, NOMBRE_MAX_LENGTH } from '../lib/userDisplay';
+import { normalizarTelefono, validarContacto, type MedioPreferido } from '../lib/contacto';
 
 export function EditarPerfil() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { profile, loading: profileLoading } = useOwnProfile();
   const { updateProfile } = useUpdateProfile();
+  const { contacto, loading: contactoLoading, guardarContacto } = useOwnContacto();
   const { url: currentAvatarUrl } = useAvatarUrl(profile?.avatar_ruta ?? null);
   const [nombreVisible, setNombreVisible] = useState<string | null>(null);
   const [zonaId, setZonaId] = useState<number | null>(null);
+  const [telefono, setTelefono] = useState<string | null>(null);
+  const [medio, setMedio] = useState<MedioPreferido | null>(null);
+  const [telefonoError, setTelefonoError] = useState('');
+  const [medioError, setMedioError] = useState('');
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarFileError, setAvatarFileError] = useState('');
   const [nombreError, setNombreError] = useState('');
@@ -32,6 +40,11 @@ export function EditarPerfil() {
 
   if (profile && nombreVisible === null) {
     setNombreVisible(profile.nombre_visible);
+  }
+  // El contacto se precarga una vez, cuando termina de cargar (puede no haber fila).
+  if (!contactoLoading && telefono === null) {
+    setTelefono(contacto?.telefono ?? '');
+    setMedio(contacto?.medio_preferido ?? null);
   }
 
   const avatarPreviewUrl = useMemo(
@@ -72,10 +85,25 @@ export function EditarPerfil() {
     return true;
   }
 
+  function validateContacto(): boolean {
+    const error = validarContacto(telefono ?? '', medio);
+    setTelefonoError(error?.campo === 'telefono' ? error.mensaje : '');
+    setMedioError(error?.campo === 'medio' ? error.mensaje : '');
+    return error === null;
+  }
+
+  function fallar(mensaje: string) {
+    submittingRef.current = false;
+    setIsSubmitting(false);
+    setSubmitError(mensaje);
+  }
+
   async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (submittingRef.current || !user || !profile) return;
-    if (!validate()) return;
+    const nombreValido = validate();
+    const contactoValido = validateContacto();
+    if (!nombreValido || !contactoValido) return;
 
     submittingRef.current = true;
     setIsSubmitting(true);
@@ -99,24 +127,39 @@ export function EditarPerfil() {
     if (zonaId !== profile.zona_id) changes.zona_id = zonaId;
     if (nuevaRutaAvatar) changes.avatar_ruta = nuevaRutaAvatar;
 
-    if (Object.keys(changes).length === 0) {
+    const telefonoNormalizado = normalizarTelefono(telefono ?? '') || null;
+    const contactoCambio =
+      telefonoNormalizado !== (contacto?.telefono ?? null) ||
+      medio !== (contacto?.medio_preferido ?? null);
+    const hayCambiosDePerfil = Object.keys(changes).length > 0;
+
+    if (!hayCambiosDePerfil && !contactoCambio) {
       navigate('/perfil');
       return;
     }
 
-    const error = await updateProfile(changes);
+    if (hayCambiosDePerfil) {
+      const error = await updateProfile(changes);
+      if (error) {
+        fallar(error);
+        return;
+      }
+
+      if (nuevaRutaAvatar && profile.avatar_ruta) {
+        await borrarAvatar(profile.avatar_ruta);
+      }
+    }
+
+    if (contactoCambio) {
+      const error = await guardarContacto({ telefono: telefonoNormalizado, medio_preferido: medio });
+      if (error) {
+        fallar(error);
+        return;
+      }
+    }
+
     submittingRef.current = false;
     setIsSubmitting(false);
-
-    if (error) {
-      setSubmitError(error);
-      return;
-    }
-
-    if (nuevaRutaAvatar && profile.avatar_ruta) {
-      await borrarAvatar(profile.avatar_ruta);
-    }
-
     navigate('/perfil');
   }
 
@@ -212,13 +255,48 @@ export function EditarPerfil() {
 
         <ZoneCascadeSelect onChange={setZonaId} valorInicial={profile.zona_id} />
 
+        <div className="rounded-tarjeta border border-borde bg-tarjeta p-5 space-y-4">
+          <div>
+            <h2 className="font-700 text-lg text-tinta">Contacto</h2>
+            <p className="flex items-center gap-1.5 text-texto-suave text-sm mt-1">
+              <Icon icon={Lock} className="h-4 w-4 shrink-0" />
+              Sólo lo ve la persona con la que hagas match.
+            </p>
+          </div>
+
+          <Input
+            label="Teléfono"
+            type="tel"
+            inputMode="tel"
+            maxLength={20}
+            value={telefono ?? ''}
+            onChange={(e) => setTelefono(e.target.value)}
+            error={telefonoError}
+          />
+
+          <div>
+            <p className="mb-1.5 font-600 text-tinta text-sm">¿Cómo preferís que te contacten?</p>
+            <MedioContactoSelect value={medio} onChange={setMedio} />
+            {medio === 'email' && (
+              <p className="text-texto-suave text-sm mt-2">Te van a escribir a {user?.email}.</p>
+            )}
+            {medioError && <p className="text-critico text-sm mt-1 font-500">{medioError}</p>}
+          </div>
+        </div>
+
         {submitError && (
           <div className="rounded-tarjeta border-2 border-critico bg-[rgba(220,38,38,0.06)] p-4 text-critico text-sm font-500">
             {submitError}
           </div>
         )}
 
-        <Button type="submit" size="lg" className="w-full" isLoading={isSubmitting} disabled={isSubmitting}>
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full"
+          isLoading={isSubmitting}
+          disabled={isSubmitting || contactoLoading}
+        >
           Guardar cambios
         </Button>
         <Button
