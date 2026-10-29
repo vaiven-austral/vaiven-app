@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { supabase } from '../lib/supabaseClient';
+import { fetchMisPublicaciones } from '../lib/misPublicaciones';
 import { PublicationCard, type Publication } from '../components/publications/PublicationCard';
 import { EmptyState } from '../components/ui/EmptyState';
 import { MatchConfirmModal } from '../components/matching/MatchConfirmModal';
@@ -27,21 +27,13 @@ export function MyPublications() {
       setLoading(true);
       setError('');
 
-      const { data, error } = await supabase
-        .from('publicaciones')
-        .select(
-          'id, tipo, estado, titulo, descripcion, creada_en, vence_en, estado_objeto, urgencia, categorias(nombre), zonas(localidad, partido), imagenes_publicacion(ruta_storage, orden)'
-        )
-        .eq('usuario_id', user!.id)
-        .eq('tipo', activeTab)
-        .order('creada_en', { ascending: false });
-
-      if (cancelled) return;
-
-      if (error) {
+      try {
+        const data = await fetchMisPublicaciones(user!.id, activeTab);
+        if (cancelled) return;
+        setPublicaciones(data);
+      } catch {
+        if (cancelled) return;
         setError('No se pudieron cargar tus publicaciones');
-      } else {
-        setPublicaciones((data as unknown as Publication[]) ?? []);
       }
       setLoading(false);
     }

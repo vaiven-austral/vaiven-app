@@ -373,6 +373,13 @@ export function ComponentShowcase() {
               <PublicationCard key={pub.id} publication={pub} />
             ))}
           </div>
+
+          <p className="text-sm font-600 text-texto-medio mt-8 mb-3">Con etiqueta de tipo (historial)</p>
+          <div className="space-y-4 max-w-md">
+            {mockPublications.map((pub) => (
+              <PublicationCard key={pub.id} publication={pub} mostrarTipo />
+            ))}
+          </div>
         </section>
 
         {/* CARDS */}
