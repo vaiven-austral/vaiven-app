@@ -116,6 +116,14 @@ Tiene que quedar `supabase/demo/fotos/` con estos archivos:
 Si falta alguna, `subir-fotos.sh` lo avisa y sigue sin esa foto. Se puede probar con otra carpeta:
 `FOTOS_DIR=/otra/carpeta bash supabase/demo/subir-fotos.sh`.
 
+Por default sube contra el stack local. Para subir contra la nube (por ejemplo, al dejar el proyecto como
+producción), exportá `SB_API_URL` y `SB_ANON_KEY` antes de llamarlo — con esas puestas, el script no toca el
+stack local para nada:
+
+```bash
+SB_API_URL=https://<ref>.supabase.co SB_ANON_KEY=<clave publicable de la nube> bash supabase/demo/subir-fotos.sh
+```
+
 ## Si algo falla
 
 | Síntoma | Qué hacer |
