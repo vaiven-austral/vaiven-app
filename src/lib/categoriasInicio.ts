@@ -6,6 +6,14 @@ export interface ConteoCategoria {
   necesidades: number;
 }
 
+// El valor de ?categoria= de Publicar donación: un entero positivo, o null si es
+// cualquier otra cosa (vacío, "abc", "0", "-3", "1.5", "2abc"): se ignora.
+export function categoriaDesdeParametro(valor: string | null): number | null {
+  if (valor === null || !/^[1-9]\d*$/.test(valor)) return null;
+  const id = Number(valor);
+  return Number.isSafeInteger(id) ? id : null;
+}
+
 // Necesidades de otros usuarios que se pueden atender hoy en una categoría. Sólo
 // cuenta, no trae filas: el usuario no navega publicaciones ajenas. El estado y el
 // vencimiento se filtran acá porque la política deja leer también las en_proceso
