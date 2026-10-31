@@ -17,6 +17,7 @@ import { ScoreRing } from '../components/matching/ScoreRing';
 import { CandidateCard } from '../components/matching/CandidateCard';
 import { ConfirmarEleccionModal } from '../components/matching/ConfirmarEleccionModal';
 import { TarjetaMotor } from '../components/matching/TarjetaMotor';
+import { ChipCategoria } from '../components/matching/ChipCategoria';
 import type { Candidate } from '../lib/n8n';
 import type { PublicacionOrigen } from '../lib/eleccion';
 import type { Sugerencia } from '../lib/sugerencias';
@@ -359,6 +360,36 @@ export function ComponentShowcase() {
             <div>
               <p className="text-sm font-600 text-texto-medio mb-3">Evaluando · sin botón</p>
               <TarjetaMotor sugerencia={sugerenciaEvaluando} />
+            </div>
+          </div>
+        </section>
+
+        {/* CHIP DE CATEGORÍA (inicio) */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-2">ChipCategoria</h2>
+          <p className="text-sm text-texto-medio mb-6">
+            Lleva a /publicar/donacion?categoria=&lt;id&gt;; acá usa ids de ejemplo. En cero va atenuado.
+          </p>
+
+          <div className="space-y-6 max-w-md">
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Con necesidades (plural)</p>
+              <div className="flex flex-wrap gap-2">
+                <ChipCategoria id={1} nombre="Ropa & Abrigo" necesidades={4} />
+                <ChipCategoria id={2} nombre="Tecnología" necesidades={12} />
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Una necesidad (singular)</p>
+              <div className="flex flex-wrap gap-2">
+                <ChipCategoria id={3} nombre="Electrodomésticos" necesidades={1} />
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">En cero · atenuado</p>
+              <div className="flex flex-wrap gap-2">
+                <ChipCategoria id={4} nombre="Muebles" necesidades={0} />
+              </div>
             </div>
           </div>
         </section>
