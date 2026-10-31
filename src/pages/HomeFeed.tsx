@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useOwnProfile } from '../hooks/useOwnProfile';
 import { supabase } from '../lib/supabaseClient';
 import { getPortada } from '../lib/imagenesPublicacion';
+import { fetchSugerencia, type Sugerencia } from '../lib/sugerencias';
 import {
   type Publication,
   estadoLabels,
@@ -19,6 +20,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { MatchConfirmModal } from '../components/matching/MatchConfirmModal';
+import { TarjetaMotor } from '../components/matching/TarjetaMotor';
 import { PublicationImage } from '../components/publications/PublicationImage';
 import { PublicationDetailModal } from '../components/publications/PublicationDetailModal';
 import lightBulbOutline from '../assets/LightBulbOutline.png';
@@ -38,6 +40,10 @@ export function HomeFeed() {
   const [error, setError] = useState('');
   const [publicationParaMatch, setPublicationParaMatch] = useState<Publication | null>(null);
   const [publicationParaDetalle, setPublicationParaDetalle] = useState<Publication | null>(null);
+  // La tarjeta del motor tiene su propio estado: si su consulta falla, no se
+  // muestra y el resto del inicio carga igual.
+  const [sugerencia, setSugerencia] = useState<Sugerencia>(null);
+  const userId = user?.id;
 
   useEffect(() => {
     if (!user) return;
@@ -70,6 +76,31 @@ export function HomeFeed() {
       cancelled = true;
     };
   }, [user]);
+
+  // Con las publicaciones propias que ya trajo el inicio. Sin ninguna no hay nada
+  // que sugerir, así que no se consulta.
+  useEffect(() => {
+    if (!userId || publicaciones.length === 0) return;
+
+    let cancelled = false;
+
+    async function cargarSugerencia() {
+      try {
+        const resultado = await fetchSugerencia(publicaciones, userId!);
+        if (cancelled) return;
+        setSugerencia(resultado);
+      } catch (error) {
+        console.error('Error al obtener la sugerencia del motor:', error);
+        if (cancelled) return;
+        setSugerencia(null);
+      }
+    }
+
+    cargarSugerencia();
+    return () => {
+      cancelled = true;
+    };
+  }, [publicaciones, userId]);
 
   return (
     <div className="p-6">
@@ -155,6 +186,12 @@ export function HomeFeed() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {sugerencia && (
+        <div className="mt-6">
+          <TarjetaMotor sugerencia={sugerencia} />
         </div>
       )}
 
