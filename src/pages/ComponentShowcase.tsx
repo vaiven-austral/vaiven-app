@@ -10,12 +10,17 @@ import { FACTOR_INFO } from '../lib/factorInfo';
 import { CategorySelect } from '../components/forms/CategorySelect';
 import { CategoriasInteresSelect } from '../components/forms/CategoriasInteresSelect';
 import { ZoneCascadeSelect } from '../components/forms/ZoneCascadeSelect';
+import { MedioContactoSelect } from '../components/forms/MedioContactoSelect';
+import type { MedioPreferido } from '../lib/contacto';
 import { PublicationCard, type Publication } from '../components/publications/PublicationCard';
 import { ScoreRing } from '../components/matching/ScoreRing';
 import { CandidateCard } from '../components/matching/CandidateCard';
 import { ConfirmarEleccionModal } from '../components/matching/ConfirmarEleccionModal';
+import { TarjetaMotor } from '../components/matching/TarjetaMotor';
+import { ChipCategoria } from '../components/matching/ChipCategoria';
 import type { Candidate } from '../lib/n8n';
 import type { PublicacionOrigen } from '../lib/eleccion';
+import type { Sugerencia } from '../lib/sugerencias';
 
 // Pesos reales del motor (docs/motor/contrato.md): 40/10/20/10/5/15 sobre 100.
 // Se escalan al score de prueba para que el anillo se vea proporcionado.
@@ -108,6 +113,18 @@ const candidatoNecesidad: Candidate = {
 const origenDonacion: PublicacionOrigen = { id: 'demo-donacion', titulo: 'PC de escritorio completa', tipo: 'donacion' };
 const origenNecesidad: PublicacionOrigen = { id: 'demo-necesidad', titulo: 'Compu para estudiar', tipo: 'necesidad' };
 
+const sugerenciaDonacion: Sugerencia = {
+  tipo: 'compatibles',
+  publicacion: { id: 'demo-donacion', tipo: 'donacion', titulo: 'Mantas de invierno' },
+  cantidad: 3,
+};
+const sugerenciaNecesidad: Sugerencia = {
+  tipo: 'compatibles',
+  publicacion: { id: 'demo-necesidad', tipo: 'necesidad', titulo: 'Compu para estudiar' },
+  cantidad: 1,
+};
+const sugerenciaEvaluando: Sugerencia = { tipo: 'evaluando' };
+
 const mockPublications: Publication[] = [
   {
     id: '1',
@@ -148,6 +165,7 @@ export function ComponentShowcase() {
   const [selectValue, setSelectValue] = useState('opcion1');
   const [categoriaId, setCategoriaId] = useState<number | null>(null);
   const [categoriasInteres, setCategoriasInteres] = useState<number[]>([]);
+  const [medioContacto, setMedioContacto] = useState<MedioPreferido | null>(null);
   const [zonaId, setZonaId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -310,6 +328,72 @@ export function ComponentShowcase() {
           </div>
         </section>
 
+        {/* MEDIO DE CONTACTO (uno solo, se puede desmarcar) */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-6">MedioContactoSelect</h2>
+
+          <div className="space-y-6 max-w-md">
+            <MedioContactoSelect value={medioContacto} onChange={setMedioContacto} />
+
+            <p className="text-sm text-texto-medio">
+              Salida: <code className="text-xs">{JSON.stringify(medioContacto)}</code>
+            </p>
+          </div>
+        </section>
+
+        {/* TARJETA DEL MOTOR (inicio) */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-2">TarjetaMotor</h2>
+          <p className="text-sm text-texto-medio mb-6">
+            El botón lleva a /matching/&lt;id&gt;; acá usa ids de ejemplo. Sin sugerencia no se muestra.
+          </p>
+
+          <div className="space-y-6 max-w-md">
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Con compatibles · donación (plural)</p>
+              <TarjetaMotor sugerencia={sugerenciaDonacion} />
+            </div>
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Con compatibles · necesidad (singular)</p>
+              <TarjetaMotor sugerencia={sugerenciaNecesidad} />
+            </div>
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Evaluando · sin botón</p>
+              <TarjetaMotor sugerencia={sugerenciaEvaluando} />
+            </div>
+          </div>
+        </section>
+
+        {/* CHIP DE CATEGORÍA (inicio) */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-2">ChipCategoria</h2>
+          <p className="text-sm text-texto-medio mb-6">
+            Lleva a /publicar/donacion?categoria=&lt;id&gt;; acá usa ids de ejemplo. En cero va atenuado.
+          </p>
+
+          <div className="space-y-6 max-w-md">
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Con necesidades (plural)</p>
+              <div className="flex flex-wrap gap-2">
+                <ChipCategoria id={1} nombre="Ropa & Abrigo" necesidades={4} />
+                <ChipCategoria id={2} nombre="Tecnología" necesidades={12} />
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Una necesidad (singular)</p>
+              <div className="flex flex-wrap gap-2">
+                <ChipCategoria id={3} nombre="Electrodomésticos" necesidades={1} />
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">En cero · atenuado</p>
+              <div className="flex flex-wrap gap-2">
+                <ChipCategoria id={4} nombre="Muebles" necesidades={0} />
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* SCORE RING */}
         <section className="mb-16">
           <h2 className="text-3xl font-700 text-tinta mb-6">ScoreRing</h2>
@@ -386,6 +470,13 @@ export function ComponentShowcase() {
           <div className="space-y-4 max-w-md">
             {mockPublications.map((pub) => (
               <PublicationCard key={pub.id} publication={pub} />
+            ))}
+          </div>
+
+          <p className="text-sm font-600 text-texto-medio mt-8 mb-3">Con etiqueta de tipo (historial)</p>
+          <div className="space-y-4 max-w-md">
+            {mockPublications.map((pub) => (
+              <PublicationCard key={pub.id} publication={pub} mostrarTipo />
             ))}
           </div>
         </section>

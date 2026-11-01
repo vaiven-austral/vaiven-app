@@ -11,14 +11,18 @@ interface CompletenessFactor {
 }
 
 // Agregar un factor: El % y el "Falta X" / "Te faltan X y Y" se arman solos.
-function getFactores(profile: Pick<Profile, 'avatar_ruta' | 'zona_id'>): CompletenessFactor[] {
+function getFactores(
+  profile: Pick<Profile, 'avatar_ruta' | 'zona_id'>,
+  tieneContacto: boolean
+): CompletenessFactor[] {
   return [
     { label: 'tu foto', completo: profile.avatar_ruta != null },
     { label: 'tu zona', completo: profile.zona_id != null },
+    { label: 'tu contacto', completo: tieneContacto },
   ];
 }
 
-const MENSAJE_TODO_COMPLETO = 'Foto y zona cargadas';
+const MENSAJE_TODO_COMPLETO = 'Foto, zona y contacto cargados';
 
 function mensajeConY(items: string[]): string {
   if (items.length <= 1) return items.join('');
@@ -27,9 +31,10 @@ function mensajeConY(items: string[]): string {
 
 // Cuenta los campos declarados en getFactores.
 export function getProfileCompleteness(
-  profile: Pick<Profile, 'avatar_ruta' | 'zona_id'>
+  profile: Pick<Profile, 'avatar_ruta' | 'zona_id'>,
+  tieneContacto: boolean
 ): ProfileCompleteness {
-  const factores = getFactores(profile);
+  const factores = getFactores(profile, tieneContacto);
   const faltantes = factores.filter((f) => !f.completo);
   const percent = Math.round(((factores.length - faltantes.length) / factores.length) * 100);
 

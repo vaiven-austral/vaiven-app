@@ -86,6 +86,10 @@ export default {
         hoja: "28px",
         pill: "999px",
       },
+      // El único degradado del sistema: el del motor (docs/ui/tokens.md).
+      backgroundImage: {
+        motor: "linear-gradient(150deg, #216869, #1B565A)",
+      },
       boxShadow: {
         sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
         md: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
