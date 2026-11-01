@@ -16,6 +16,8 @@ import {
   estadoObjetoVariant,
   vencidaLabel,
   vencidaVariant,
+  tipoLabels,
+  tipoVariant,
 } from '../../lib/publicationBadges';
 
 export type { Publication };
@@ -23,6 +25,8 @@ export type { Publication };
 interface PublicationCardProps {
   publication: Publication;
   onClick?: () => void;
+  // Para listas que mezclan donaciones y necesidades (el historial).
+  mostrarTipo?: boolean;
 }
 
 interface TransitionButtonProps {
@@ -50,7 +54,7 @@ function TransitionButton({ variant, isLoading, onClick, children }: TransitionB
   );
 }
 
-export function PublicationCard({ publication, onClick }: PublicationCardProps) {
+export function PublicationCard({ publication, onClick, mostrarTipo = false }: PublicationCardProps) {
   const { id, tipo, titulo, vence_en, urgencia, estado_objeto, categorias, zonas, imagenes_publicacion } =
     publication;
   const { estado, loading, error, transicionar } = usePublicationState(id, publication.estado);
@@ -86,6 +90,7 @@ export function PublicationCard({ publication, onClick }: PublicationCardProps) 
       )}
 
       <div className="flex flex-wrap gap-2 mb-3">
+        {mostrarTipo && <Badge variant={tipoVariant}>{tipoLabels[tipo]}</Badge>}
         {categorias && <Badge variant="secondary">{categorias.nombre}</Badge>}
         {tipo === 'necesidad' && urgencia && (
           <Badge variant={urgenciaVariants[urgencia]}>{urgenciaLabels[urgencia]}</Badge>
