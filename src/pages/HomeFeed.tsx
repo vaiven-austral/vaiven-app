@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useOwnProfile } from '../hooks/useOwnProfile';
 import { supabase } from '../lib/supabaseClient';
 import { getPortada } from '../lib/imagenesPublicacion';
+import { isPublicationExpired } from '../lib/publicationState';
 import { fetchSugerencia, type Sugerencia } from '../lib/sugerencias';
 import { fetchConteosPorCategoria, type ConteoCategoria } from '../lib/categoriasInicio';
 import {
@@ -172,7 +173,7 @@ export function HomeFeed() {
             <div
               key={publication.id}
               className="w-40 shrink-0 bg-tarjeta rounded-tarjeta border border-borde shadow-sm overflow-hidden cursor-pointer"
-              onClick={() => setPublicationParaMatch(publication)}
+              onClick={() => setPublicationParaDetalle(publication)}
             >
               <PublicationImage
                 rutaStorage={getPortada(publication.imagenes_publicacion)?.ruta_storage}
@@ -209,17 +210,20 @@ export function HomeFeed() {
                     </Badge>
                   )}
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="!h-7 !px-2 !text-[11px] w-full"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setPublicationParaDetalle(publication);
-                  }}
-                >
-                  Ver detalles
-                </Button>
+                {/* El motor busca candidatos sólo para publicaciones activas. */}
+                {publication.estado === 'activa' && !isPublicationExpired(publication.vence_en) && (
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    className="!h-7 !px-2 !text-[11px] w-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPublicationParaMatch(publication);
+                    }}
+                  >
+                    Ver match
+                  </Button>
+                )}
               </div>
             </div>
           ))}
