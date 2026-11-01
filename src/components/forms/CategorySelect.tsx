@@ -43,6 +43,13 @@ export function CategorySelect({ value, onChange }: CategorySelectProps) {
     };
   }, []);
 
+  // Un valor que llega de afuera (por ejemplo ?categoria=9999) y no es una categoría
+  // activa se descarta: si no, el selector se ve vacío pero el formulario lo guarda.
+  useEffect(() => {
+    if (loading || value === null) return;
+    if (!categorias.some((categoria) => categoria.id === value)) onChange(null);
+  }, [loading, categorias, value, onChange]);
+
   const options = loading
     ? [{ value: '', label: 'Cargando...' }]
     : [
