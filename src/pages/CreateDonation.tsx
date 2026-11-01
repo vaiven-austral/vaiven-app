@@ -1,7 +1,8 @@
 import { useRef, useState, type FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabaseClient';
+import { categoriaDesdeParametro } from '../lib/categoriasInicio';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { Select } from '../components/ui/select';
@@ -46,10 +47,14 @@ function getMaxVencimientoISODate(): string {
 export function CreateDonation() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
-  const [categoriaId, setCategoriaId] = useState<number | null>(null);
+  // Los chips del inicio llegan con ?categoria=<id>: es sólo el valor inicial.
+  const [categoriaId, setCategoriaId] = useState<number | null>(() =>
+    categoriaDesdeParametro(searchParams.get('categoria'))
+  );
   const [zonaId, setZonaId] = useState<number | null>(null);
   const [estadoObjeto, setEstadoObjeto] = useState<EstadoObjeto | ''>('');
   const [cantidad, setCantidad] = useState(1);
