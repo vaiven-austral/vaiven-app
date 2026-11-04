@@ -53,17 +53,3 @@ export function mensajeErrorEleccion(error: unknown): string {
   if (texto.includes('necesidad')) return ERROR_NECESIDAD;
   return ERROR_GENERICO;
 }
-
-// Lo que viaja en el state de la navegación hacia la pantalla del contacto.
-// No es una elección guardada: si se abre la URL directo, no está.
-export interface ContactoNavState {
-  tituloDonacion: string;
-  tituloNecesidad: string;
-}
-
-export function leerContactoNavState(state: unknown): ContactoNavState | null {
-  if (typeof state !== 'object' || state === null) return null;
-  const { tituloDonacion, tituloNecesidad } = state as Record<string, unknown>;
-  if (typeof tituloDonacion !== 'string' || typeof tituloNecesidad !== 'string') return null;
-  return { tituloDonacion, tituloNecesidad };
-}
