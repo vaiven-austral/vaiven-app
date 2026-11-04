@@ -24,7 +24,7 @@ export type ContactoDelMatch =
     };
 
 const SELECT_MATCH =
-  'id, creado_en, donacion:publicaciones!donacion_id(titulo, usuario_id), necesidad:publicaciones!necesidad_id(titulo, usuario_id)';
+  'id, donacion_id, creado_en, donacion:publicaciones!donacion_id(titulo, usuario_id), necesidad:publicaciones!necesidad_id(titulo, usuario_id)';
 
 // Lee de la base y nada más: si el match o el contacto no llegan, no existen para
 // este usuario (las políticas deciden quién ve qué). Si una consulta falla,
