@@ -4,6 +4,8 @@ import { useAuth } from '../hooks/useAuth';
 import { useOwnProfile } from '../hooks/useOwnProfile';
 import { supabase } from '../lib/supabaseClient';
 import { getPortada } from '../lib/imagenesPublicacion';
+import { fetchSugerencia, type Sugerencia } from '../lib/sugerencias';
+import { fetchConteosPorCategoria, type ConteoCategoria } from '../lib/categoriasInicio';
 import {
   type Publication,
   estadoLabels,
@@ -19,6 +21,8 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { MatchConfirmModal } from '../components/matching/MatchConfirmModal';
+import { TarjetaMotor } from '../components/matching/TarjetaMotor';
+import { ChipCategoria } from '../components/matching/ChipCategoria';
 import { PublicationImage } from '../components/publications/PublicationImage';
 import { PublicationDetailModal } from '../components/publications/PublicationDetailModal';
 import lightBulbOutline from '../assets/LightBulbOutline.png';
@@ -38,6 +42,17 @@ export function HomeFeed() {
   const [error, setError] = useState('');
   const [publicationParaMatch, setPublicationParaMatch] = useState<Publication | null>(null);
   const [publicationParaDetalle, setPublicationParaDetalle] = useState<Publication | null>(null);
+  // La tarjeta del motor tiene su propio estado: si su consulta falla, no se
+  // muestra y el resto del inicio carga igual.
+  const [sugerencia, setSugerencia] = useState<Sugerencia>(null);
+  const userId = user?.id;
+  // «Tus categorías» también tiene su propio estado: un error acá no rompe el inicio.
+  const [conteos, setConteos] = useState<ConteoCategoria[]>([]);
+  const [conteosLoading, setConteosLoading] = useState(true);
+  const [conteosError, setConteosError] = useState(false);
+  // Una clave estable, para no volver a consultar cada vez que el perfil cambia de
+  // referencia sin cambiar las categorías.
+  const categoriasKey = profile ? profile.categorias_interes.join(',') : null;
 
   useEffect(() => {
     if (!user) return;
@@ -70,6 +85,59 @@ export function HomeFeed() {
       cancelled = true;
     };
   }, [user]);
+
+  // Con las publicaciones propias que ya trajo el inicio. Sin ninguna no hay nada
+  // que sugerir, así que no se consulta.
+  useEffect(() => {
+    if (!userId || publicaciones.length === 0) return;
+
+    let cancelled = false;
+
+    async function cargarSugerencia() {
+      try {
+        const resultado = await fetchSugerencia(publicaciones, userId!);
+        if (cancelled) return;
+        setSugerencia(resultado);
+      } catch (error) {
+        console.error('Error al obtener la sugerencia del motor:', error);
+        if (cancelled) return;
+        setSugerencia(null);
+      }
+    }
+
+    cargarSugerencia();
+    return () => {
+      cancelled = true;
+    };
+  }, [publicaciones, userId]);
+
+  useEffect(() => {
+    // Sin categorías elegidas el bloque muestra la invitación y no usa los conteos.
+    if (!userId || !categoriasKey) return;
+
+    let cancelled = false;
+    const ids = categoriasKey.split(',').map(Number);
+
+    async function cargarConteos() {
+      setConteosLoading(true);
+      setConteosError(false);
+      try {
+        const resultado = await fetchConteosPorCategoria(ids, userId!);
+        if (cancelled) return;
+        setConteos(resultado);
+      } catch (error) {
+        console.error('Error al cargar los conteos por categoría:', error);
+        if (cancelled) return;
+        setConteosError(true);
+      }
+      setConteosLoading(false);
+    }
+
+    cargarConteos();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, categoriasKey]);
 
   return (
     <div className="p-6">
@@ -156,6 +224,46 @@ export function HomeFeed() {
             </div>
           ))}
         </div>
+      )}
+
+      {sugerencia && (
+        <div className="mt-6">
+          <TarjetaMotor sugerencia={sugerencia} />
+        </div>
+      )}
+
+      {profile && (
+        <section className="mt-6">
+          <h2 className="font-700 text-tinta text-lg">Tus categorías</h2>
+
+          {profile.categorias_interes.length === 0 ? (
+            <>
+              <p className="mt-1 mb-3 text-texto-medio text-sm">
+                Elegí las categorías que te interesan y te mostramos cuántas personas necesitan algo en cada una.
+              </p>
+              <Link to="/perfil/editar" className="text-primario font-600 text-sm">
+                Elegir categorías
+              </Link>
+            </>
+          ) : (
+            <>
+              <p className="mt-1 mb-3 text-texto-medio text-sm">
+                Necesidades activas en lo que te interesa. Tocá una para donar.
+              </p>
+              {conteosLoading && <p className="text-texto-medio">Cargando...</p>}
+              {!conteosLoading && conteosError && (
+                <p className="text-critico">No pudimos cargar tus categorías.</p>
+              )}
+              {!conteosLoading && !conteosError && (
+                <div className="flex flex-wrap gap-2">
+                  {conteos.map((c) => (
+                    <ChipCategoria key={c.id} id={c.id} nombre={c.nombre} necesidades={c.necesidades} />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </section>
       )}
 
       {publicationParaMatch && (
