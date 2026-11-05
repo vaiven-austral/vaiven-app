@@ -74,7 +74,7 @@ export function AnalysisPanel({ candidate, open, onOpenChange, origen }: Analysi
         </div>
 
         <DrawerFooter className="border-t border-borde pt-4">
-          <PanelActions origen={origen} tituloCandidato={candidate.titulo} />
+          <PanelActions origen={origen} necesidadId={candidate.id} tituloCandidato={candidate.titulo} />
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

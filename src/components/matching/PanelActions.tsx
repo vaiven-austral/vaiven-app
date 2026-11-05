@@ -7,10 +7,11 @@ import { ConfirmarEleccionModal } from './ConfirmarEleccionModal';
 
 interface PanelActionsProps {
   origen?: PublicacionOrigen;
+  necesidadId: string;
   tituloCandidato: string;
 }
 
-export function PanelActions({ origen, tituloCandidato }: PanelActionsProps) {
+export function PanelActions({ origen, necesidadId, tituloCandidato }: PanelActionsProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   // Sin la publicación de origen no sabemos de qué lado está la persona.
@@ -34,6 +35,7 @@ export function PanelActions({ origen, tituloCandidato }: PanelActionsProps) {
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
         donacionId={origen.id}
+        necesidadId={necesidadId}
         tituloDonacion={origen.titulo}
         tituloNecesidad={tituloCandidato}
       />

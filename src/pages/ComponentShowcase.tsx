@@ -451,13 +451,15 @@ export function ComponentShowcase() {
         <section className="mb-16">
           <h2 className="text-3xl font-700 text-tinta mb-6">ConfirmarEleccionModal</h2>
           <p className="text-sm text-texto-medio mb-4">
-            «Sí, elegir» navega a /contacto/:donacionId con los dos títulos en el state; no guarda nada.
+            «Sí, elegir» llama a elegir_candidato y navega a /contacto/:donacionId. Acá usa ids de ejemplo, así que
+            la base responde con el error y el modal sigue abierto.
           </p>
           <Button variant="outline" onClick={() => setConfirmarOpen(true)}>Abrir modal</Button>
           <ConfirmarEleccionModal
             open={confirmarOpen}
             onOpenChange={setConfirmarOpen}
             donacionId={origenDonacion.id}
+            necesidadId={candidatoNecesidad.id}
             tituloDonacion={origenDonacion.titulo}
             tituloNecesidad={candidatoNecesidad.titulo}
           />

@@ -9,13 +9,14 @@ interface PublicacionDelMatch {
 // deja leer, tampoco desde un match (datos/permisos.md).
 export interface MiMatch {
   id: string;
+  donacion_id: string;
   creado_en: string;
   donacion: PublicacionDelMatch | null;
   necesidad: PublicacionDelMatch | null;
 }
 
 const SELECT_MIS_MATCHES =
-  'id, creado_en, donacion:publicaciones!donacion_id(titulo, usuario_id), necesidad:publicaciones!necesidad_id(titulo, usuario_id)';
+  'id, donacion_id, creado_en, donacion:publicaciones!donacion_id(titulo, usuario_id), necesidad:publicaciones!necesidad_id(titulo, usuario_id)';
 
 // Los matches propios, del más nuevo al más viejo. No filtra por usuario: la
 // política ya devuelve sólo los matches donde el usuario es dueño de un lado.
