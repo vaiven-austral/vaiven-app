@@ -1,0 +1,3 @@
+# Las fotos del caso no se suben al repo: tienen licencias y marcas de agua de terceros.
+# subir-fotos.sh las busca en esta carpeta, así que cada máquina tiene que tener su copia.
+fotos/

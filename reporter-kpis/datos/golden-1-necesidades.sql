@@ -41,7 +41,7 @@ from auth.users u where u.email like '%@golden.vaiven.dev';
 
 -- 3. Perfiles (los crea handle_new_user): avatar y zona sólo donde el golden set los define. Suman a la confianza.
 update public.perfiles set avatar_ruta = 'golden/d-01.webp', zona_id = (select id from public.zonas where region='AMBA' and partido='Vicente López' and localidad is not distinct from 'Florida') where id = '00000000-0000-4000-8000-000000012001';  -- D-01
-update public.perfiles set avatar_ruta = 'golden/d-02.webp', zona_id = (select id from public.zonas where region='AMBA' and partido='Comuna 13' and localidad is not distinct from 'Belgrano') where id = '00000000-0000-4000-8000-000000012002';  -- D-02
+update public.perfiles set avatar_ruta = 'golden/d-02.webp', zona_id = (select id from public.zonas where region='AMBA' and partido='CABA' and localidad is not distinct from 'Belgrano') where id = '00000000-0000-4000-8000-000000012002';  -- D-02
 update public.perfiles set avatar_ruta = NULL, zona_id = NULL where id = '00000000-0000-4000-8000-000000012006';  -- D-06
 update public.perfiles set avatar_ruta = 'golden/d-12.webp', zona_id = (select id from public.zonas where region='AMBA' and partido='Merlo' and localidad is not distinct from 'Merlo') where id = '00000000-0000-4000-8000-000000012012';  -- D-12
 update public.perfiles set avatar_ruta = NULL, zona_id = NULL where id = '00000000-0000-4000-8000-000000012013';  -- D-13
@@ -54,7 +54,7 @@ update public.perfiles set avatar_ruta = NULL, zona_id = (select id from public.
 update public.perfiles set avatar_ruta = 'golden/n-06.webp', zona_id = (select id from public.zonas where region='AMBA' and partido='Merlo' and localidad is not distinct from 'Merlo') where id = '00000000-0000-4000-8000-000000011006';  -- N-06
 update public.perfiles set avatar_ruta = 'golden/n-09.webp', zona_id = (select id from public.zonas where region='AMBA' and partido='Florencio Varela' and localidad is not distinct from 'Florencio Varela') where id = '00000000-0000-4000-8000-000000011009';  -- N-09
 update public.perfiles set avatar_ruta = NULL, zona_id = (select id from public.zonas where region='AMBA' and partido='Berazategui' and localidad is not distinct from 'Ranelagh') where id = '00000000-0000-4000-8000-000000011010';  -- N-10
-update public.perfiles set avatar_ruta = 'golden/n-11.webp', zona_id = (select id from public.zonas where region='AMBA' and partido='Comuna 5' and localidad is not distinct from 'Almagro') where id = '00000000-0000-4000-8000-000000011011';  -- N-11
+update public.perfiles set avatar_ruta = 'golden/n-11.webp', zona_id = (select id from public.zonas where region='AMBA' and partido='CABA' and localidad is not distinct from 'Almagro') where id = '00000000-0000-4000-8000-000000011011';  -- N-11
 update public.perfiles set avatar_ruta = NULL, zona_id = (select id from public.zonas where region='AMBA' and partido='Tigre' and localidad is not distinct from 'Don Torcuato Este') where id = '00000000-0000-4000-8000-000000011012';  -- N-12
 update public.perfiles set avatar_ruta = 'golden/n-13.webp', zona_id = (select id from public.zonas where region='AMBA' and partido='General San Martín' and localidad is not distinct from 'Villa Ballester') where id = '00000000-0000-4000-8000-000000011013';  -- N-13
 update public.perfiles set avatar_ruta = NULL, zona_id = NULL where id = '00000000-0000-4000-8000-000000011014';  -- N-14
@@ -81,7 +81,7 @@ insert into public.publicaciones (id, usuario_id, tipo, titulo, descripcion, cat
   -- N-10
   ('00000000-0000-4000-8000-000000001010', '00000000-0000-4000-8000-000000011010', 'necesidad', 'Botines de seguridad talle 43', 'empiezo en una obra el lunes y me piden q vaya con lo mio. si alguien tiene botines de seguridad talle 43 y ropa de trabajo', (select id from public.categorias where slug = 'ropa-y-calzado'), (select id from public.zonas where region='AMBA' and partido='Berazategui' and localidad is not distinct from 'Ranelagh'), 'alta', 1, 'activa', '2026-12-31'),
   -- N-11
-  ('00000000-0000-4000-8000-000000001011', '00000000-0000-4000-8000-000000011011', 'necesidad', 'Ventilador', 'un ventilador o algo xfa, en el depto hace 38 grados y tengo un bebe de meses', (select id from public.categorias where slug = 'electrodomesticos'), (select id from public.zonas where region='AMBA' and partido='Comuna 5' and localidad is not distinct from 'Almagro'), 'alta', 1, 'activa', '2026-12-31'),
+  ('00000000-0000-4000-8000-000000001011', '00000000-0000-4000-8000-000000011011', 'necesidad', 'Ventilador', 'un ventilador o algo xfa, en el depto hace 38 grados y tengo un bebe de meses', (select id from public.categorias where slug = 'electrodomesticos'), (select id from public.zonas where region='AMBA' and partido='CABA' and localidad is not distinct from 'Almagro'), 'alta', 1, 'activa', '2026-12-31'),
   -- N-12
   ('00000000-0000-4000-8000-000000001012', '00000000-0000-4000-8000-000000011012', 'necesidad', 'Lavarropas', 'alguien tiene lavarropas q no use? se me rompio y estoy lavando a mano para 5', (select id from public.categorias where slug = 'electrodomesticos'), (select id from public.zonas where region='AMBA' and partido='Tigre' and localidad is not distinct from 'Don Torcuato Este'), 'media', 1, 'activa', '2026-12-31'),
   -- N-13
