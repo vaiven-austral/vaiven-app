@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, ScrollRestoration } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
 import { BottomNav } from '../components/layout/BottomNav';
 
@@ -18,6 +18,10 @@ export function AppLayout() {
           <BottomNav />
         </div>
       </div>
+
+      {/* El layout no se remonta al cambiar de pantalla, así que sin esto la
+          nueva ruta hereda el scroll de la anterior (Perfil → Editar perfil). */}
+      <ScrollRestoration />
     </div>
   );
 }
