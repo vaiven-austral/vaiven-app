@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, type RefObject } from 'react';
+import { Dialog } from '@base-ui/react/dialog';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Icon } from '@/components/ui/icon';
 import { Badge } from '../ui/badge';
@@ -21,9 +22,14 @@ import {
 interface PublicationDetailModalProps {
   publication: Publication;
   onClose: () => void;
+  // A dónde vuelve el foco al cerrar. Sin esto vuelve al elemento que lo tenía al abrir.
+  finalFocus?: RefObject<HTMLElement | null>;
 }
 
-export function PublicationDetailModal({ publication, onClose }: PublicationDetailModalProps) {
+// El detalle es un diálogo informativo: Escape y el clic en el fondo lo cierran,
+// el foco queda adentro y el fondo no se mueve (lo resuelve Base UI). Se monta ya
+// abierto: quien lo usa lo dibuja o no, y recibe onClose.
+export function PublicationDetailModal({ publication, onClose, finalFocus }: PublicationDetailModalProps) {
   const {
     tipo,
     estado,
@@ -51,28 +57,26 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
-      role="dialog"
-      aria-modal="true"
-      onClick={(e) => {
-        e.stopPropagation();
-        onClose();
+    <Dialog.Root
+      open
+      onOpenChange={(abierto) => {
+        if (!abierto) onClose();
       }}
     >
-      <div
-        className="w-full sm:max-w-[390px] max-h-[90vh] overflow-y-auto rounded-tarjeta bg-tarjeta shadow-lg flex flex-col"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <Dialog.Portal>
+        <Dialog.Backdrop className="fixed inset-0 z-[60] bg-tinta/40" />
+        <Dialog.Viewport className="fixed inset-0 z-[60] flex items-center justify-center p-6">
+          <Dialog.Popup
+            finalFocus={finalFocus}
+            className="w-full sm:max-w-[390px] max-h-[90vh] overflow-y-auto rounded-tarjeta bg-tarjeta shadow-lg outline-none flex flex-col"
+          >
         <div className="flex items-center justify-end p-2 border-b border-borde">
-          <button
-            type="button"
-            onClick={onClose}
+          <Dialog.Close
             aria-label="Cerrar"
             className="flex h-8 w-8 items-center justify-center rounded-pill text-texto-medio hover:bg-lienzo"
           >
             <Icon icon={X} size={18} />
-          </button>
+          </Dialog.Close>
         </div>
 
         <div className="flex flex-col">
@@ -115,7 +119,7 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
         </div>
 
         <div className="min-w-0 flex-1 p-6">
-          <h2 className="mb-3 font-800 text-xl text-tinta">{titulo}</h2>
+          <Dialog.Title className="mb-3 font-800 text-xl text-tinta">{titulo}</Dialog.Title>
 
           <div className="mb-4 flex flex-wrap gap-2">
             <Badge variant={tipoVariant[tipo]}>{tipoLabels[tipo]}</Badge>
@@ -139,7 +143,9 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
           {descripcion && <p className="text-sm leading-relaxed text-texto-medio">{descripcion}</p>}
         </div>
         </div>
-      </div>
-    </div>
+          </Dialog.Popup>
+        </Dialog.Viewport>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
