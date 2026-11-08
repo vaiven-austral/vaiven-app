@@ -99,7 +99,7 @@ export function PublicationCard({ publication, onVerMatch, mostrarTipo = false }
       )}
 
       <div className="flex flex-wrap gap-2 mb-3">
-        {mostrarTipo && <Badge variant={tipoVariant}>{tipoLabels[tipo]}</Badge>}
+        {mostrarTipo && <Badge variant={tipoVariant[tipo]}>{tipoLabels[tipo]}</Badge>}
         {categorias && <Badge variant="secondary">{categorias.nombre}</Badge>}
         {tipo === 'necesidad' && urgencia && (
           <Badge variant={urgenciaVariants[urgencia]}>{urgenciaLabels[urgencia]}</Badge>

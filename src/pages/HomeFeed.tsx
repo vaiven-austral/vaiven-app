@@ -193,7 +193,7 @@ export function HomeFeed() {
                   </p>
                 )}
                 <div className="flex flex-col items-start gap-1 mb-2">
-                  <Badge variant={tipoVariant} className="!text-[11px]">
+                  <Badge variant={tipoVariant[publication.tipo]} className="!text-[11px]">
                     {tipoLabels[publication.tipo]}
                   </Badge>
                   <Badge variant={estadoVariants[publication.estado]} className="!text-[11px]">
