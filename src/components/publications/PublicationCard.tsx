@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { usePublicationState } from '../../hooks/usePublicationState';
@@ -63,10 +63,13 @@ export function PublicationCard({ publication, onVerMatch, mostrarTipo = false }
   const { estado, loading, error, transicionar } = usePublicationState(id, publication.estado);
   const vencida = estado !== 'completada' && isPublicationExpired(vence_en);
   const [mostrarDetalle, setMostrarDetalle] = useState(false);
+  // Al cerrar el detalle, el foco vuelve al botón del título.
+  const tituloRef = useRef<HTMLButtonElement>(null);
 
   const portada = getPortada(imagenes_publicacion);
 
   return (
+    <>
     <div
       className="bg-tarjeta rounded-tarjeta border border-borde shadow-sm overflow-hidden cursor-pointer"
       onClick={() => setMostrarDetalle(true)}
@@ -81,6 +84,7 @@ export function PublicationCard({ publication, onVerMatch, mostrarTipo = false }
       <div className="flex items-start justify-between gap-2 mb-2">
         <h3 className="font-500 text-[14.5px] leading-[150%] text-tinta">
           <button
+            ref={tituloRef}
             type="button"
             className="text-left rounded-boton focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primario"
             onClick={() => setMostrarDetalle(true)}
@@ -147,10 +151,17 @@ export function PublicationCard({ publication, onVerMatch, mostrarTipo = false }
 
       {error && <p className="text-critico text-sm mt-2 font-500">{error}</p>}
       </div>
-
-      {mostrarDetalle && (
-        <PublicationDetailModal publication={publication} onClose={() => setMostrarDetalle(false)} />
-      )}
     </div>
+
+    {/* Fuera del div clicable: un portal no corta el burbujeo de React, y un clic
+        en el fondo del detalle llegaría a la tarjeta y lo reabriría. */}
+    {mostrarDetalle && (
+      <PublicationDetailModal
+        publication={publication}
+        onClose={() => setMostrarDetalle(false)}
+        finalFocus={tituloRef}
+      />
+    )}
+    </>
   );
 }
