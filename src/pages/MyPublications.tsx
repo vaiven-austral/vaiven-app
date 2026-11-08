@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { rutaQuienesTeEligieron } from '../lib/eleccion';
 import { fetchMisPublicaciones } from '../lib/misPublicaciones';
 import { PublicationCard, type Publication } from '../components/publications/PublicationCard';
 import { EmptyState } from '../components/ui/EmptyState';
@@ -11,6 +12,7 @@ type Tipo = 'donacion' | 'necesidad';
 export function MyPublications() {
   const { user } = useAuth();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const activeTab: Tipo = pathname === '/mis-necesidades' ? 'necesidad' : 'donacion';
 
   const [publicaciones, setPublicaciones] = useState<Publication[]>([]);
@@ -90,7 +92,14 @@ export function MyPublications() {
             <PublicationCard
               key={publication.id}
               publication={publication}
-              onVerMatch={() => setPublicationParaMatch(publication)}
+              mostrarTipo
+              // Una necesidad va directo a quienes la eligieron; una donación pasa
+              // por el modal de confirmación antes de buscar candidatos.
+              onVerMatch={() =>
+                publication.tipo === 'necesidad'
+                  ? navigate(rutaQuienesTeEligieron(publication.id))
+                  : setPublicationParaMatch(publication)
+              }
             />
           ))}
         </div>

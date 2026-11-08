@@ -18,13 +18,15 @@ import {
   vencidaVariant,
   tipoLabels,
   tipoVariant,
+  matchLabels,
 } from '../../lib/publicationBadges';
 
 export type { Publication };
 
 interface PublicationCardProps {
   publication: Publication;
-  // Sin esta prop la card no muestra «Ver match» (el historial).
+  // Sin esta prop la card no muestra el botón de match (el historial). El texto lo
+  // decide la tarjeta por tipo; a dónde lleva lo decide quien la usa.
   onVerMatch?: () => void;
   // Para listas que mezclan donaciones y necesidades (el historial).
   mostrarTipo?: boolean;
@@ -121,7 +123,7 @@ export function PublicationCard({ publication, onVerMatch, mostrarTipo = false }
               onVerMatch();
             }}
           >
-            Ver match
+            {matchLabels[tipo]}
           </Button>
         )}
 
