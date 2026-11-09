@@ -95,7 +95,7 @@ export function HomeFeed() {
 
     async function cargarSugerencia() {
       try {
-        const resultado = await fetchSugerencia(publicaciones, userId!);
+        const resultado = await fetchSugerencia(publicaciones);
         if (cancelled) return;
         setSugerencia(resultado);
       } catch (error) {
