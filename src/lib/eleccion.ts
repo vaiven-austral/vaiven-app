@@ -19,6 +19,11 @@ export function rutaContacto(donacionId: string): string {
   return `/contacto/${donacionId}`;
 }
 
+// La lista de quienes eligieron una necesidad propia.
+export function rutaQuienesTeEligieron(necesidadId: string): string {
+  return `/quienes-te-eligieron/${necesidadId}`;
+}
+
 // Guarda la elección: único camino para crear un match (la función pasa la
 // donación a en_proceso y crea la fila de matches en el mismo paso). Devuelve el
 // id del match; elegir de nuevo al mismo candidato devuelve el mismo. Si falla,

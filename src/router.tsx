@@ -17,6 +17,7 @@ import { PerfilPage } from './pages/PerfilPage';
 import { EditarPerfil } from './pages/EditarPerfil';
 import { MatchingResultsPage } from './pages/MatchingResultsPage';
 import { ContactoPage } from './pages/ContactoPage';
+import { QuienesTeEligieronPage } from './pages/QuienesTeEligieronPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { RootPage } from './pages/RootPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -109,6 +110,10 @@ export const router = createBrowserRouter([
           {
             path: '/matching/:publicacionId',
             element: <MatchingResultsPage />,
+          },
+          {
+            path: '/quienes-te-eligieron/:necesidadId',
+            element: <QuienesTeEligieronPage />,
           },
           {
             path: '/contacto/:donacionId',

@@ -1,7 +1,7 @@
 import { supabase } from './supabaseClient';
 import type { Publication } from './publicationBadges';
 
-const SELECT_MIS_PUBLICACIONES =
+export const SELECT_MIS_PUBLICACIONES =
   'id, tipo, estado, titulo, descripcion, creada_en, vence_en, estado_objeto, urgencia, categorias(nombre), zonas(localidad, partido), imagenes_publicacion(ruta_storage, orden)';
 
 // Las publicaciones propias, de la más nueva a la más vieja. Con `tipo` trae

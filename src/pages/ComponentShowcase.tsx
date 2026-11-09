@@ -18,6 +18,7 @@ import { CandidateCard } from '../components/matching/CandidateCard';
 import { ConfirmarEleccionModal } from '../components/matching/ConfirmarEleccionModal';
 import { TarjetaMotor } from '../components/matching/TarjetaMotor';
 import { ChipCategoria } from '../components/matching/ChipCategoria';
+import { TarjetaEleccionRecibida } from '../components/matching/TarjetaEleccionRecibida';
 import type { Candidate } from '../lib/n8n';
 import type { PublicacionOrigen } from '../lib/eleccion';
 import type { Sugerencia } from '../lib/sugerencias';
@@ -480,6 +481,34 @@ export function ComponentShowcase() {
             {mockPublications.map((pub) => (
               <PublicationCard key={pub.id} publication={pub} mostrarTipo />
             ))}
+          </div>
+        </section>
+
+        {/* TARJETA DE ELECCIÓN RECIBIDA (Quiénes te eligieron) */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-2">TarjetaEleccionRecibida</h2>
+          <p className="text-sm text-texto-medio mb-6">
+            Tocar la tarjeta abre el detalle; «Ver contacto» es un botón propio que no lo abre. Acá los dos
+            sólo escriben en la consola.
+          </p>
+
+          <div className="space-y-6 max-w-md">
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Donación elegida</p>
+              <TarjetaEleccionRecibida
+                donacion={mockPublications[0]}
+                onVerDetalle={(donacion) => console.log('Ver detalle ->', donacion.titulo)}
+                onVerContacto={(donacionId) => console.log('Ver contacto ->', donacionId)}
+              />
+            </div>
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Publicación cerrada · sin detalle ni contacto</p>
+              <TarjetaEleccionRecibida
+                donacion={null}
+                onVerDetalle={() => undefined}
+                onVerContacto={() => undefined}
+              />
+            </div>
           </div>
         </section>
 

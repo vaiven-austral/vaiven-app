@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabaseClient';
 import { callN8nWebhook, WebhookError } from '@/lib/n8n';
 import type { Candidate } from '@/lib/n8n';
-import type { PublicacionOrigen } from '@/lib/eleccion';
+import { rutaQuienesTeEligieron, type PublicacionOrigen } from '@/lib/eleccion';
+import { useAuth } from '@/hooks/useAuth';
 import { CandidateCard } from '@/components/matching/CandidateCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Users, Lock, FileX, AlertCircle, WifiOff } from 'lucide-react';
@@ -17,6 +18,10 @@ export function MatchingResultsPage() {
   const [error, setError] = useState<{ message: string; status?: number } | null>(null);
   const [categorias, setCategorias] = useState<Record<number, string>>({});
   const [origen, setOrigen] = useState<PublicacionOrigen | undefined>(undefined);
+  const { user } = useAuth();
+  const userId = user?.id;
+  // La publicación cuyo origen ya se resolvió: hasta entonces no se llama al motor.
+  const [origenResueltoDe, setOrigenResueltoDe] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -33,26 +38,33 @@ export function MatchingResultsPage() {
     return () => { cancelled = true; };
   }, []);
 
-  // Título y tipo de la publicación de origen: el tipo decide si el drawer
-  // ofrece elegir, y el título va al modal de confirmación.
+  // Título, tipo y dueño de la publicación de origen: el tipo decide si el drawer
+  // ofrece elegir, y el título va al modal de confirmación. El ranking es sólo de
+  // donaciones: la dueña de una necesidad va a «Quiénes te eligieron», sin que se
+  // llame al motor. Un id ajeno, una donación o una lectura fallida siguen igual.
   useEffect(() => {
-    if (!publicacionId) return;
+    if (!publicacionId || !userId) return;
     let cancelled = false;
     supabase
       .from('publicaciones')
-      .select('titulo, tipo')
+      .select('titulo, tipo, usuario_id')
       .eq('id', publicacionId)
       .maybeSingle()
       .then(({ data, error }) => {
         if (cancelled) return;
         if (error) {
           console.error('Error al leer la publicación de origen:', error);
+        } else if (data?.tipo === 'necesidad' && data.usuario_id === userId) {
+          // replace: «atrás» no tiene que volver a esta redirección.
+          navigate(rutaQuienesTeEligieron(publicacionId), { replace: true });
           return;
+        } else if (data) {
+          setOrigen({ id: publicacionId, titulo: data.titulo, tipo: data.tipo });
         }
-        if (data) setOrigen({ id: publicacionId, titulo: data.titulo, tipo: data.tipo });
+        setOrigenResueltoDe(publicacionId);
       });
     return () => { cancelled = true; };
-  }, [publicacionId]);
+  }, [publicacionId, userId, navigate]);
 
   const handleRefresh = useCallback(async () => {
     if (!publicacionId) {
@@ -80,9 +92,11 @@ export function MatchingResultsPage() {
   }, [publicacionId]);
 
   useEffect(() => {
+    // El motor se llama recién cuando se resolvió el origen y no hubo redirección.
+    if (publicacionId && origenResueltoDe !== publicacionId) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     handleRefresh();
-  }, [handleRefresh]);
+  }, [handleRefresh, publicacionId, origenResueltoDe]);
 
   const renderErrorState = () => {
     if (!error) return null;
