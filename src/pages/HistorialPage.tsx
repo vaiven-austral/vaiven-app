@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { rutaContacto } from '../lib/eleccion';
 import { fetchMisPublicaciones } from '../lib/misPublicaciones';
 import { agruparPublicaciones } from '../lib/historial';
 import {
@@ -115,6 +117,12 @@ export function HistorialPage() {
                     </dd>
                   </div>
                 </dl>
+                <Link
+                  to={rutaContacto(match.donacion_id)}
+                  className="mt-3 inline-block text-primario font-600 text-sm"
+                >
+                  Ver contacto
+                </Link>
               </Card>
             ))}
           </div>
