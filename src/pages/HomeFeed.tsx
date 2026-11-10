@@ -184,7 +184,16 @@ export function HomeFeed() {
                 className="h-24 w-full"
               />
               <div className="p-3">
-                <p className="font-500 text-[14.5px] leading-[150%] text-tinta truncate">{publication.titulo}</p>
+                {/* Es el control que abre el detalle con teclado (Tab + Enter/Espacio),
+                    como el título de PublicationCard. El clic del resto de la tarjeta
+                    sigue abriéndolo con el mouse. */}
+                <button
+                  type="button"
+                  className="block w-full text-left font-500 text-[14.5px] leading-[150%] text-tinta truncate rounded-boton focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primario"
+                  onClick={() => setPublicationParaDetalle(publication)}
+                >
+                  {publication.titulo}
+                </button>
                 {publication.categorias && (
                   <p className="text-texto-medio text-xs truncate">{publication.categorias.nombre}</p>
                 )}
