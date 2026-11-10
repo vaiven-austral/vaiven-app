@@ -90,7 +90,7 @@ export function MyPublications() {
             <PublicationCard
               key={publication.id}
               publication={publication}
-              onClick={() => setPublicationParaMatch(publication)}
+              onVerMatch={() => setPublicationParaMatch(publication)}
             />
           ))}
         </div>
