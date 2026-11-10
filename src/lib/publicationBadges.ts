@@ -17,6 +17,7 @@ export interface Publication {
 type BadgeVariant =
   | 'primary'
   | 'secondary'
+  | 'terciario'
   | 'vencida'
   | 'success'
   | 'warning'
@@ -75,5 +76,16 @@ export const tipoLabels: Record<Publication['tipo'], string> = {
   necesidad: 'NECESIDAD',
 };
 
-// donación y necesidad comparten el mismo turquesa; solo el texto las distingue
-export const tipoVariant: BadgeVariant = 'secondary';
+// Lo que hace el botón de match de cada tipo: una donación busca candidatos; una
+// necesidad lista a quienes la eligieron.
+export const matchLabels: Record<Publication['tipo'], string> = {
+  donacion: 'Ver candidatos',
+  necesidad: 'Quiénes te eligieron',
+};
+
+// El chip de tipo se distingue por color y no sólo por texto: donación en el
+// secundario (teal), necesidad en el terciario (docs/ui/tokens.md, «Chip de tipo»).
+export const tipoVariant: Record<Publication['tipo'], BadgeVariant> = {
+  donacion: 'secondary',
+  necesidad: 'terciario',
+};

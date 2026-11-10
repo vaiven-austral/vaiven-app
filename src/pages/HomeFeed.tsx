@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useOwnProfile } from '../hooks/useOwnProfile';
 import { supabase } from '../lib/supabaseClient';
@@ -17,7 +17,9 @@ import {
   estadoObjetoVariant,
   tipoLabels,
   tipoVariant,
+  matchLabels,
 } from '../lib/publicationBadges';
+import { rutaQuienesTeEligieron } from '../lib/eleccion';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -35,6 +37,7 @@ function getPrimerNombre(nombre?: string | null, email?: string | null): string 
 
 export function HomeFeed() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { profile } = useOwnProfile();
   const primerNombre = getPrimerNombre(profile?.nombre_visible, user?.email);
 
@@ -202,7 +205,7 @@ export function HomeFeed() {
                   </p>
                 )}
                 <div className="flex flex-col items-start gap-1 mb-2">
-                  <Badge variant={tipoVariant} className="!text-[11px]">
+                  <Badge variant={tipoVariant[publication.tipo]} className="!text-[11px]">
                     {tipoLabels[publication.tipo]}
                   </Badge>
                   <Badge variant={estadoVariants[publication.estado]} className="!text-[11px]">
@@ -227,10 +230,16 @@ export function HomeFeed() {
                     className="!h-7 !px-2 !text-[11px] w-full"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setPublicationParaMatch(publication);
+                      // Una necesidad va directo a quienes la eligieron; una
+                      // donación pasa por el modal antes de buscar candidatos.
+                      if (publication.tipo === 'necesidad') {
+                        navigate(rutaQuienesTeEligieron(publication.id));
+                      } else {
+                        setPublicationParaMatch(publication);
+                      }
                     }}
                   >
-                    Ver match
+                    {matchLabels[publication.tipo]}
                   </Button>
                 )}
               </div>

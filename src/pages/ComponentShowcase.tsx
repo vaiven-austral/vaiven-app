@@ -160,6 +160,14 @@ const mockPublications: Publication[] = [
   },
 ];
 
+// Una necesidad activa y vigente, para ver su botón de match (la de arriba está vencida).
+const necesidadVigente: Publication = {
+  ...mockPublications[1],
+  id: '4',
+  titulo: 'Compu o notebook para estudiar',
+  vence_en: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+};
+
 export function ComponentShowcase() {
   const [inputValue, setInputValue] = useState('');
   const [confirmarOpen, setConfirmarOpen] = useState(false);
@@ -482,6 +490,25 @@ export function ComponentShowcase() {
               <PublicationCard key={pub.id} publication={pub} mostrarTipo />
             ))}
           </div>
+
+          <p className="text-sm font-600 text-texto-medio mt-8 mb-1">Botón de match por tipo</p>
+          <p className="text-sm text-texto-medio mb-3">
+            Donación: «Ver candidatos». Necesidad: «Quiénes te eligieron». El chip de tipo
+            va en cada color. Sólo aparece en publicaciones activas y vigentes. Acá los dos
+            escriben en la consola.
+          </p>
+          <div className="space-y-4 max-w-md">
+            <PublicationCard
+              publication={mockPublications[0]}
+              mostrarTipo
+              onVerMatch={() => console.log('Ver candidatos (abre el modal de confirmación)')}
+            />
+            <PublicationCard
+              publication={necesidadVigente}
+              mostrarTipo
+              onVerMatch={() => console.log('Quiénes te eligieron (navega directo)')}
+            />
+          </div>
         </section>
 
         {/* TARJETA DE ELECCIÓN RECIBIDA (Quiénes te eligieron) */}
@@ -552,6 +579,7 @@ export function ComponentShowcase() {
           <div className="flex flex-wrap gap-3">
             <Badge variant="primary">Primary</Badge>
             <Badge variant="secondary">Secondary</Badge>
+            <Badge variant="terciario">Terciario</Badge>
             <Badge variant="success">Success</Badge>
             <Badge variant="warning">Warning</Badge>
             <Badge variant="destructive">Destructive</Badge>
