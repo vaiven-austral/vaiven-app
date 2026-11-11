@@ -75,5 +75,5 @@ BEGIN
 END;
 $$;
 
-REVOKE ALL ON FUNCTION public.elegir_candidato(uuid, uuid) FROM public;
+REVOKE ALL ON FUNCTION public.elegir_candidato(uuid, uuid) FROM public, anon;
 GRANT EXECUTE ON FUNCTION public.elegir_candidato(uuid, uuid) TO authenticated;

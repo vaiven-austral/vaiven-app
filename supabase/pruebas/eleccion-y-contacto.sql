@@ -177,5 +177,101 @@ BEGIN
   END IF;
 END $$;
 
+-- ============================================================
+-- Caso 7: un usuario ajeno no puede elegir
+-- ============================================================
+-- donación de B sin tocar hasta acá: b7777777-…
+SET LOCAL ROLE authenticated;
+SELECT set_config('request.jwt.claims', '{"sub":"78d026a5-c05c-4705-b32b-b518bd05bc3b","role":"authenticated"}', true);
+DO $$
+DECLARE v_id uuid; v_hubo_error boolean := false; v_mensaje text;
+BEGIN
+  BEGIN
+    SELECT elegir_candidato('b7777777-7777-7777-7777-777777777777', 'a1111111-1111-1111-1111-111111111111') INTO v_id;
+  EXCEPTION WHEN OTHERS THEN
+    v_hubo_error := true;
+    v_mensaje := sqlerrm;
+  END;
+  IF NOT v_hubo_error THEN
+    RAISE EXCEPTION 'caso 7 (usuario ajeno no puede elegir): esperaba error, no lo hubo (uuid=%)', v_id;
+  END IF;
+  IF v_mensaje <> 'La donación no está activa o no es tuya' THEN
+    RAISE EXCEPTION 'caso 7 (usuario ajeno no puede elegir): mensaje inesperado: %', v_mensaje;
+  END IF;
+END $$;
+
+-- ============================================================
+-- Caso 8: necesidad inválida — vencida, propia, o que no es necesidad
+-- ============================================================
+SET LOCAL ROLE authenticated;
+SELECT set_config('request.jwt.claims', '{"sub":"ff3041a6-febe-4e85-925b-ae5216b73361","role":"authenticated"}', true);
+DO $$
+DECLARE v_id uuid; v_hubo_error boolean := false; v_mensaje text;
+BEGIN
+  BEGIN
+    -- a9999999-…: necesidad vencida (de C)
+    SELECT elegir_candidato('b7777777-7777-7777-7777-777777777777', 'a9999999-9999-9999-9999-999999999999') INTO v_id;
+  EXCEPTION WHEN OTHERS THEN
+    v_hubo_error := true;
+    v_mensaje := sqlerrm;
+  END;
+  IF NOT v_hubo_error THEN
+    RAISE EXCEPTION 'caso 8a (necesidad vencida): esperaba error, no lo hubo (uuid=%)', v_id;
+  END IF;
+  IF v_mensaje <> 'La necesidad no está disponible' THEN
+    RAISE EXCEPTION 'caso 8a (necesidad vencida): mensaje inesperado: %', v_mensaje;
+  END IF;
+END $$;
+
+DO $$
+DECLARE v_id uuid; v_hubo_error boolean := false; v_mensaje text;
+BEGIN
+  BEGIN
+    -- a8888888-…: necesidad propia de B
+    SELECT elegir_candidato('b7777777-7777-7777-7777-777777777777', 'a8888888-8888-8888-8888-888888888888') INTO v_id;
+  EXCEPTION WHEN OTHERS THEN
+    v_hubo_error := true;
+    v_mensaje := sqlerrm;
+  END;
+  IF NOT v_hubo_error THEN
+    RAISE EXCEPTION 'caso 8b (necesidad propia): esperaba error, no lo hubo (uuid=%)', v_id;
+  END IF;
+  IF v_mensaje <> 'La necesidad no está disponible' THEN
+    RAISE EXCEPTION 'caso 8b (necesidad propia): mensaje inesperado: %', v_mensaje;
+  END IF;
+END $$;
+
+DO $$
+DECLARE v_id uuid; v_hubo_error boolean := false; v_mensaje text;
+BEGIN
+  BEGIN
+    -- b1111111-…: es una donación, no una necesidad
+    SELECT elegir_candidato('b7777777-7777-7777-7777-777777777777', 'b1111111-1111-1111-1111-111111111111') INTO v_id;
+  EXCEPTION WHEN OTHERS THEN
+    v_hubo_error := true;
+    v_mensaje := sqlerrm;
+  END;
+  IF NOT v_hubo_error THEN
+    RAISE EXCEPTION 'caso 8c (no es necesidad): esperaba error, no lo hubo (uuid=%)', v_id;
+  END IF;
+  IF v_mensaje <> 'La necesidad no está disponible' THEN
+    RAISE EXCEPTION 'caso 8c (no es necesidad): mensaje inesperado: %', v_mensaje;
+  END IF;
+END $$;
+
+RESET ROLE;
+DO $$
+DECLARE v_estado text; v_count int;
+BEGIN
+  SELECT estado INTO v_estado FROM publicaciones WHERE id = 'b7777777-7777-7777-7777-777777777777';
+  IF v_estado <> 'activa' THEN
+    RAISE EXCEPTION 'casos 7 y 8: esperaba la donación b7777777 todavía activa, quedó %', v_estado;
+  END IF;
+  SELECT count(*) INTO v_count FROM matches WHERE donacion_id = 'b7777777-7777-7777-7777-777777777777';
+  IF v_count <> 0 THEN
+    RAISE EXCEPTION 'casos 7 y 8: esperaba 0 filas en matches para b7777777, dio %', v_count;
+  END IF;
+END $$;
+
 RESET ROLE;
 ROLLBACK;

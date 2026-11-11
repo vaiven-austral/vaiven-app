@@ -118,7 +118,7 @@ export function PublicationDetailModal({ publication, onClose }: PublicationDeta
           <h2 className="mb-3 font-800 text-xl text-tinta">{titulo}</h2>
 
           <div className="mb-4 flex flex-wrap gap-2">
-            <Badge variant={tipoVariant}>{tipoLabels[tipo]}</Badge>
+            <Badge variant={tipoVariant[tipo]}>{tipoLabels[tipo]}</Badge>
             {vencida && <Badge variant={vencidaVariant}>{vencidaLabel}</Badge>}
             <Badge variant={estadoVariants[estado]}>{estadoLabels[estado]}</Badge>
             {categorias && <Badge variant="secondary">{categorias.nombre}</Badge>}

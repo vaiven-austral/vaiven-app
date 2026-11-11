@@ -1,6 +1,7 @@
 # Reporter de KPIs de VaiVen. Lo entrega dirección: no se edita.
-# Variables del repo: KPI_URL, KPI_PUBLISHABLE_KEY, KPI_ENV, KPI_API_URL, KPI_APP_URL.
-# Secrets del repo: KPI_PROJECT_KEY, VERTEX_SA_JSON.
+# Variables del repo: KPI_URL, KPI_PUBLISHABLE_KEY, KPI_ENV, KPI_API_URL, KPI_APP_URL,
+#                     KPI_DEV_URL, KPI_DEV_PUBLISHABLE_KEY, KPI_N8N_URL, KPI_N8N_WORKFLOW_ID.
+# Secrets del repo: KPI_PROJECT_KEY, VERTEX_SA_JSON, KPI_N8N_API_KEY.
 name: Reporter de KPIs
 
 on:
@@ -48,6 +49,12 @@ jobs:
           VERTEX_SA_JSON: ${{ secrets.VERTEX_SA_JSON }}
         run: bash reporter-kpis/stack.sh demo
       - name: KPIs de la demo
+        env:
+          KPI_DEV_URL: ${{ vars.KPI_DEV_URL }}
+          KPI_DEV_PUBLISHABLE_KEY: ${{ vars.KPI_DEV_PUBLISHABLE_KEY }}
+          KPI_N8N_URL: ${{ vars.KPI_N8N_URL }}
+          KPI_N8N_WORKFLOW_ID: ${{ vars.KPI_N8N_WORKFLOW_ID }}
+          KPI_N8N_API_KEY: ${{ secrets.KPI_N8N_API_KEY }}
         run: bash reporter-kpis/reportar.sh
       - name: Golden set
         run: bash reporter-kpis/stack.sh golden
