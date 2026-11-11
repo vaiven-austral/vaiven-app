@@ -18,13 +18,16 @@ import {
   vencidaVariant,
   tipoLabels,
   tipoVariant,
+  matchLabels,
 } from '../../lib/publicationBadges';
 
 export type { Publication };
 
 interface PublicationCardProps {
   publication: Publication;
-  onClick?: () => void;
+  // Sin esta prop la card no muestra el botón de match (el historial). El texto lo
+  // decide la tarjeta por tipo; a dónde lleva lo decide quien la usa.
+  onVerMatch?: () => void;
   // Para listas que mezclan donaciones y necesidades (el historial).
   mostrarTipo?: boolean;
 }
@@ -54,7 +57,7 @@ function TransitionButton({ variant, isLoading, onClick, children }: TransitionB
   );
 }
 
-export function PublicationCard({ publication, onClick, mostrarTipo = false }: PublicationCardProps) {
+export function PublicationCard({ publication, onVerMatch, mostrarTipo = false }: PublicationCardProps) {
   const { id, tipo, titulo, vence_en, urgencia, estado_objeto, categorias, zonas, imagenes_publicacion } =
     publication;
   const { estado, loading, error, transicionar } = usePublicationState(id, publication.estado);
@@ -65,8 +68,8 @@ export function PublicationCard({ publication, onClick, mostrarTipo = false }: P
 
   return (
     <div
-      className={`bg-tarjeta rounded-tarjeta border border-borde shadow-sm overflow-hidden ${onClick ? 'cursor-pointer' : ''}`}
-      onClick={onClick}
+      className="bg-tarjeta rounded-tarjeta border border-borde shadow-sm overflow-hidden cursor-pointer"
+      onClick={() => setMostrarDetalle(true)}
     >
       <PublicationImage
         rutaStorage={portada?.ruta_storage}
@@ -76,7 +79,15 @@ export function PublicationCard({ publication, onClick, mostrarTipo = false }: P
 
       <div className="p-4">
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h3 className="font-500 text-[14.5px] leading-[150%] text-tinta">{titulo}</h3>
+        <h3 className="font-500 text-[14.5px] leading-[150%] text-tinta">
+          <button
+            type="button"
+            className="text-left rounded-boton focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primario"
+            onClick={() => setMostrarDetalle(true)}
+          >
+            {titulo}
+          </button>
+        </h3>
         <div className="flex gap-1">
           {vencida && <Badge variant={vencidaVariant}>{vencidaLabel}</Badge>}
           <Badge variant={estadoVariants[estado]}>{estadoLabels[estado]}</Badge>
@@ -90,7 +101,7 @@ export function PublicationCard({ publication, onClick, mostrarTipo = false }: P
       )}
 
       <div className="flex flex-wrap gap-2 mb-3">
-        {mostrarTipo && <Badge variant={tipoVariant}>{tipoLabels[tipo]}</Badge>}
+        {mostrarTipo && <Badge variant={tipoVariant[tipo]}>{tipoLabels[tipo]}</Badge>}
         {categorias && <Badge variant="secondary">{categorias.nombre}</Badge>}
         {tipo === 'necesidad' && urgencia && (
           <Badge variant={urgenciaVariants[urgencia]}>{urgenciaLabels[urgencia]}</Badge>
@@ -101,17 +112,20 @@ export function PublicationCard({ publication, onClick, mostrarTipo = false }: P
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button
-          size="sm"
-          variant="outline"
-          className="!h-8 !px-3 !text-xs"
-          onClick={(e) => {
-            e.stopPropagation();
-            setMostrarDetalle(true);
-          }}
-        >
-          Ver detalles
-        </Button>
+        {/* El motor busca candidatos sólo para publicaciones activas. */}
+        {onVerMatch && estado === 'activa' && !vencida && (
+          <Button
+            size="sm"
+            variant="primary"
+            className="!h-8 !px-3 !text-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              onVerMatch();
+            }}
+          >
+            {matchLabels[tipo]}
+          </Button>
+        )}
 
         {estado === 'activa' && (
           <TransitionButton variant="outline" isLoading={loading} onClick={() => transicionar('en_proceso')}>

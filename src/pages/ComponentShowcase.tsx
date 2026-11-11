@@ -18,6 +18,7 @@ import { CandidateCard } from '../components/matching/CandidateCard';
 import { ConfirmarEleccionModal } from '../components/matching/ConfirmarEleccionModal';
 import { TarjetaMotor } from '../components/matching/TarjetaMotor';
 import { ChipCategoria } from '../components/matching/ChipCategoria';
+import { TarjetaEleccionRecibida } from '../components/matching/TarjetaEleccionRecibida';
 import type { Candidate } from '../lib/n8n';
 import type { PublicacionOrigen } from '../lib/eleccion';
 import type { Sugerencia } from '../lib/sugerencias';
@@ -158,6 +159,14 @@ const mockPublications: Publication[] = [
     zonas: { partido: 'Tigre', localidad: 'Tigre' },
   },
 ];
+
+// Una necesidad activa y vigente, para ver su botón de match (la de arriba está vencida).
+const necesidadVigente: Publication = {
+  ...mockPublications[1],
+  id: '4',
+  titulo: 'Compu o notebook para estudiar',
+  vence_en: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+};
 
 export function ComponentShowcase() {
   const [inputValue, setInputValue] = useState('');
@@ -451,13 +460,15 @@ export function ComponentShowcase() {
         <section className="mb-16">
           <h2 className="text-3xl font-700 text-tinta mb-6">ConfirmarEleccionModal</h2>
           <p className="text-sm text-texto-medio mb-4">
-            «Sí, elegir» navega a /contacto/:donacionId con los dos títulos en el state; no guarda nada.
+            «Sí, elegir» llama a elegir_candidato y navega a /contacto/:donacionId. Acá usa ids de ejemplo, así que
+            la base responde con el error y el modal sigue abierto.
           </p>
           <Button variant="outline" onClick={() => setConfirmarOpen(true)}>Abrir modal</Button>
           <ConfirmarEleccionModal
             open={confirmarOpen}
             onOpenChange={setConfirmarOpen}
             donacionId={origenDonacion.id}
+            necesidadId={candidatoNecesidad.id}
             tituloDonacion={origenDonacion.titulo}
             tituloNecesidad={candidatoNecesidad.titulo}
           />
@@ -478,6 +489,53 @@ export function ComponentShowcase() {
             {mockPublications.map((pub) => (
               <PublicationCard key={pub.id} publication={pub} mostrarTipo />
             ))}
+          </div>
+
+          <p className="text-sm font-600 text-texto-medio mt-8 mb-1">Botón de match por tipo</p>
+          <p className="text-sm text-texto-medio mb-3">
+            Donación: «Ver candidatos». Necesidad: «Quiénes te eligieron». El chip de tipo
+            va en cada color. Sólo aparece en publicaciones activas y vigentes. Acá los dos
+            escriben en la consola.
+          </p>
+          <div className="space-y-4 max-w-md">
+            <PublicationCard
+              publication={mockPublications[0]}
+              mostrarTipo
+              onVerMatch={() => console.log('Ver candidatos (abre el modal de confirmación)')}
+            />
+            <PublicationCard
+              publication={necesidadVigente}
+              mostrarTipo
+              onVerMatch={() => console.log('Quiénes te eligieron (navega directo)')}
+            />
+          </div>
+        </section>
+
+        {/* TARJETA DE ELECCIÓN RECIBIDA (Quiénes te eligieron) */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-700 text-tinta mb-2">TarjetaEleccionRecibida</h2>
+          <p className="text-sm text-texto-medio mb-6">
+            Tocar la tarjeta abre el detalle; «Ver contacto» es un botón propio que no lo abre. Acá los dos
+            sólo escriben en la consola.
+          </p>
+
+          <div className="space-y-6 max-w-md">
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Donación elegida</p>
+              <TarjetaEleccionRecibida
+                donacion={mockPublications[0]}
+                onVerDetalle={(donacion) => console.log('Ver detalle ->', donacion.titulo)}
+                onVerContacto={(donacionId) => console.log('Ver contacto ->', donacionId)}
+              />
+            </div>
+            <div>
+              <p className="text-sm font-600 text-texto-medio mb-3">Publicación cerrada · sin detalle ni contacto</p>
+              <TarjetaEleccionRecibida
+                donacion={null}
+                onVerDetalle={() => undefined}
+                onVerContacto={() => undefined}
+              />
+            </div>
           </div>
         </section>
 
@@ -521,6 +579,7 @@ export function ComponentShowcase() {
           <div className="flex flex-wrap gap-3">
             <Badge variant="primary">Primary</Badge>
             <Badge variant="secondary">Secondary</Badge>
+            <Badge variant="terciario">Terciario</Badge>
             <Badge variant="success">Success</Badge>
             <Badge variant="warning">Warning</Badge>
             <Badge variant="destructive">Destructive</Badge>

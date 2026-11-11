@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useOwnProfile } from '../hooks/useOwnProfile';
 import { supabase } from '../lib/supabaseClient';
 import { getPortada } from '../lib/imagenesPublicacion';
+import { isPublicationExpired } from '../lib/publicationState';
 import { fetchSugerencia, type Sugerencia } from '../lib/sugerencias';
 import { fetchConteosPorCategoria, type ConteoCategoria } from '../lib/categoriasInicio';
 import {
@@ -16,7 +17,9 @@ import {
   estadoObjetoVariant,
   tipoLabels,
   tipoVariant,
+  matchLabels,
 } from '../lib/publicationBadges';
+import { rutaQuienesTeEligieron } from '../lib/eleccion';
 import { EmptyState } from '../components/ui/EmptyState';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -34,6 +37,7 @@ function getPrimerNombre(nombre?: string | null, email?: string | null): string 
 
 export function HomeFeed() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { profile } = useOwnProfile();
   const primerNombre = getPrimerNombre(profile?.nombre_visible, user?.email);
 
@@ -172,7 +176,7 @@ export function HomeFeed() {
             <div
               key={publication.id}
               className="w-40 shrink-0 bg-tarjeta rounded-tarjeta border border-borde shadow-sm overflow-hidden cursor-pointer"
-              onClick={() => setPublicationParaMatch(publication)}
+              onClick={() => setPublicationParaDetalle(publication)}
             >
               <PublicationImage
                 rutaStorage={getPortada(publication.imagenes_publicacion)?.ruta_storage}
@@ -180,7 +184,16 @@ export function HomeFeed() {
                 className="h-24 w-full"
               />
               <div className="p-3">
-                <p className="font-500 text-[14.5px] leading-[150%] text-tinta truncate">{publication.titulo}</p>
+                {/* Es el control que abre el detalle con teclado (Tab + Enter/Espacio),
+                    como el título de PublicationCard. El clic del resto de la tarjeta
+                    sigue abriéndolo con el mouse. */}
+                <button
+                  type="button"
+                  className="block w-full text-left font-500 text-[14.5px] leading-[150%] text-tinta truncate rounded-boton focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primario"
+                  onClick={() => setPublicationParaDetalle(publication)}
+                >
+                  {publication.titulo}
+                </button>
                 {publication.categorias && (
                   <p className="text-texto-medio text-xs truncate">{publication.categorias.nombre}</p>
                 )}
@@ -192,7 +205,7 @@ export function HomeFeed() {
                   </p>
                 )}
                 <div className="flex flex-col items-start gap-1 mb-2">
-                  <Badge variant={tipoVariant} className="!text-[11px]">
+                  <Badge variant={tipoVariant[publication.tipo]} className="!text-[11px]">
                     {tipoLabels[publication.tipo]}
                   </Badge>
                   <Badge variant={estadoVariants[publication.estado]} className="!text-[11px]">
@@ -209,17 +222,26 @@ export function HomeFeed() {
                     </Badge>
                   )}
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="!h-7 !px-2 !text-[11px] w-full"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setPublicationParaDetalle(publication);
-                  }}
-                >
-                  Ver detalles
-                </Button>
+                {/* El motor busca candidatos sólo para publicaciones activas. */}
+                {publication.estado === 'activa' && !isPublicationExpired(publication.vence_en) && (
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    className="!h-7 !px-2 !text-[11px] w-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // Una necesidad va directo a quienes la eligieron; una
+                      // donación pasa por el modal antes de buscar candidatos.
+                      if (publication.tipo === 'necesidad') {
+                        navigate(rutaQuienesTeEligieron(publication.id));
+                      } else {
+                        setPublicationParaMatch(publication);
+                      }
+                    }}
+                  >
+                    {matchLabels[publication.tipo]}
+                  </Button>
+                )}
               </div>
             </div>
           ))}
