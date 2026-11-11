@@ -114,17 +114,14 @@ const candidatoNecesidad: Candidate = {
 const origenDonacion: PublicacionOrigen = { id: 'demo-donacion', titulo: 'PC de escritorio completa', tipo: 'donacion' };
 const origenNecesidad: PublicacionOrigen = { id: 'demo-necesidad', titulo: 'Compu para estudiar', tipo: 'necesidad' };
 
-const sugerenciaDonacion: Sugerencia = {
-  tipo: 'compatibles',
-  publicacion: { id: 'demo-donacion', tipo: 'donacion', titulo: 'Mantas de invierno' },
+const sugerenciaPlural: Sugerencia = {
+  publicacion: { id: 'demo-donacion', titulo: 'Mantas de invierno' },
   cantidad: 3,
 };
-const sugerenciaNecesidad: Sugerencia = {
-  tipo: 'compatibles',
-  publicacion: { id: 'demo-necesidad', tipo: 'necesidad', titulo: 'Compu para estudiar' },
+const sugerenciaSingular: Sugerencia = {
+  publicacion: { id: 'demo-donacion', titulo: 'PC de escritorio completa' },
   cantidad: 1,
 };
-const sugerenciaEvaluando: Sugerencia = { tipo: 'evaluando' };
 
 const mockPublications: Publication[] = [
   {
@@ -359,16 +356,12 @@ export function ComponentShowcase() {
 
           <div className="space-y-6 max-w-md">
             <div>
-              <p className="text-sm font-600 text-texto-medio mb-3">Con compatibles · donación (plural)</p>
-              <TarjetaMotor sugerencia={sugerenciaDonacion} />
+              <p className="text-sm font-600 text-texto-medio mb-3">Con candidatos · plural</p>
+              <TarjetaMotor sugerencia={sugerenciaPlural} />
             </div>
             <div>
-              <p className="text-sm font-600 text-texto-medio mb-3">Con compatibles · necesidad (singular)</p>
-              <TarjetaMotor sugerencia={sugerenciaNecesidad} />
-            </div>
-            <div>
-              <p className="text-sm font-600 text-texto-medio mb-3">Evaluando · sin botón</p>
-              <TarjetaMotor sugerencia={sugerenciaEvaluando} />
+              <p className="text-sm font-600 text-texto-medio mb-3">Con un candidato · singular</p>
+              <TarjetaMotor sugerencia={sugerenciaSingular} />
             </div>
           </div>
         </section>
