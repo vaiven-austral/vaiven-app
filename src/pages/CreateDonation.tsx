@@ -65,6 +65,7 @@ export function CreateDonation() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [fotosFallaron, setFotosFallaron] = useState(false);
   const submittingRef = useRef(false);
 
   function validate(): FormErrors {
@@ -147,9 +148,10 @@ export function CreateDonation() {
 
     const { error: imagenesError } = await subirImagenesPublicacion(imagenes, user.id, data.id);
     if (imagenesError) {
-      submittingRef.current = false;
-      setIsSubmitting(false);
-      setSubmitError(`La publicación se creó, pero hubo un problema con las fotos: ${imagenesError}`);
+      // la publicación ya existe: no se rehabilita el botón para no insertar otra
+      console.error('Error al subir las fotos de la publicación:', imagenesError);
+      setFotosFallaron(true);
+      setTimeout(() => navigate('/mis-donaciones'), 1500);
       return;
     }
 
@@ -232,6 +234,12 @@ export function CreateDonation() {
         {submitError && (
           <div className="rounded-tarjeta border-2 border-critico bg-[rgba(220,38,38,0.06)] p-4 text-critico text-sm font-500">
             {submitError}
+          </div>
+        )}
+
+        {fotosFallaron && (
+          <div className="rounded-tarjeta border-2 border-critico bg-[rgba(220,38,38,0.06)] p-4 text-critico text-sm font-500">
+            Tu publicación se creó, pero las fotos no se pudieron subir.
           </div>
         )}
 
