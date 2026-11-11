@@ -1,7 +1,7 @@
 -- ============================================================
 -- CASO DE DEMO: «LA COMPU PARA ESTUDIAR»
 -- Una PC de escritorio donada contra cuatro pedidos de compu que compiten.
--- Categoría 5: Tecnología | Zona 1178: Caballito (Comuna 6, CABA)
+-- Categoría 5: Tecnología | Zona 1178: Caballito (CABA)
 -- Puntaje = resolución (nivel × 10) + urgencia o estado (hasta 10) + proximidad (misma
 -- zona 20, mismo partido 13, misma región 7, otra 0) + confianza del perfil (0, 5 o 10)
 -- + calidad (hasta 5) + categoría (15). Los datos de este caso (zonas, textos y perfiles)

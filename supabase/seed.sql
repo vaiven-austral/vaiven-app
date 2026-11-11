@@ -115,7 +115,7 @@ WHERE u.id IN (
 ON CONFLICT (provider_id, provider) DO NOTHING;
 
 -- 3. ACTUALIZACIÓN DE PERFILES (Zona y Avatar para scoring de confianza y cercanía)
--- Usuario A: Perfil completo (Caballito, Comuna 6, AMBA: zona_id=1178)
+-- Usuario A: Perfil completo (Caballito, CABA, AMBA: zona_id=1178)
 UPDATE public.perfiles
 SET avatar_ruta = '/avatars/usuario-a.webp', zona_id = 1178, rol_preferido = 'receptor'
 WHERE id = 'f3b6d105-625f-400e-8d1d-dd5a3d0364a0';
@@ -125,7 +125,7 @@ UPDATE public.perfiles
 SET avatar_ruta = '/avatars/usuario-b.webp', zona_id = 1178, rol_preferido = 'donante'
 WHERE id = 'ff3041a6-febe-4e85-925b-ae5216b73361';
 
--- Usuario C: Perfil parcial (Sin avatar, Mismo partido Comuna 6: zona_id=66)
+-- Usuario C: Perfil parcial (Sin avatar, Mismo partido CABA: zona_id=66)
 UPDATE public.perfiles
 SET avatar_ruta = NULL, zona_id = 66, rol_preferido = 'donante'
 WHERE id = '78d026a5-c05c-4705-b32b-b518bd05bc3b';
@@ -258,7 +258,7 @@ INSERT INTO public.publicaciones (
     'Donamos varias prendas de abrigo de invierno en perfecto estado, lavadas y listas para usar. Incluye camperas y buzos abrigados.',
     3, 1178, 'como_nuevo', 5, now() + interval '30 days'
   ),
-  -- D2: Candidato #2 para N1 (Usuario C, Mismo Partido Comuna 6, Perfil Parcial)
+  -- D2: Candidato #2 para N1 (Usuario C, Mismo Partido CABA, Perfil Parcial)
   (
     'b2222222-2222-2222-2222-222222222222',
     '78d026a5-c05c-4705-b32b-b518bd05bc3b', 'donacion', 'activa',
