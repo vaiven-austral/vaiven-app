@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# Sube las fotos del caso «La compu para estudiar» al Storage local y las asocia a sus publicaciones.
-# Se corre DESPUÉS de cargar supabase/demo/caso-compu-para-estudiar.sql, con el stack local levantado:
+# Sube las fotos del caso «La compu para estudiar» al Storage y las asocia a sus publicaciones.
+# Se corre DESPUÉS de cargar supabase/demo/caso-compu-para-estudiar.sql:
 #
-#   bash supabase/demo/subir-fotos.sh
+#   bash supabase/demo/subir-fotos.sh                     # contra el stack local levantado
+#   SB_API_URL=https://<ref>.supabase.co SB_ANON_KEY=<clave publicable> \
+#     bash supabase/demo/subir-fotos.sh                    # contra la nube
 #
 # Lo hace como la app: inicia sesión con cada usuario (contraseña de la semilla), sube el archivo a su
 # propia carpeta del bucket privado «publicaciones» ({usuario_id}/{publicacion_id}/{orden}.jpg) e inserta
@@ -13,8 +15,11 @@
 set -euo pipefail
 AQUI="$(cd "$(dirname "$0")" && pwd)"
 FOTOS="${FOTOS_DIR:-$AQUI/fotos}"
-eval "$(cd "$AQUI/../.." && pnpm --silent supabase status -o env 2>/dev/null | sed 's/^/SB_/')"
-: "${SB_API_URL:?no pude leer la URL de la API: ¿está levantado supabase?}" "${SB_ANON_KEY:?falta la clave anónima}"
+# Con SB_API_URL ya puesta (por ejemplo, apuntando a la nube) no se toca: se usa tal cual.
+if [ -z "${SB_API_URL:-}" ]; then
+  eval "$(cd "$AQUI/../.." && pnpm --silent supabase status -o env 2>/dev/null | sed 's/^/SB_/')"
+fi
+: "${SB_API_URL:?no pude leer la URL de la API: ¿está levantado supabase, o falta exportar SB_API_URL?}" "${SB_ANON_KEY:?falta la clave anónima (SB_ANON_KEY)}"
 PASS=vaiven123
 
 # email | id del usuario | id de la publicación | orden | archivo
