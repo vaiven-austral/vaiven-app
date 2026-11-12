@@ -19,7 +19,7 @@ n8n_api()  {
   : "${KPI_N8N_URL:?n8n_api: falta KPI_N8N_URL}" \
     "${KPI_N8N_WORKFLOW_ID:?n8n_api: falta KPI_N8N_WORKFLOW_ID}" \
     "${KPI_N8N_API_KEY:?n8n_api: falta KPI_N8N_API_KEY}"
-  curl -fsS "$KPI_N8N_URL/api/v1/executions?$1&workflowId=$KPI_N8N_WORKFLOW_ID" \
+  curl -fsS --max-time 120 "$KPI_N8N_URL/api/v1/executions?$1&workflowId=$KPI_N8N_WORKFLOW_ID" \
     -H "X-N8N-API-KEY: $KPI_N8N_API_KEY"
 }
 gh_api()   { curl -fsS -H "Authorization: Bearer ${GH_TOKEN:?falta GH_TOKEN}" -H "Accept: application/vnd.github+json" "https://api.github.com/$1"; }
@@ -44,14 +44,17 @@ candidatos_por_donacion() {
 latencia_p95() {
   # p95 (posición ceil(0,95 × N)) de la duración de las últimas 20 ejecuciones exitosas de lectura.
   # Lectura = runData contiene "Webhook" y NO "Webhook Motor Juicio".
-  local cursor="" n=0 tmp page
+  # Cada lectura guarda en n8n la lista completa de candidatos (varios MB): se pide de a pocas por página,
+  # porque con limit=50 la respuesta pasa de 400 MB y el n8n de la VM se queda sin heap (502).
+  local cursor="" n=0 tmp page pg=0 t0
   tmp=$(mktemp) || return 1
   trap 'rm -f "$tmp"' RETURN
 
   while [ "$n" -lt 20 ]; do
-    local q="status=success&includeData=true&limit=50"
+    local q="status=success&includeData=true&limit=5"
     [ -n "$cursor" ] && q="${q}&cursor=${cursor}"
-    page=$(n8n_api "$q") || { echo "latencia_p95: falló n8n_api" >&2; return 1; }
+    pg=$((pg + 1)); t0=$SECONDS
+    page=$(n8n_api "$q") || { echo "latencia_p95: falló n8n_api en la página $pg tras $((SECONDS - t0)) s" >&2; return 1; }
 
     echo "$page" | jq -r '
       '"$MS_FUNC"'
@@ -60,6 +63,7 @@ latencia_p95() {
       | ((.stoppedAt | ms) - (.startedAt | ms)) | round' >> "$tmp"
 
     n=$(wc -l < "$tmp")
+    echo "latencia_p95: página $pg, $((${#page} / 1048576)) MB en $((SECONDS - t0)) s, $n lecturas" >&2
     cursor=$(echo "$page" | jq -r '.nextCursor // empty')
     [ -z "$cursor" ] && break
   done
